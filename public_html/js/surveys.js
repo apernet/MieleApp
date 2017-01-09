@@ -7,7 +7,6 @@ define(['jquery', 'system', 'menu', 'exceptions'], function($, system, menu, e) 
             setTokenValue();
             resizeContent();
             buildSurveyBoxes();
-            buildSurveyBoxes();
             engineSearch();
         };
 

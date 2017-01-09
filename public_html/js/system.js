@@ -14,8 +14,9 @@ define(['jquery', 'system'], function($, e) {
         this.menu = {
             option: {
                 /**
-                 * Cierra sesión
-                 * @returns {HomeL#2.Home.closeSessionOption.HomeAnonym$4}
+                 * 
+                 * @param {type} token
+                 * @returns {systemL#2.system.menu.option.closeSessionOption.systemAnonym$1}
                  */
                 closeSessionOption: function(token) {
                     var url = self.SERVER+self.getApiPath()+"/auth/invalidate";
