@@ -72,6 +72,10 @@ define(['jquery', 'system'], function($, e) {
                 }
             }
         };
+        
+        this.gotToLogin = function(){
+            window.location = "login.html";;
+        };
     };
 
     return new system();

@@ -3,7 +3,7 @@ define(['bootstrap-dialog'],function(bdialog){
     var Exception = function(){
         this.INTERNAL_SERVER_ERROR = "Internal Server Error";
         
-        this.error = function(title, textContent){
+        this.error = function(title, textContent, onclick){
             bdialog.show({
                 type: bdialog.TYPE_DANGER,
                 title: title,
@@ -13,7 +13,8 @@ define(['bootstrap-dialog'],function(bdialog){
                         label: "cerrar",
                         title: "cerrar",
                         action: function(dialog){
-                            dialog.close();
+                            if(typeof onclick === "function")
+                                onclick();
                         }
                 }]
             });

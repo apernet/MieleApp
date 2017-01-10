@@ -30,7 +30,7 @@ define(['jquery', 'system', 'menu', 'exceptions'], function($, system, menu, e) 
         var buildSurveyBoxes = function() {
             var surveyType = self.getSurveysTypes(token);
             $(surveyType).each(function() {
-                if (typeof this.id === undefined || typeof this.name === undefined)
+                if (typeof this.id === undefined || typeof this.name === undefined || parseInt(this.status) !== 1)
                     return true;    /* skip */
                 $('#boxContent').append(buildBox(this));
             });
@@ -68,7 +68,12 @@ define(['jquery', 'system', 'menu', 'exceptions'], function($, system, menu, e) 
                     surveys = response;
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
-                    e.error(jqXHR.statusText + " - " + jqXHR.status, jqXHR.responseText);
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                    e.error(jqXHR.statusText + " - " + jqXHR.status, jqXHR.responseText+"<br>"+errorThrown, function(){
+                        system.gotToLogin();
+                    });
                 }
             });
             return surveys;
