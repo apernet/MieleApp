@@ -2,7 +2,10 @@
 define(['jquery', 'system'], function($, e) {
     var system = function() {
         var self = this;
-        this.SERVER = "http://localhost:8000";
+
+        var port = 8000;
+
+        this.SERVER = "http://" + window.location.hostname + ":" + port;
         this.getApiPath = function() {
             return "/api/v1";
         };
