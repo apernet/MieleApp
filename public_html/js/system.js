@@ -79,6 +79,10 @@ define(['jquery', 'system'], function($, e) {
         this.gotToLogin = function(){
             window.location = "login.html";;
         };
+        
+        this.goToSurveyInterface = function(token){
+            window.location = "surveyInterface.html";;
+        };
     };
 
     return new system();

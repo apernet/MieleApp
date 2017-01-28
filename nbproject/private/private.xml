@@ -7,5 +7,9 @@
             <file>file:/Library/WebServer/Documents/MieleApp/public_html/js/main.js</file>
             <file>file:/Library/WebServer/Documents/MieleApp/public_html/index.html</file>
         </group>
+        <group name="Miele">
+            <file>file:/Library/WebServer/Documents/MieleApp/public_html/js/surveys.js</file>
+            <file>file:/Library/WebServer/Documents/MieleApp/public_html/surveys.html</file>
+        </group>
     </open-files>
 </project-private>

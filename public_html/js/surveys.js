@@ -8,6 +8,10 @@ define(['jquery', 'system', 'menu', 'exceptions'], function($, system, menu, e) 
             resizeContent();
             buildSurveyBoxes();
             engineSearch();
+            
+            $('.survey').on('click', function(){
+                system.goToSurveyInterface(token);
+            });
         };
 
         var resizeContent = function() {
@@ -45,7 +49,7 @@ define(['jquery', 'system', 'menu', 'exceptions'], function($, system, menu, e) 
             var button = $('<div>', {class: "button-play"}).append($('<img>', {src: "img/play-button.png"}));
             var box = $('<div>', {class: "box"}).append(type).append(icon).append(button).append(name);
 
-            return $('<div>', {class: "col-sm-4 box-content", surveyName: survey.name}).append(box);
+            return $('<div>', {class: "col-sm-4 box-content survey", surveyName: survey.name}).append(box);
         };
         
         /**
