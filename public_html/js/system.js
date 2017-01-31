@@ -80,8 +80,8 @@ define(['jquery', 'system'], function($, e) {
             window.location = "login.html";;
         };
         
-        this.goToSurveyInterface = function(token){
-            window.location = "surveyInterface.html";;
+        this.goToSurveyInterface = function(token, idSurvey){
+            window.location = "surveyInterface.html?token="+token+"&idSurvey="+idSurvey;;
         };
     };
 

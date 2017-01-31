@@ -15,7 +15,9 @@ require.config({
         menu: 'js/menu',
         home: 'js/home',
         survey: 'js/surveys',
-        surveyInterface: 'js/surveyInterface'
+        surveyInterface: 'js/surveyInterface',
+        surveys: 'js/surveys',
+        surveyBuilder: 'js/surveyBuilder'
     },
     shim: {
         jquery: {

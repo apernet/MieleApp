@@ -10,7 +10,8 @@ define(['jquery', 'system', 'menu', 'exceptions'], function($, system, menu, e) 
             engineSearch();
             
             $('.survey').on('click', function(){
-                system.goToSurveyInterface(token);
+                var idSurvey = $(this).attr('idSurvey');
+                (parseInt(idSurvey) > 0) ? system.goToSurveyInterface(token, idSurvey) : e.error("No fue posible abrir la encuesta", "No se obtuvo el identificar de la encuesta a contestar");
             });
         };
 
@@ -49,7 +50,7 @@ define(['jquery', 'system', 'menu', 'exceptions'], function($, system, menu, e) 
             var button = $('<div>', {class: "button-play"}).append($('<img>', {src: "img/play-button.png"}));
             var box = $('<div>', {class: "box"}).append(type).append(icon).append(button).append(name);
 
-            return $('<div>', {class: "col-sm-4 box-content survey", surveyName: survey.name}).append(box);
+            return $('<div>', {class: "col-sm-4 box-content survey", surveyName: survey.name, idSurvey: survey.id}).append(box);
         };
         
         /**
@@ -107,6 +108,29 @@ define(['jquery', 'system', 'menu', 'exceptions'], function($, system, menu, e) 
 
         var getToken = function() {
             return token;
+        };
+        
+        this.getSurvey = function(authToken, idSurvey){
+            var survey = null;
+            $.ajax({
+                method: "POST",
+                async: false,
+                cache: false,
+                data: {},
+                url: system.getSystemPath() + "/survey/?id="+idSurvey+"&token=" + authToken,
+                success: function(response, textStatus, jqXHR) {
+                    if (typeof response !== 'object')
+                        e.error("Respuesta inesperada", response);
+
+                    survey = response;
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    e.error(jqXHR.statusText + " - " + jqXHR.status, jqXHR.responseText+"<br>"+errorThrown, function(){
+                        system.gotToLogin();
+                    });
+                }
+            });
+            return survey;
         };
     };
 

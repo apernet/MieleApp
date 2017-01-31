@@ -6,23 +6,31 @@ and open the template in the editor.
 -->
 <html>
     <head>
-        <title>TODO supply a title</title>
+        <title>Nueva encuesta</title>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, shrink-to-fit=no, initial-scale=1">
-        <link rel="stylesheet" href="apis/bootstrap/css/bootstrap.min.css"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="apis/bootstrap/css/bootstrap.css"/>
         <link rel="stylesheet" href="apis/bootstrap3-dialog/dist/css/bootstrap-dialog.css"/>
-        <link rel="stylesheet" href="css/menu.css"/>
-        <link rel="stylesheet" href="css/surveys.css"/>
-        <link rel="stylesheet" href="apis/font-awesome/css/font-awesome.min.css"/>
         <script data-main="js/main" src="apis/require.js"></script>
     </head>
     <body>
-        <div>TODO write content</div>
+        <div class="title-page">
+            Modo encuesta
+        </div>
+        <div class="wrapper">
+            <div class="container">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <div class="surveyQuestions"></div>
+                </div>
+            </div>
+        </div>
     </body>
     <script>
-        require(['main'], function () {
-            require(['surveyInterface'], function (surveyInterface) {
-                surveyInterface.init();
+        require(['main'], function() {
+            require(['jquery', 'surveyInterface'], function($, surveyInterface) {
+                $(document).ready(function() {
+                    surveyInterface.init({});
+                });
             });
         });
     </script>
