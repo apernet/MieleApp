@@ -9,6 +9,7 @@ require.config({
         alerts: 'js/alerts',
         validator: 'js/validator',
         'bootstrap-dialog': 'apis/bootstrap3-dialog/dist/js/bootstrap-dialog.min',
+        "jquery.bxslider": "apis/jquery.bxslider/jquery.bxslider",
         exceptions: 'js/exceptions',
         system: 'js/system',
         index: 'js/index',
@@ -17,13 +18,15 @@ require.config({
         survey: 'js/surveys',
         surveyInterface: 'js/surveyInterface',
         surveys: 'js/surveys',
-        surveyBuilder: 'js/surveyBuilder'
+        surveyBuilder: 'js/surveyBuilder',
+        surveyType: 'js/surveyType',
+        questionType: 'js/questionType'
     },
     shim: {
         jquery: {
             exports: 'jQuery'
         },
         "bootstrap": {"deps": ['jquery']},
-        'bootstrap-dialog': ['jquery','bootstrap']
+        'bootstrap-dialog': ['jquery', 'bootstrap'],
     }
 });

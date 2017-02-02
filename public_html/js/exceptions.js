@@ -47,7 +47,6 @@ define(['bootstrap-dialog', 'exceptions', 'system'], function(bdialog, e, sys) {
                         }
                     }],
                 close: function(dialog) {
-                    console.log("close");
                     (typeof onclick === "function") ? onclick(dialog) : dialog.close();
                 }
             });

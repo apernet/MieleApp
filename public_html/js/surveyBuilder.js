@@ -9,14 +9,12 @@
  * @param {type} e
  * @returns {SurveyBuilder|surveyBuilderL#4.SurveyBuilder}
  *******************************************************************************/
-define(['jquery', 'sortable', 'questionType', 'surveyType', 'system', 'exceptions', 'alerts'], function($, Sortable, QT, ST, sys, e, alerts) {
+define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts) {
     var SurveyBuilder = function() {
         var self = this;
         var token = null;
-        var questionsType = null;
-        var surveyTypeSelect = null;
+        var question = null;
         var surveyInfoContainer = null;
-        var buttonToolbar = null;
 
         var questionTypes = {
             '1': 'singleAnswer',
@@ -40,54 +38,7 @@ define(['jquery', 'sortable', 'questionType', 'surveyType', 'system', 'exception
          * @returns {undefined}
          */
         this.init = function(settings) {
-            setToken(settings);
-            surveyTypeSelect = $('#' + settings.idSurveyTypeSelect);
-            surveyInfoContainer = $('#'+settings.idSurveyInfo);
-            buttonToolbar = $('#'+settings.idButtonToolbar);
-
-            if (buildSurveyBuilderTools())
-                setAvailableSurveyTypes();
-
-            $(document).ready(function() {
-                buttonToolbar.find('button').on('click', function() {
-                    newQuestion($(this));
-                });
-
-                $('.home').on('click', function() {
-                    sys.goToIndex(token);
-                });
-            });
-        };
-
-        /**
-         * @description build button toolbar
-         * @returns {undefined}
-         */
-        var buildSurveyBuilderTools = function() {
-            questionsType = getQuestionsType();
-            $(questionsType).each(function() {
-                var question = this;
-                buttonToolbar.append($('<button>', {class: "btn btn-primary " + question.icon, type: question.id, title: question.name, id: question.id}));
-            });
-            return (questionsType !== undefined && questionsType !== null) ? true : false;
-        };
-
-        var setAvailableSurveyTypes = function() {
-            var surveyTypes = getSurveyTypes();
-            $(surveyTypes).each(function() {
-                var option = $('<option>', {id: this.id, value: this.id}).append(this.name);
-                surveyTypeSelect.append(option);
-            });
-
-        };
-
-        var getQuestionsType = function() {
-            return QT.getQuestionType(token);
-        };
-
-
-        var getSurveyTypes = function() {
-            return ST.getSurveyTypes(token);
+            token = settings.token;
         };
 
         /**
@@ -95,98 +46,40 @@ define(['jquery', 'sortable', 'questionType', 'surveyType', 'system', 'exception
          * @param {object} question
          * @returns {Number}
          */
-        var newQuestion = function(question) {
-            var questionType = getSurveyTypeSelected($(question).attr('type'));
-            removeActiveContainersClass();
-            if (questionType === undefined)
-                return 0;
+        this.addQuestion = function(question) {
+            var qcontainer = self.questionContainer(question);
 
-            var qcontainer = questionContainer(question);
+            setQuestion(question, qcontainer);
 
-            setQuestion(questionType, qcontainer);
+            return qcontainer;
         };
+        
         /**
          * @description execute function of a selected question.
-         * @param {string} qtype index of question type
+         * @param {string} question question object
          * @param {object} qcontainer question container is an object wrapper  
          * @returns {undefined}
          */
-        var setQuestion = function(qtype, qcontainer) {
-            self.question[qtype].init(qcontainer);
-            activeContainerListener();
-        };
-        /**
-         * @description sort questions for dragging
-         * @returns {undefined}
-         */
-        var activeSortable = function() {
-            var questionContainerList = document.getElementById('surveyBuilderContainer');
-
-            Sortable.create(questionContainerList, {
-                handle: '.glyphicon-move',
-                animation: 150
-            });
+        var setQuestion = function(question, qcontainer) {
+            var questionName = getSurveyTypeSelected(question);
+            self.question[questionName].init(qcontainer, question);
+            
         };
 
-        /**
-         * Add border on active questions
-         * @returns {undefined}
-         */
-        var activeContainerListener = function() {
-            $('#surveyBuilderContainer').find('input,textarea,checkbox').unbind('focusout').focusout(function() {
-                $('.questionContainer').removeClass('active');
-            });
-
-            $('#surveyBuilderContainer').find('input,textarea,checkbox').unbind('focus').focus(function() {
-                removeActiveContainersClass();
-                $(this).closest('.questionContainer').addClass("active");
-            });
-        };
-
-        var removeActiveContainersClass = function() {
-            $('.questionContainer').removeClass('active');
-        };
-
-        var questionContainer = function(question) {
-            var idQuestionType = question.attr('type');
-            var content = $('<div>', {class: "active questionContainer list-group col-xs-12 col-sm-12 col-md-12 col-lg-12", idQuestionType: idQuestionType}).append(titleBarQuestion(question));
+        this.questionContainer = function(question) {
+            var content = $('<div>', {class: "active questionContainer list-group col-xs-12 col-sm-12 col-md-12 col-lg-12", id: "question_"+question.id, idQuestionType: question.idQuestionType, idQuestion: question.id}).append();
             $('#surveyBuilderContainer').append(content);
-            activeSortable();
             return content;
         };
 
-        var titleBarQuestion = function(question) {
-            var title = $('<div>', {class: "title"})
-                    .append($('<button>', {class: "button-title-bar-question close glyphicon glyphicon-trash"}).click(function() {
-                        $(this).parents().find('.questionContainer').eq($('.glyphicon-trash').index(this)).remove();
-                    }))
-                    .append($('<button>', {class: "button-title-bar-question close glyphicon glyphicon-move"}))
-                    .append($('<div>', {class: "question-title"}).append(question.attr('title')));
-            return title;
+        var getSurveyTypeSelected = function(question) {
+            return questionTypes[question.idQuestionType];
         };
 
-        var getSurveyTypeSelected = function(questionTypeSelected) {
-            return questionTypes[questionTypeSelected];
+        var getAnswersOptions = function(question) {
+            return question.cat_question_type.answer_type;
         };
-
-        var getQuestionTypeData = function(idQuestion) {
-            var data = null;
-            $(questionsType).each(function() {
-                if (parseInt(idQuestion) === parseInt(this.id))
-                    return data = this;
-            });
-
-            return data;
-        };
-
-        var getAnswersOptions = function(idQuestion) {
-            var questionData = getQuestionTypeData(idQuestion);
-            return (typeof questionData.answer_type !== undefined) ? questionData.answer_type : null;
-        };
-
-        var setToken = function(settings) {
-            token = settings.token;
-        };
+        
         /**
          * @description object that contains functions of each type of question
          */
@@ -197,34 +90,24 @@ define(['jquery', 'sortable', 'questionType', 'surveyType', 'system', 'exception
              * @returns {undefined}
              */
             singleAnswer: {
-                init: function(qcontainer) {
-                    this.add(qcontainer).focus();
+                init: function(qcontainer, question) {
+                    this.add(qcontainer, question);
+                    
                 },
 
-                add: function(qcontainer) {
-                    var textarea = $('<textarea>', {class: "form-control question", placeholder: "Escriba aquí su pregunta"});
+                add: function(qcontainer, question) {
+                     var textarea = $('<textarea>', {class: "form-control question", placeholder: "Escriba aquí su pregunta"});
                     var form = $('<div>', {class: "form-group"}).append($('<div>', {class: "col-xs-12 col-sm-12 col-md-12 col-lg-12"}).append(textarea));
-
+                    qcontainer.append($('<label>', {class:"col-xs-12 col-sm-12 col-md-12 col-lg-12"}).append(question.text));
                     qcontainer.append(form);
-
-                    return textarea;
                 },
 
-                /**
-                 * @description return question data;
-                 * @param {type} qcontainer
-                 * @returns {unresolved}
-                 */
                 save: function(qcontainer) {
-                    var questionForm = $(qcontainer).find('.question').first();
-                    var idQuestionType = $(qcontainer).attr("idQuestionType");
-                    this.removeAlert(questionForm);
-
-                    return ($.trim($(questionForm).val()).length === 0) ? alerts.addFormError(questionForm) : {text: questionForm.val(), idQuestionType: idQuestionType};
+                   
                 },
 
-                removeAlert: function(questionForm) {
-                    return alerts.removeFormError(questionForm);
+                removeAlert: function() {
+                    
                 }
             },
 
@@ -234,8 +117,8 @@ define(['jquery', 'sortable', 'questionType', 'surveyType', 'system', 'exception
              * @returns {undefined}
              */
             multipleAnswerRadio: {
-                init: function(qcontainer) {
-                    self.question.multipleAnswerFunct.init(qcontainer, "record").focus();
+                init: function(qcontainer, question) {
+                    self.question.multipleAnswerFunct.init(qcontainer, "record", question);
                 },
                 save: function(qtype, qcontainer) {
                     return self.question.multipleAnswerFunct.save(qtype, qcontainer);
@@ -243,8 +126,8 @@ define(['jquery', 'sortable', 'questionType', 'surveyType', 'system', 'exception
             },
 
             multipleAnswerCheck: {
-                init: function(qcontainer) {
-                    self.question.multipleAnswerFunct.init(qcontainer, "check").focus();
+                init: function(qcontainer, question) {
+                    self.question.multipleAnswerFunct.init(qcontainer, "check", question);
                 },
                 save: function(qtype, qcontainer) {
                     return self.question.multipleAnswerFunct.save(qtype, qcontainer);
@@ -255,60 +138,31 @@ define(['jquery', 'sortable', 'questionType', 'surveyType', 'system', 'exception
              * functions of Multiple answers
              */
             multipleAnswerFunct: {
-                init: function(qcontainer, iconTypeOfQuestion) {
-                    var self = this;
-                    var textarea = $('<textarea>', {class: "form-control question", type: "text", placeholder: "Escriba aquí su pregunta"});
-                    var form = $('<div>', {class: "form-group"}).append($('<div>', {class: "col-xs-12 col-sm-12 col-md-12 col-lg-12"}).append(textarea));
+                init: function(qcontainer, iconTypeOfQuestion, question) {
+                    var questionWrapper = $('<div>', {class: "col-xs-12 col-sm-12 col-md-12 col-lg-12 question"}).append(question.text);
                     var optionsWrapper = $('<div>', {class: "col-xs-12 col-sm-12 col-md-12 col-lg-12"});
-                    var buttonPlus = $('<button>', {class: "btn btn-success glyphicon glyphicon-plus"});
-                    var buttonPlusWrapper = $('<div>', {class: "col-xs-12 col-sm-12 col-md-12 col-lg-12"}).append(buttonPlus);
 
-                    buttonPlus.click(function() {
-                        self.addForm(optionsWrapper, iconTypeOfQuestion).focus();
-                    });
-
-                    qcontainer.append($('<div>', {class: "form-group col-xs-12 col-sm-12 col-md-12 col-lg-12"}).append(form));
+                    qcontainer.append(questionWrapper);
+                    optionsWrapper.append(this.setOptions(iconTypeOfQuestion, question));
                     qcontainer.append(optionsWrapper);
-                    qcontainer.append(buttonPlusWrapper);
-
-                    this.addForm(optionsWrapper, iconTypeOfQuestion);
-
-                    return textarea;
+                    
+                    return true;
                 },
-
-                /**
-                 * @description add an answer option to the question
-                 * @param {type} optionsWrapper
-                 * @param {string} iconTypeOfQuestion 
-                 * @returns {$}
-                 */
-                addForm: function(optionsWrapper, iconTypeOfQuestion) {
-                    var wrapperForm = $('<div>', {class: "rowOption col-xs-12 col-sm-12 col-md-12 col-lg-12"});
-                    var formGroup = $('<div>', {class: "input-group form-group"});
-                    var newOptionForm = $('<input>', {class: "questionOption form-control", type: "text", placeholder: "Escriba una respuesta.."});
-                    var buttonRemoveForm = $('<button>', {class: "btn btn-warning", type: "button"}).append($('<spam>', {class: "glyphicon glyphicon-remove"}));
-                    var buttonTypeQuestionIcon = $('<button>', {class: "btn btn-warning", type: "button"}).append($('<spam>', {class: "glyphicon glyphicon-" + iconTypeOfQuestion}));
-
-                    formGroup.
-                            append($('<div>', {class: "input-group-btn"}).append(buttonTypeQuestionIcon))
-                            .append(newOptionForm).append($('<div>', {class: "input-group-btn"})
-                            .append(buttonRemoveForm));
-
-                    wrapperForm.append(formGroup);
-                    optionsWrapper.append(wrapperForm);
-
-                    activeContainerListener();
-
-                    buttonRemoveForm.click(function() {
-                        if (optionsWrapper.find('.questionOption').length > 1)
-                            wrapperForm.remove();
+                setOptions: function(iconTypeOfQuestion, question) {
+                    var options = question.question_answers;
+                    var wrapper = $('<div>', {class: "col-xs-12 col-sm-12 col-md-12 col-lg-12"});
+                    $(options).each(function(){
+                        var type = (iconTypeOfQuestion === "check") ? "checkbox" : "radio";
+                        var option = $('<div>', {class: type});
+                        var input = $('<input>', {type: type, name:"radio_"+question.id});
+                        var label = $('<label>').append(input).append(this.text);
+                        wrapper.append(option.append(label));
                     });
-
-                    return newOptionForm;
+                    
+                    return wrapper;
                 },
-
                 save: function(qcontainer) {
-                    return this.getData(qcontainer);
+                    
                 },
 
                 /**
@@ -318,19 +172,7 @@ define(['jquery', 'sortable', 'questionType', 'surveyType', 'system', 'exception
                  * @returns {surveyBuilderL#12.SurveyBuilder.execute.multipleAnswerFunct.getData.surveyBuilderAnonym$27|Boolean}
                  */
                 getData: function(qcontainer) {
-                    if (!this.validate(qcontainer))
-                        return null;
 
-                    var idQuestionType = $(qcontainer).attr('idQuestionType');
-                    var questionForm = $(qcontainer).find('.question').first();
-                    var data = {text: questionForm.val(), idQuestionType: idQuestionType, answers: []};
-
-                    $(qcontainer).find('input.questionOption').each(function() {
-                        var optionForm = $(this);
-                        data.answers.push({text: optionForm.val()});
-                    });
-
-                    return data;
                 },
                 /**
                  * @description Validates main question and each answer option.
@@ -372,34 +214,35 @@ define(['jquery', 'sortable', 'questionType', 'surveyType', 'system', 'exception
              * @description this function adds a question type of approval
              */
             approval: {
-                init: function(qcontainer) {
-                    this.add(qcontainer).focus();
+                init: function(qcontainer, question) {
+                    this.add(qcontainer, question);
                 },
 
-                add: function(qcontainer) {
-                    var textarea = $('<textarea>', {class: "form-control question", placeholder: "Escriba aquí su pregunta"});
-                    var form = $('<div>', {class: "row form-group"})
-                            .append($('<div>', {class: "col-xs-12 col-sm-12 col-md-12 col-lg-12"}).append(textarea));
+                add: function(qcontainer, question) {
+                    var questionWrapper = $('<div>', {class: "col-xs-12 col-sm-12 col-md-12 col-lg-12 question"}).append(question.text);
+                    qcontainer.append(questionWrapper).append(this.getButtonsGroup(question));
 
-                    qcontainer.append(form).append(this.getButtonsGroup(qcontainer));
-
-                    return textarea;
+                    return true;
                 },
 
-                getButtonsGroup: function(qcontainer) {
+                getButtonsGroup: function(question) {
                     var group = $('<div>', {class: "btn-group", role: "group"});
-                    var idQuestionType = $(qcontainer).attr('idQuestionType');
-                    var groupButton = this.getButtonGroupOptions(idQuestionType);
+                    var groupButton = this.getButtonGroupOptions(question);
 
                     $(groupButton).each(function() {
                         var button = $('<button>', {type: "button", class: "btn btn-default", value: this.id}).append(this.name);
                         group.append(button);
                     });
+                    
+                    $(group).find("button").on("click", function(){
+                        $(group).find("button.active").removeClass("active");
+                        $(this).addClass('active');
+                    });
                     return $('<div>', {class: "row col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center"}).append(group);
                 },
 
-                getButtonGroupOptions: function(idQuestion) {
-                    return getAnswersOptions(idQuestion);
+                getButtonGroupOptions: function(question) {
+                    return getAnswersOptions(question);
                 },
                 /**
                  * @description return question data;
@@ -408,11 +251,7 @@ define(['jquery', 'sortable', 'questionType', 'surveyType', 'system', 'exception
                  * @returns {unresolved}
                  */
                 save: function(qcontainer) {
-                    var questionForm = $(qcontainer).find('.question').first();
-                    var idQuestionType = $(qcontainer).attr('idQuestionType');
-                    questionForm.val($.trim(questionForm.val()));
-                    this.removeAlert(questionForm);
-                    return ($(questionForm).val().length === 0) ? alerts.addFormError(questionForm) : {text: questionForm.val(), idQuestionType: idQuestionType};
+                    
                 },
 
                 removeAlert: function(questionForm) {
@@ -424,27 +263,25 @@ define(['jquery', 'sortable', 'questionType', 'surveyType', 'system', 'exception
              * @description this function adds a question type of rating scale 
              */
             ratingScale: {
-                init: function(qcontainer) {
-                    this.add(qcontainer).focus();
+                init: function(qcontainer, question) {
+                    this.add(qcontainer, question);
                 },
 
-                add: function(qcontainer) {
-                    var textarea = $('<textarea>', {class: "form-control question", placeholder: "Escriba aquí su pregunta"});
-                    var formGroup = $('<div>', {class: "row form-group"})
-                            .append($('<div>', {class: "col-xs-12 col-sm-12 col-md-12 col-lg-12"}).append(textarea));
+                add: function(qcontainer, question) {
+                    var questionWrapper = $('<div>', {class: "col-xs-12 col-sm-12 col-md-12 col-lg-12 question"}).append(question.text);
 
-                    qcontainer.append(formGroup);
+                    qcontainer.append(questionWrapper);
 
                     var label = $('<label>', {class: "col-xs-7 col-sm-9 col-md-9 col-lg-4"}).append("Puntuación Máxima");
                     var gradeForm = this.getGradeSelect();
 
-                    formGroup = $('<div>', {class: "row form-group"})
+                    var formGroup = $('<div>', {class: "form-group"})
                             .append(label)
                             .append($('<div>', {class: "col-xs-5 col-sm-3 col-md-3 col-lg-3"}).append(gradeForm));
 
                     qcontainer.append(formGroup);
 
-                    return textarea;
+                    return true;
                 },
 
                 getGradeSelect: function() {
@@ -468,14 +305,7 @@ define(['jquery', 'sortable', 'questionType', 'surveyType', 'system', 'exception
                  * @returns {unresolved}
                  */
                 save: function(qcontainer) {
-                    var questionForm = $(qcontainer).find('.question').first();
-                    var grade = $(qcontainer).find('select').first();
-                    var idQuestionType = $(qcontainer).attr('idQuestionType');
-                    questionForm.val($.trim(questionForm.val()));
-                    this.removeAlert(questionForm);
-                    return (parseInt(grade.val()) > 0) ?
-                            ((questionForm.val().length === 0) ? alerts.addFormError(questionForm) : {text: questionForm.val(), idQuestionType: idQuestionType})
-                            : alerts.addFormError(grade);
+                    
                 },
 
                 removeAlert: function(questionForm) {
@@ -487,27 +317,19 @@ define(['jquery', 'sortable', 'questionType', 'surveyType', 'system', 'exception
              * @description This function adds a single text
              */
             singleText: {
-                init: function(qcontainer) {
-                    this.add(qcontainer).focus();
+                init: function(qcontainer, question) {
+                    this.add(qcontainer, question);
                 },
 
-                add: function(qcontainer) {
-                    var textarea = $('<textarea>', {class: "form-control question", placeholder: "Escriba aquí su pregunta"});
-                    var formGroup = $('<div>', {class: "row form-group"})
-                            .append($('<div>', {class: "col-xs-12 col-sm-12 col-md-12 col-lg-12"}).append(textarea));
+                add: function(qcontainer, question) {
+                    var questionWrapper = $('<div>', {class: "col-xs-12 col-sm-12 col-md-12 col-lg-12 question"}).append(question.text);
 
-                    qcontainer.append(formGroup);
-                    return textarea;
+                    qcontainer.append(questionWrapper);
+                    return true;
                 },
 
                 save: function(qcontainer) {
-                    var questionForm = $(qcontainer).find('.question').first();
-                    var idQuestionType = $(qcontainer).attr('idQuestionType');
-
-                    questionForm.val($.trim(questionForm.val()));
-                    this.removeAlert(questionForm);
-
-                    return (questionForm.val().length === 0) ? alerts.addFormError(questionForm) : {text: questionForm.val(), idQuestionType: idQuestionType};
+                    
                 },
 
                 removeAlert: function(questionForm) {
@@ -519,24 +341,21 @@ define(['jquery', 'sortable', 'questionType', 'surveyType', 'system', 'exception
              * @description question of confirmation type
              */
             confirmation: {
-                init: function(qcontainer) {
-                    this.add(qcontainer).focus();
+                init: function(qcontainer, question) {
+                    this.add(qcontainer, question);
                 },
 
-                add: function(qcontainer) {
-                    var textarea = $('<textarea>', {class: "form-control question", placeholder: "Escriba aquí su pregunta"});
-                    var formGroup = $('<div>', {class: "row form-group"})
-                            .append($('<div>', {class: "col-xs-12 col-sm-12 col-md-12 col-lg-12"}).append(textarea));
+                add: function(qcontainer, question) {
+                    var questionWrapper = $('<div>', {class: "col-xs-12 col-sm-12 col-md-12 col-lg-12 question"}).append(question.text);
+                    
+                    qcontainer.append(questionWrapper).append(this.getButtonsGroup(question));
 
-                    qcontainer.append(formGroup).append(this.getButtonsGroup(qcontainer));
-
-                    return textarea;
+                    return true;
                 },
 
-                getButtonsGroup: function(qcontainer) {
+                getButtonsGroup: function(question) {
                     var group = $('<div>', {});
-                    var idQuestionType = qcontainer.attr('idQuestionType');
-                    $(this.getButtonGroupOptions(idQuestionType)).each(function() {
+                    $(this.getButtonGroupOptions(question)).each(function() {
                         var button = $('<input>', {type: "radio", value: this.value, name: "radio"});
                         var label = $('<label>').append(button).append(this.text);
                         var div = $('<div>', {class: "radio"}).append(label);
@@ -546,8 +365,8 @@ define(['jquery', 'sortable', 'questionType', 'surveyType', 'system', 'exception
                     return $('<div>', {class: "col-xs-12 col-sm-12 col-md-12 col-lg-12"}).append(group);
                 },
 
-                getButtonGroupOptions: function(idQuestion) {
-                    var questionData = getAnswersOptions(idQuestion);
+                getButtonGroupOptions: function(question) {
+                    var questionData = getAnswersOptions(question);
                     var options = [];
                     $(questionData).each(function() {
                         options.push({text: this.name, value: this.id});
@@ -556,12 +375,7 @@ define(['jquery', 'sortable', 'questionType', 'surveyType', 'system', 'exception
                 },
 
                 save: function(qcontainer) {
-                    var questionForm = $(qcontainer).find('.question').first();
-                    var idQuestionType = $(qcontainer).attr('idQuestionType');
-                    questionForm.val($.trim(questionForm.val()));
-                    this.removeAlert(questionForm);
-
-                    return (questionForm.val().length === 0) ? alerts.addFormError(questionForm) : {text: questionForm.val(), idQuestionType: idQuestionType};
+                    
                 },
 
                 removeAlert: function(questionForm) {
@@ -598,10 +412,6 @@ define(['jquery', 'sortable', 'questionType', 'surveyType', 'system', 'exception
             getSurveyData: function() {
                 var data = null;
                 var questionData = this.getQuestionData();
-                var validatedSurveyInfo = this.validateSurveyInfoData();
-
-                if (!$.isArray(questionData) || !validatedSurveyInfo)
-                    return false;
 
                 data = this.getSurveyInfoObject();
                 data.questions = questionData;
@@ -624,28 +434,6 @@ define(['jquery', 'sortable', 'questionType', 'surveyType', 'system', 'exception
 
             getSurveyInfoData: function() {
                 return JSON.parse(JSON.stringify(surveyInfoContainer.serializeArray()));
-            },
-
-            validateSurveyInfoData: function() {
-                var status = true;
-
-                surveyInfoContainer.find('.required').each(function() {
-                    alerts.removeFormError($(this));
-                    $(this).val($.trim($(this).val()));
-
-                    if ($(this).val().length === 0) {
-                        status = false;
-                        alerts.addFormError($(this));
-                    }
-                });
-
-                if (!parseInt(surveyTypeSelect.val()) > 0) {
-                    status = false;
-                    alerts.addFormError(surveyTypeSelect);
-
-                }
-
-                return status;
             },
 
             /**

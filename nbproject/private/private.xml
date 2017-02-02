@@ -7,15 +7,13 @@
             <file>file:/Library/WebServer/Documents/MieleApp/public_html/js/main.js</file>
             <file>file:/Library/WebServer/Documents/MieleApp/public_html/index.html</file>
         </group>
-        <group name="Miele">
-            <file>file:/Library/WebServer/Documents/MieleApp/public_html/surveys.html</file>
-            <file>file:/Library/WebServer/Documents/MieleApp/public_html/js/system.js</file>
-            <file>file:/Library/WebServer/Documents/MieleApp/public_html/js/surveyInterface.js</file>
-            <file>file:/Library/WebServer/Documents/MieleApp/public_html/surveyInterface.html</file>
-            <file>file:/Library/WebServer/Documents/MieleApp/public_html/js/surveys.js</file>
-        </group>
         <group>
             <file>file:/Library/WebServer/Documents/MieleApp/public_html/surveys.html</file>
+            <file>file:/Library/WebServer/Documents/MieleApp/public_html/surveyInterface.html</file>
+        </group>
+        <group name="Miele">
+            <file>file:/Library/WebServer/Documents/MieleApp/public_html/js/surveyInterface.js</file>
+            <file>file:/Library/WebServer/Documents/MieleApp/public_html/js/surveyBuilder.js</file>
             <file>file:/Library/WebServer/Documents/MieleApp/public_html/surveyInterface.html</file>
         </group>
     </open-files>

@@ -1,0 +1,20 @@
+/* 
+    Created on : Feb 2, 2017, 1:53:27 PM
+    Author     : danielunag
+*/
+.surveyBuilderContainer{
+    height: 97%;
+    position: absolute;
+}
+.questionContainer{
+    height: 100%;
+    position: absolute;
+    
+}
+
+.bx-wrapper{
+    height: 97%;
+}
+.bx-viewport{
+    height: 100% !important;
+}

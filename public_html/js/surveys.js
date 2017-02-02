@@ -125,9 +125,7 @@ define(['jquery', 'system', 'menu', 'exceptions'], function($, system, menu, e) 
                     survey = response;
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
-                    e.error(jqXHR.statusText + " - " + jqXHR.status, jqXHR.responseText+"<br>"+errorThrown, function(){
-                        system.gotToLogin();
-                    });
+                    e.manageError(jqXHR, textStatus, errorThrown);
                 }
             });
             return survey;
