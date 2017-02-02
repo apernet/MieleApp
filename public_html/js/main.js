@@ -28,5 +28,6 @@ require.config({
         },
         "bootstrap": {"deps": ['jquery']},
         'bootstrap-dialog': ['jquery', 'bootstrap'],
+        'jquery.bxslider': ['jquery']
     }
 });
