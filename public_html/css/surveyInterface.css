@@ -2,19 +2,44 @@
     Created on : Feb 2, 2017, 1:53:27 PM
     Author     : danielunag
 */
-.surveyBuilderContainer{
-    height: 97%;
+body{
+    font-size: 18px;
+}
+
+.background-survey-interface{
+    top: 0;
     position: absolute;
+    width: 100%;
+    height: 100%;
+    background: url("../img/BK 01.png") no-repeat fixed;
+    background-size: 100% 100%;
+}
+.surveyBuilderContainer{
+    height: 90%;
+    position: absolute;
+    background-color: transparent;
 }
 .questionContainer{
-    height: 100%;
     position: absolute;
-    
+    padding: 10px;
+    background-color: white;
+
 }
 
 .bx-wrapper{
     height: 97%;
+    padding-right: 50px;
+    padding-left: 50px;
+    padding-bottom: 30px;
+    background-color: transparent !important;
 }
 .bx-viewport{
     height: 100% !important;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.page-content-wrapper {
+    height: 100%;
 }
