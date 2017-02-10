@@ -46,12 +46,16 @@ define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts)
          * @param {object} question
          * @returns {Number}
          */
-        this.addQuestion = function(question) {
+        this.addQuestion = function(question, sliderContainer) {
             var qcontainer = self.questionContainer(question);
-
+            console.log(sliderContainer);
+            if(sliderContainer === undefined)
+                sliderContainer = getSliderContainer();
+                   
+            sliderContainer.append(qcontainer);
             setQuestion(question, qcontainer);
 
-            return qcontainer;
+            return sliderContainer;
         };
         
         /**
@@ -65,10 +69,16 @@ define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts)
             self.question[questionName].init(qcontainer, question);
             
         };
+        
+        var getSliderContainer = function(){
+            var sliderContainder = $('<div>', {class: "slider-container"});
+            $('#slider').append(sliderContainder);
+            return sliderContainder; 
+        };
 
         this.questionContainer = function(question) {
             var content = $('<div>', {class: "active questionContainer list-group col-xs-12 col-sm-12 col-md-12 col-lg-12", id: "question_"+question.id, idQuestionType: question.idQuestionType, idQuestion: question.id}).append();
-            $('#surveyBuilderContainer').append(content);
+            
             return content;
         };
 

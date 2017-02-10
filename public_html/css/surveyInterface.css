@@ -6,6 +6,17 @@ body{
     font-size: 18px;
 }
 
+
+.footer-Wrapper{
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+}
+
+.footer-Wrapper img{
+    width: 100%;
+}
+
 .background-survey-interface{
     top: 0;
     position: absolute;
@@ -14,13 +25,21 @@ body{
     background: url("../img/BK 01.png") no-repeat fixed;
     background-size: 100% 100%;
 }
+.slider-content{
+    height: 100%;
+    position: absolute;
+}
+.message-container{
+    height: 100%;
+    position: absolute;
+    width: 100%;
+}
 .surveyBuilderContainer{
-    height: 90%;
+    height: 90% !important;
     position: absolute;
     background-color: transparent;
 }
 .questionContainer{
-    position: absolute;
     padding: 10px;
     background-color: white;
 
