@@ -5,11 +5,43 @@
 body{
     font-size: 18px;
 }
+.navbar{
+    background-color: #E60000;
+    min-height: 85px;
+    display: flex;
+    align-items: center;
+    padding-right: 30px;
+}
 
+.navbar.message-mode{
+    background-color: transparent;
+}
+
+.navbar.message-mode .navbar-right{
+    display: none;
+}
+.navbar.message-mode{
+    display: block;
+}
+
+.navbar-brand {
+    float:none;
+}
+.navbar-title{
+    
+}
+.navbar.message-mode .survey-title{
+    display: none;
+}
+.navbar .survey-title{
+    color: white;
+    font-size: 25px;
+    display: block;
+}
 
 .footer-Wrapper{
     position: absolute;
-    bottom: 0px;
+    top: 90%;
     width: 100%;
 }
 
@@ -31,8 +63,15 @@ body{
 }
 .message-container{
     height: 100%;
-    position: absolute;
+    position: relative;
     width: 100%;
+    font-size: 60px;
+    text-align: center;
+}
+
+.message-container .text-wrapper{
+    max-height: 70%;
+    overflow-y: auto;
 }
 .surveyBuilderContainer{
     height: 90% !important;
@@ -60,5 +99,10 @@ body{
 }
 
 .page-content-wrapper {
+    height: 100%;
+}
+
+.slider-container{
+    overflow-y: auto;
     height: 100%;
 }
