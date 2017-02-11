@@ -74,7 +74,8 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'home
          */
         var setButtonsNext = function(){
             $('.slider-container').each(function(){
-                $(this).append(getButtonNext("siguientee"));
+                if(!$(this).find('.button-next').length > 0)
+                    $(this).append(getButtonNext("siguientee"));
             });
         };
         
@@ -96,7 +97,7 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'home
         };
 
         var setWelcomText = function(survey) {
-            var content = $('<div>', {class: "message-container", id: "question_welcome_text", idQuestionType: 0, idQuestion: 0})
+            var content = $('<div>', {class: "message-container slider-container", id: "question_welcome_text", idQuestionType: 0, idQuestion: 0})
                     .append($('<div>', {class:"text-wrapper"}).append(survey.welcome_text))
                     .append(getFooter())
                     .append(getButtonNext("Empezar"));
@@ -105,10 +106,11 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'home
         };
 
         var setFinishText = function(survey) {
-            var content = $('<div>', {class: "message-container", id: "question_finish_text", idQuestionType: 0, idQuestion: 0})
+            var content = $('<div>', {class: "message-container slider-container", id: "question_finish_text", idQuestionType: 0, idQuestion: 0})
                     .append($('<div>', {class:"text-wrapper"}).append(survey.finish_text))
-                    .append(getFooter());
-
+                    .append(getFooter())
+                    .append(getButtonNext("Responder nueva encuesta"));
+            
             $('#slider').append(content);
         };
 
