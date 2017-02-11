@@ -75,7 +75,7 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'home
         var setButtonsNext = function(){
             $('.slider-container').each(function(){
                 if(!$(this).find('.button-next').length > 0)
-                    $(this).append(getButtonNext("siguientee"));
+                    $(this).append(getButtonNext("siguiente"));
             });
         };
         
