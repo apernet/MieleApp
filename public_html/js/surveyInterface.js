@@ -62,6 +62,10 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'home
                     showNavBarTitle();
                 }
             });
+         
+            $('.button-next').on("click", function() {
+                    slider.goToNextSlide();
+            });
         };
         
         /**
@@ -115,11 +119,8 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'home
         };
 
         var getButtonNext = function(text) {
-            var button = $('<div>', {class: "text-center next-bx", id: "next-bx"}).append($('<button>', {class: "btn btn-primary btn-lg"}).append(text));
-            button.on("click", function() {
-                    slider.goToNextSlide();
-                    return false;
-            });
+            var button = $('<div>', {class: "button-next text-center next-bx", id: "next-bx"}).append($('<button>', {class: "btn btn-primary btn-lg"}).append(text));
+            
             return button;
         };
 
