@@ -24,32 +24,32 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'home
         var showSurvey = function() {
             var survey = getSurvey();
             var sliderContainer;
-            
             survey = ($.isPlainObject(survey)) ? null : survey[0];
             console.log(survey);
-            
+            SurveyBuilder.init({token: token}, survey);
+
             hideNavBarTitle();
-            
+
             setTitle(survey.name);
 
-            setWelcomText(survey);
-
-            SurveyBuilder.init({token: token}, survey);
+            setWelcomText(survey);          // initial slider
 
             $(survey.mst_questions).each(function(index) {
                 /* add a new slider each three questions */
                 if (index % 3 === 0)
-                    sliderContainer = SurveyBuilder.addQuestion(this);
-                else
-                    SurveyBuilder.addQuestion(this, sliderContainer);
+                    sliderContainer = getSliderContainer();
+                
+                SurveyBuilder.addQuestion(this).insertBefore(sliderContainer.find('.navigation-buttons'));
 
             });
 
-            setFinishText(survey);
-            
-            setButtonsNext();
-            
-            slider = $('#slider').bxSlider({
+            setFinishText(survey);          // end slider
+
+            slider = initSlider();
+        };
+
+        var initSlider = function() {
+            var sliderObject = $('#slider').bxSlider({
                 mode: "fade",
                 speed: 800,
                 hideControlOnEnd: true,
@@ -58,38 +58,68 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'home
                 infiniteLoop: false,
                 controls: false,
                 touchEnabled: false,
-                onSlideNext: function($slideElement, oldIndex, newIndex){
+                onSlideNext: function($slideElement, oldIndex, newIndex) {
                     showNavBarTitle();
+                },
+                onSlideAfter: function($slideElement, oldIndex, newIndex) {
+                    setSliderNumber();
                 }
             });
-         
+
             $('.button-next').on("click", function() {
+                if (questionsCompleted())
                     slider.goToNextSlide();
             });
-        };
-        
-        /**
-         * @description Set button next in each slider
-         * @returns {undefined}
-         */
-        var setButtonsNext = function(){
-            $('.slider-container').each(function(){
-                if(!$(this).find('.button-next').length > 0)
-                    $(this).append(getButtonNext("siguiente"));
+            
+            $('.button-prev').on("click", function() {
+                if(slider.getCurrentSlide() > 1)
+                    slider.goToPrevSlide();
             });
+            
+            $('.restart-survey').on("click", function(){
+                slider.goToSlide(0);
+            });
+
+            return sliderObject;
         };
         
-        var showNavBarTitle = function(){
+         /**
+         * 
+         * @param {boolean} addCurrentSlider add slider number container
+         * @returns {$}
+         */
+        var getSliderContainer = function(){
+            var sliderContainder = $('<div>', {class: "slider-container"});
+                sliderContainder.append(getSliderNumberContainer())
+                        .append(navigationButtons());
+                
+            $('#slider').append(sliderContainder);
+            
+            return sliderContainder; 
+        };
+        
+        var getSliderNumberContainer = function(){
+            return $('<div>', {class: "slider-number-container"});
+        };
+
+        var showNavBarTitle = function() {
             $('.navbar').removeClass('message-mode');
         };
-        
-        var hideNavBarTitle = function(){
+
+        var hideNavBarTitle = function() {
             $('.navbar').addClass('message-mode');
         };
-        
-        var setTitle = function(title){
+
+        var setTitle = function(title) {
             $('.survey-title').append(title);
-            
+        };
+
+        var setSliderNumber = function() {
+            var index = slider.getCurrentSlide();
+            var totalSliders = parseInt(slider.getSlideCount()) - 1;
+            if(!isNaN(totalSliders) || !isNaN(index))
+                if (index > 0)
+                    $('.slider-number-container').empty().text(index + "/" + totalSliders);
         };
 
         var getFooter = function() {
@@ -98,19 +128,19 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'home
 
         var setWelcomText = function(survey) {
             var content = $('<div>', {class: "message-container slider-container", id: "question_welcome_text", idQuestionType: 0, idQuestion: 0})
-                    .append($('<div>', {class:"text-wrapper"}).append(survey.welcome_text))
+                    .append($('<div>', {class: "text-wrapper"}).append(survey.welcome_text))
                     .append(getFooter())
-                    .append(getButtonNext("Empezar"));
+                    .append(startSurvey());
 
             $('#slider').append(content);
         };
 
         var setFinishText = function(survey) {
             var content = $('<div>', {class: "message-container slider-container", id: "question_finish_text", idQuestionType: 0, idQuestion: 0})
-                    .append($('<div>', {class:"text-wrapper"}).append(survey.finish_text))
+                    .append($('<div>', {class: "text-wrapper"}).append(survey.finish_text))
                     .append(getFooter())
-                    .append(getButtonNext("Responder nueva encuesta"));
-            
+                    .append(restartSurvey());
+
             $('#slider').append(content);
         };
 
@@ -119,11 +149,46 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'home
 
             return (!parseInt(idSurvey) > 0) ? null : Surveys.getSurvey(token, idSurvey);
         };
-
-        var getButtonNext = function(text) {
-            var button = $('<div>', {class: "button-next text-center next-bx", id: "next-bx"}).append($('<button>', {class: "btn btn-primary btn-lg"}).append(text));
+        
+        var startSurvey = function(){
+            var wrapper = $('<div>', {class: "col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center"});
+            var container = $('<div>', {class:"btn-group"});
+            var next = $('<button>', {class: "btn btn-primary btn-lg button-next next-bx"}).append("Empezar");
             
-            return button;
+            container.append(next);
+            
+            return  wrapper.append(container);
+        };
+        
+        var restartSurvey = function(){
+            var wrapper = $('<div>', {class: "col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center"});
+            var container = $('<div>', {class:"btn-group"});
+            var next = $('<button>', {class: "btn btn-primary btn-lg restart-survey"}).append("Iniciar nueva encuesta");
+            
+            container.append(next);
+            
+            return  wrapper.append(container);
+        };
+
+        var navigationButtons = function() {
+            var wrapper = $('<div>', {class: "col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center navigation-buttons"});
+            var container = $('<div>', {class:"btn-group"});
+            var next = $('<button>', {class: "btn btn-primary btn-lg button-next next-bx"}).append("Siguiente");
+            var prev = $('<button>', {class: "btn btn-primary btn-lg button-prev prev-bx"}).append("Anterior");
+            
+            wrapper.append(container);
+            
+            container.append(prev);
+            container.append(next);
+            
+            return wrapper;
+        };
+
+        var questionsCompleted = function() {
+            var ok = true;
+
+
+            return ok;
         };
 
     };

@@ -9,6 +9,8 @@ require.config({
         alerts: 'js/alerts',
         validator: 'js/validator',
         'bootstrap-dialog': 'apis/bootstrap3-dialog/dist/js/bootstrap-dialog.min',
+        "bootstrap-star-rating": "apis/bootstrap-star-rating/js/star-rating",
+        "bootstrap-star-rating-es": "apis/bootstrap-star-rating/js/locales/es",
         "jquery.bxslider": "apis/jquery.bxslider/jquery.bxslider",
         exceptions: 'js/exceptions',
         system: 'js/system',
@@ -27,7 +29,10 @@ require.config({
             exports: 'jQuery'
         },
         "bootstrap": {"deps": ['jquery']},
-        'bootstrap-dialog': ['jquery', 'bootstrap'],
-        'jquery.bxslider': ['jquery']
+        'bootstrap-dialog': {"deps": ['jquery', 'bootstrap']},
+        'jquery.bxslider': {"deps":['jquery']},
+        "bootstrap-star-rating": {"deps": ['jquery']},
+        "bootstrap-star-rating-es": {"deps":['bootstrap-star-rating']},
+        surveyBuilder: {"deps": ['bootstrap-star-rating', 'bootstrap-star-rating-es']}
     }
 });

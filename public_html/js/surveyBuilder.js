@@ -46,16 +46,12 @@ define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts)
          * @param {object} question
          * @returns {Number}
          */
-        this.addQuestion = function(question, sliderContainer) {
+        this.addQuestion = function(question) {
             var qcontainer = self.questionContainer(question);
-            console.log(sliderContainer);
-            if(sliderContainer === undefined)
-                sliderContainer = getSliderContainer();
                    
-            sliderContainer.append(qcontainer);
             setQuestion(question, qcontainer);
 
-            return sliderContainer;
+            return qcontainer;
         };
         
         /**
@@ -70,18 +66,12 @@ define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts)
             
         };
         
-        var getSliderContainer = function(){
-            var sliderContainder = $('<div>', {class: "slider-container"});
-            $('#slider').append(sliderContainder);
-            return sliderContainder; 
-        };
-
         this.questionContainer = function(question) {
             var content = $('<div>', {class: "active questionContainer list-group col-xs-12 col-sm-12 col-md-12 col-lg-12", id: "question_"+question.id, idQuestionType: question.idQuestionType, idQuestion: question.id}).append();
             
             return content;
         };
-
+        
         var getSurveyTypeSelected = function(question) {
             return questionTypes[question.idQuestionType];
         };
@@ -106,7 +96,7 @@ define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts)
                 },
 
                 add: function(qcontainer, question) {
-                     var textarea = $('<textarea>', {class: "form-control question", placeholder: "Escriba aquí su pregunta"});
+                     var textarea = $('<textarea>', {class: "form-control question", placeholder: "Escriba aquí su respuesta"});
                     var form = $('<div>', {class: "form-group"}).append($('<div>', {class: "col-xs-12 col-sm-12 col-md-12 col-lg-12"}).append(textarea));
                     qcontainer.append($('<label>', {class:"col-xs-12 col-sm-12 col-md-12 col-lg-12"}).append(question.text));
                     qcontainer.append(form);
@@ -240,7 +230,7 @@ define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts)
                     var groupButton = this.getButtonGroupOptions(question);
 
                     $(groupButton).each(function() {
-                        var button = $('<button>', {type: "button", class: "btn btn-default", value: this.id}).append(this.name);
+                        var button = $('<button>', {type: "button", class: "btn btn-default btn-lg", value: this.id}).append(this.name);
                         group.append(button);
                     });
                     
@@ -282,15 +272,12 @@ define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts)
 
                     qcontainer.append(questionWrapper);
 
-                    var label = $('<label>', {class: "col-xs-7 col-sm-9 col-md-9 col-lg-4"}).append("Puntuación Máxima");
                     var gradeForm = this.getGradeSelect();
+                    
+                    var ratingForm = $('<div>', {class: "col-xs-5 col-sm-3 col-md-3 col-lg-3 rating"});
 
-                    var formGroup = $('<div>', {class: "form-group"})
-                            .append(label)
-                            .append($('<div>', {class: "col-xs-5 col-sm-3 col-md-3 col-lg-3"}).append(gradeForm));
-
-                    qcontainer.append(formGroup);
-
+                    qcontainer.append(ratingForm);
+                    ratingForm.rating({min: 0, max: 10, step: 1, stars: 10, language: "es"});
                     return true;
                 },
 
