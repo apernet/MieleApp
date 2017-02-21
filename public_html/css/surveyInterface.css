@@ -81,7 +81,10 @@ body{
 .questionContainer{
     padding: 10px;
     background-color: white;
+}
 
+.questionContainer .form-horizontal{
+    display: flex;
 }
 
 .bx-wrapper{

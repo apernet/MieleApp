@@ -33,6 +33,8 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'home
             setTitle(survey.name);
 
             setWelcomText(survey);          // initial slider
+            
+            (survey.non) ? null : setSectionAnon();
 
             $(survey.mst_questions).each(function(index) {
                 /* add a new slider each three questions */
@@ -125,6 +127,15 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'home
         var getFooter = function() {
             return $('<div>', {class: "footer-Wrapper"}).append($('<img>', {src: "img/logo-bar.png"}));
         };
+        
+        var setSectionAnon = function(){
+            var content = $('<div>', {class: "slider-container", id: "anon_section", idQuestionType: 0, idQuestion: 0})
+                    .append($('#anonContent').show())
+                    .append(startSurvey());
+
+            $('#slider').append(content);
+        };
+        
 
         var setWelcomText = function(survey) {
             var content = $('<div>', {class: "message-container slider-container", id: "question_welcome_text", idQuestionType: 0, idQuestion: 0})
@@ -153,7 +164,7 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'home
         var startSurvey = function(){
             var wrapper = $('<div>', {class: "col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center"});
             var container = $('<div>', {class:"btn-group"});
-            var next = $('<button>', {class: "btn btn-primary btn-lg button-next next-bx"}).append("Empezar");
+            var next = $('<button>', {class: "btn btn-primary btn-lg button-next next-bx"}).append("Siguiente");
             
             container.append(next);
             
