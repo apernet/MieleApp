@@ -14,7 +14,6 @@ define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts)
         var self = this;
         var token = null;
         var question = null;
-        var surveyInfoContainer = null;
 
         var questionTypes = {
             '1': 'singleAnswer',
@@ -48,12 +47,12 @@ define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts)
          */
         this.addQuestion = function(question) {
             var qcontainer = self.questionContainer(question);
-                   
+
             setQuestion(question, qcontainer);
 
             return qcontainer;
         };
-        
+
         /**
          * @description execute function of a selected question.
          * @param {string} question question object
@@ -61,25 +60,30 @@ define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts)
          * @returns {undefined}
          */
         var setQuestion = function(question, qcontainer) {
-            var questionName = getSurveyTypeSelected(question);
+            var questionName = getSurveyTypeSelected(question.idQuestionType);
             self.question[questionName].init(qcontainer, question);
-            
+
         };
-        
+
         this.questionContainer = function(question) {
-            var content = $('<div>', {class: "active questionContainer list-group col-xs-12 col-sm-12 col-md-12 col-lg-12", id: "question_"+question.id, idQuestionType: question.idQuestionType, idQuestion: question.id}).append();
-            
+            var content = $('<div>', {class: "active questionContainer list-group col-xs-12 col-sm-12 col-md-12 col-lg-12", id: "question_" + question.id, idQuestionType: question.idQuestionType, idQuestion: question.id}).append();
+
             return content;
         };
-        
-        var getSurveyTypeSelected = function(question) {
-            return questionTypes[question.idQuestionType];
+
+        var getSurveyTypeSelected = function(idQuestionType) {
+            return questionTypes[idQuestionType];
         };
 
         var getAnswersOptions = function(question) {
             return question.cat_question_type.answer_type;
         };
-        
+
+        this.isQuestionCompleted = function(qcontainer, idQuestionType) {
+            var questionName = getSurveyTypeSelected(idQuestionType);
+            return self.question[questionName].validate(qcontainer);
+        };
+
         /**
          * @description object that contains functions of each type of question
          */
@@ -92,22 +96,34 @@ define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts)
             singleAnswer: {
                 init: function(qcontainer, question) {
                     this.add(qcontainer, question);
-                    
+
                 },
 
                 add: function(qcontainer, question) {
-                     var textarea = $('<textarea>', {class: "form-control question", placeholder: "Escriba aquí su respuesta"});
+                    var self_ = this;
+                    var textarea = $('<textarea>', {class: "form-control question", placeholder: "Escriba aquí su respuesta"});
                     var form = $('<div>', {class: "form-group"}).append($('<div>', {class: "col-xs-12 col-sm-12 col-md-12 col-lg-12"}).append(textarea));
-                    qcontainer.append($('<label>', {class:"col-xs-12 col-sm-12 col-md-12 col-lg-12"}).append(question.text));
+                    qcontainer.append($('<label>', {class: "col-xs-12 col-sm-12 col-md-12 col-lg-12"}).append(question.text));
                     qcontainer.append(form);
+
+                    /* when press button next in the survey and if the question has error alert this will deactivate it */
+                    textarea.keydown(function() {
+                        self_.removeAlert(textarea);
+                    });
                 },
 
-                save: function(qcontainer) {
-                   
+                validate: function(qcontainer) {
+                    var form = qcontainer.find('.question').first();
+                    form.val($.trim(form.val()));
+                    return (form.val().length > 0) ? this.removeAlert(form) : this.addAlert(form);
                 },
-
-                removeAlert: function() {
-                    
+                addAlert: function(form) {
+                    alerts.addFormError(form);
+                    return false;
+                },
+                removeAlert: function(form) {
+                    alerts.removeFormError(form);
+                    return true;
                 }
             },
 
@@ -120,8 +136,8 @@ define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts)
                 init: function(qcontainer, question) {
                     self.question.multipleAnswerFunct.init(qcontainer, "record", question);
                 },
-                save: function(qtype, qcontainer) {
-                    return self.question.multipleAnswerFunct.save(qtype, qcontainer);
+                validate: function(qcontainer) {
+                    return self.question.multipleAnswerFunct.validate(qcontainer);
                 }
             },
 
@@ -129,8 +145,8 @@ define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts)
                 init: function(qcontainer, question) {
                     self.question.multipleAnswerFunct.init(qcontainer, "check", question);
                 },
-                save: function(qtype, qcontainer) {
-                    return self.question.multipleAnswerFunct.save(qtype, qcontainer);
+                validate: function(qcontainer) {
+                    return self.question.multipleAnswerFunct.validate(qcontainer);
                 }
             },
 
@@ -145,68 +161,54 @@ define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts)
                     qcontainer.append(questionWrapper);
                     optionsWrapper.append(this.setOptions(iconTypeOfQuestion, question));
                     qcontainer.append(optionsWrapper);
-                    
+
                     return true;
                 },
                 setOptions: function(iconTypeOfQuestion, question) {
+                    var self_ = this;
                     var options = question.question_answers;
                     var wrapper = $('<div>', {class: "col-xs-12 col-sm-12 col-md-12 col-lg-12"});
-                    $(options).each(function(){
+
+                    $(options).each(function() {
                         var type = (iconTypeOfQuestion === "check") ? "checkbox" : "radio";
                         var option = $('<div>', {class: type});
-                        var input = $('<input>', {type: type, name:"radio_"+question.id});
+                        var input = $('<input>', {class: "option", type: type, name: "radio_" + question.id});
                         var label = $('<label>').append(input).append(this.text);
+
                         wrapper.append(option.append(label));
+                        /* when press button next in the survey and if the question has error alert this will deactivate it */
+                        $(input).on("click", function() {
+                            self_.removeAlert(wrapper);
+                        });
                     });
-                    
+
                     return wrapper;
                 },
-                save: function(qcontainer) {
-                    
-                },
-
-                /**
-                 * @description return data object of the question.
-                 * @param {type} qtype
-                 * @param {type} qcontainer
-                 * @returns {surveyBuilderL#12.SurveyBuilder.execute.multipleAnswerFunct.getData.surveyBuilderAnonym$27|Boolean}
-                 */
-                getData: function(qcontainer) {
-
-                },
-                /**
-                 * @description Validates main question and each answer option.
-                 * @param {type} qcontainer
-                 * @returns {Boolean}
-                 */
                 validate: function(qcontainer) {
-                    var status = true;
-                    var questionForm = $(qcontainer).find('.question').first();
-
-                    questionForm.val($.trim(questionForm.val()));
-                    alerts.removeFormError(questionForm);
-
-                    if ($.trim(questionForm.val()).length === 0) {
-                        status = false;
-                        alerts.addFormError(questionForm);
-                    }
-
-                    if ($(qcontainer).find('input.questionOption').length === 0)
-                        status = false;
-                    else
-                        $(qcontainer).find('input.questionOption').each(function() {
-                            var optionForm = $(this);
-
-                            alerts.removeFormError(optionForm);
-                            optionForm.val($.trim(optionForm.val()));
-
-                            if (optionForm.val().length === 0) {
-                                status = false;
-                                alerts.addFormError($(this));
-                            }
-                        });
-
-                    return status;
+                    var status = false;
+                    qcontainer.find('.option').each(function() {
+                        if ($(this).is(':checked'))
+                            status = true;
+                    });
+                    return (status) ? this.removeAlert(qcontainer) : this.addAlert(qcontainer);
+                },
+                addAlert: function(qcontainer) {
+                    qcontainer.find('.checkbox').each(function() {
+                        $(this).addClass('has-error');
+                    });
+                    qcontainer.find('.radio').each(function() {
+                        $(this).addClass('has-error');
+                    });
+                    return false;
+                },
+                removeAlert: function(qcontainer) {
+                    qcontainer.find('.checkbox').each(function() {
+                        $(this).removeClass('has-error');
+                    });
+                    qcontainer.find('.radio').each(function() {
+                        $(this).removeClass('has-error');
+                    });
+                    return true;
                 }
             },
 
@@ -226,6 +228,7 @@ define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts)
                 },
 
                 getButtonsGroup: function(question) {
+                    var self_ = this;
                     var group = $('<div>', {class: "btn-group", role: "group"});
                     var groupButton = this.getButtonGroupOptions(question);
 
@@ -233,29 +236,38 @@ define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts)
                         var button = $('<button>', {type: "button", class: "btn btn-default btn-lg", value: this.id}).append(this.name);
                         group.append(button);
                     });
-                    
-                    $(group).find("button").on("click", function(){
+
+                    $(group).find("button").on("click", function() {
+                        /* when press button next in the survey and if the question has error alert this will deactivate it */
+                        self_.removeAlert(group);
+                        
                         $(group).find("button.active").removeClass("active");
                         $(this).addClass('active');
                     });
+
                     return $('<div>', {class: "row col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center"}).append(group);
                 },
 
                 getButtonGroupOptions: function(question) {
                     return getAnswersOptions(question);
                 },
-                /**
-                 * @description return question data;
-                 * @param {type} qtype
-                 * @param {type} qcontainer
-                 * @returns {unresolved}
-                 */
-                save: function(qcontainer) {
-                    
+
+                validate: function(qcontainer) {
+                    var status = false;
+                    var btngroup = qcontainer.find('.btn-group').first();
+                    if (qcontainer.find('.btn.active').length === 1)
+                        status = true;
+
+                    return (status) ? this.removeAlert(btngroup) : this.addAlert(btngroup);
                 },
 
-                removeAlert: function(questionForm) {
-                    return alerts.removeFormError(questionForm);
+                addAlert: function(btngroup) {
+                    btngroup.css({"border": "solid 1px red"});
+                    return true;
+                },
+                removeAlert: function(btngroup) {
+                    btngroup.css({"border": "none"});
+                    return true;
                 }
             },
 
@@ -272,21 +284,17 @@ define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts)
 
                     qcontainer.append(questionWrapper);
 
-                    var gradeForm = this.getGradeSelect();
-                    
-                    var ratingForm = $('<div>', {class: "col-xs-5 col-sm-3 col-md-3 col-lg-3 rating"});
+                    var ratingForm = $('<input>', {type: "text", value: 0, "data-min": 0, "data-max": 10, "data-step": 1, class: "rating"});
 
                     qcontainer.append(ratingForm);
-                    ratingForm.rating({min: 0, max: 10, step: 1, stars: 10, language: "es"});
+
+                    ratingForm.rating({stars: 10, language: "es"});
+
                     return true;
                 },
 
-                getGradeSelect: function() {
-                    var select = $('<select>', {class: "form-control grade"});
-                    $(this.gradeOptions()).each(function() {
-                        $(select).append($('<option>', {value: this.value}).append(this.option));
-                    });
-                    return select;
+                getGradeSelect: function(qcontainer) {
+                    return parseInt(qcontainer.find('input').first().val());
                 },
 
                 gradeOptions: function() {
@@ -296,17 +304,9 @@ define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts)
 
                     return options;
                 },
-                /**
-                 * @description return question data;
-                 * @param {type} qcontainer
-                 * @returns {unresolved}
-                 */
-                save: function(qcontainer) {
-                    
-                },
 
-                removeAlert: function(questionForm) {
-                    return alerts.removeFormError(questionForm);
+                validate: function(qcontainer) {
+                    return (this.getGradeSelect(qcontainer) > 0) ? true : false;
                 }
             },
 
@@ -326,11 +326,15 @@ define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts)
                 },
 
                 save: function(qcontainer) {
-                    
+                    return true;
                 },
 
                 removeAlert: function(questionForm) {
                     return alerts.removeFormError(questionForm);
+                },
+
+                validate: function() {
+                    return true;
                 }
             },
 
@@ -344,19 +348,27 @@ define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts)
 
                 add: function(qcontainer, question) {
                     var questionWrapper = $('<div>', {class: "col-xs-12 col-sm-12 col-md-12 col-lg-12 question"}).append(question.text);
-                    
+
                     qcontainer.append(questionWrapper).append(this.getButtonsGroup(question));
 
                     return true;
                 },
 
                 getButtonsGroup: function(question) {
+                    var self_ = this;
                     var group = $('<div>', {});
+                    
                     $(this.getButtonGroupOptions(question)).each(function() {
                         var button = $('<input>', {type: "radio", value: this.value, name: "radio"});
                         var label = $('<label>').append(button).append(this.text);
                         var div = $('<div>', {class: "radio"}).append(label);
+                        
                         group.append(div);
+                        
+                        /* when press button next in the survey and if the question has error alert this will deactivate it */
+                        $(button).on("click", function() {
+                            self_.removeAlert(group);
+                        });
                     });
 
                     return $('<div>', {class: "col-xs-12 col-sm-12 col-md-12 col-lg-12"}).append(group);
@@ -365,143 +377,40 @@ define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts)
                 getButtonGroupOptions: function(question) {
                     var questionData = getAnswersOptions(question);
                     var options = [];
+
                     $(questionData).each(function() {
                         options.push({text: this.name, value: this.id});
                     });
+
                     return options;
                 },
 
-                save: function(qcontainer) {
+                validate: function(qcontainer) {
+                    var status = false;
                     
+                    qcontainer.find('input[type=radio]').each(function() {
+                        if ($(this).is(':checked'))
+                            status = true;
+                    });
+                    
+                    return (status) ? this.removeAlert(qcontainer) : this.addAlert(qcontainer);
                 },
+                
+                addAlert: function(qcontainer) {
+                    qcontainer.find('.radio').each(function() {
+                        $(this).addClass('has-error');
+                    });
 
-                removeAlert: function(questionForm) {
-                    return alerts.removeFormError(questionForm);
+                    return false;
+                },
+                
+                removeAlert: function(qcontainer) {
+                    qcontainer.find('.radio').each(function() {
+                        $(this).removeClass('has-error');
+                    });
+
+                    return true;
                 }
-            }
-        };
-        /**
-         * @description functions for storing the currently survey
-         * @type type
-         */
-        this.save = {
-            survey: function() {
-                var data = (!this.isEmpty()) ? this.getSurveyData() : null;
-
-                return (data !== false) ? this.sendData(data) : null;
-            },
-
-            isEmpty: function() {
-                return ($('.questionContainer').length > 0) ? false : this.alertOfEmtySurvey();
-            },
-
-            /**
-             * @description Returns a json object with the information of the new survey.
-             * @returns {object} data || null
-             *      {
-             *          name: name of the survey,
-             *          type: type of survey,
-             *          anon: is anon,
-             *          welcome_text: text,
-             *          finish_text: text
-             *      }
-             */
-            getSurveyData: function() {
-                var data = null;
-                var questionData = this.getQuestionData();
-
-                data = this.getSurveyInfoObject();
-                data.questions = questionData;
-
-                return data;
-            },
-
-            getSurveyInfoObject: function() {
-                var surveyInfoData = this.getSurveyInfoData();
-                var surveyInfoObject = {};
-
-                surveyInfoData.push({name: "anon", value: ($('#isAnon').prop("checked")) ? 1 : 0});
-
-                $(surveyInfoData).each(function() {
-                    surveyInfoObject[this.name] = this.value;
-                });
-
-                return surveyInfoObject;
-            },
-
-            getSurveyInfoData: function() {
-                return JSON.parse(JSON.stringify(surveyInfoContainer.serializeArray()));
-            },
-
-            /**
-             * @description process each question for storing in the server
-             * @returns {Array}
-             */
-            getQuestionData: function() {
-                var data = [];
-                var errors = false;
-
-                $('.questionContainer').each(function() {
-                    var idQuestionType = getSurveyTypeSelected($(this).attr('idQuestionType'));
-                    var dataQuestion = self.question[idQuestionType].save($(this));
-
-                    ($.isPlainObject(dataQuestion)) ? data.push(dataQuestion) : errors = true;
-                });
-
-                return (errors === true) ? null : (data.length > 0) ? data : null;
-            },
-
-            /**
-             * @description Send the survey data to the server to be stored
-             * @param {object} 
-             *      
-             *  {
-             *        survey: array(1) {
-             *             [0]=>                    //Question 1
-             *                 array(2) {
-             *                  ["qtype"]=> string(1) "1"
-             *                  ["question"]=> string(7) "fqwfqwr"
-             *               },
-             *               [1]=>                  //Question 2
-             *               array(2) {
-             *                  ["qtype"]=>    //Question Type
-             *                  string(1) "1" ["question"]=>
-             *                  string(7) "fqwfqwr"
-             *           } 
-             *   }
-             * @returns {unresolved}
-             */
-            sendData: function(data, callbackSuccess) {
-                console.log("processData");
-                console.log(data);
-
-                return $.ajax({
-                    method: "POST",
-                    async: false,
-                    cache: false,
-                    data: data,
-                    url: sys.getSystemPath() + "/survey/create/?token=" + token,
-                    type: "json",
-                    success: function(response, textStatus, jqXHR) {
-                        if (typeof callbackSuccess === "function") {
-                            callbackSuccess();
-                        } else
-                        if (parseInt(jqXHR.status) === 200)
-                            e.success("Éxito", "Encuesta creada correctamente", function() {
-                                sys.goToIndex(token);
-                            });
-                        else
-                            e.warning(jqXHR, textStatus, jqXHR);
-                    },
-                    error: function(jqXHR, textStatus, errorThrown) {
-                        e.manageError(jqXHR, textStatus, errorThrown);
-                        return 0;
-                    }
-                });
-            },
-
-            alertOfEmtySurvey: function() {
-                e.warning("Advertencia", "Necesita agregar almenos una pregunta");
             }
         };
     };

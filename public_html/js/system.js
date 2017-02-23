@@ -9,9 +9,9 @@ define(['jquery', 'system'], function($, e) {
         this.getApiPath = function() {
             return "/api/v1";
         };
-        
-        this.getSystemPath = function(){
-            return self.SERVER+self.getApiPath();
+
+        this.getSystemPath = function() {
+            return self.SERVER + self.getApiPath();
         };
 
         this.menu = {
@@ -22,8 +22,8 @@ define(['jquery', 'system'], function($, e) {
                  * @returns {systemL#2.system.menu.option.closeSessionOption.systemAnonym$1}
                  */
                 closeSessionOption: function(token) {
-                    var url = self.SERVER+self.getApiPath()+"/auth/invalidate";
-                    
+                    var url = self.SERVER + self.getApiPath() + "/auth/invalidate";
+
                     return {
                         title: "Cerrar Sesión",
                         onclick: {
@@ -53,6 +53,17 @@ define(['jquery', 'system'], function($, e) {
                                     window.location.href = "home.html?token=" + token;
                                 }
                     };
+                },
+                closeSurveyMode: function(token) {
+                    return {
+                        title: "Salir",
+                        onclick:
+                                function() {
+                                    authModal(function() {
+                                        window.location.href = "surveys.html?token=" + token;
+                                    });
+                                }
+                    };
                 }
             }
 
@@ -75,13 +86,20 @@ define(['jquery', 'system'], function($, e) {
                 }
             }
         };
-        
-        this.gotToLogin = function(){
-            window.location = "login.html";;
+
+        this.gotToLogin = function() {
+            window.location = "login.html";
+            ;
         };
-        
-        this.goToSurveyInterface = function(token, idSurvey){
-            window.location = "surveyInterface.html?token="+token+"&idSurvey="+idSurvey;;
+
+        this.goToSurveyInterface = function(token, idSurvey) {
+            window.location = "surveyInterface.html?token=" + token + "&idSurvey=" + idSurvey;
+            ;
+        };
+
+        var authModal = function(onclick) {
+            if (typeof onclick === "function")
+                onclick();
         };
     };
 

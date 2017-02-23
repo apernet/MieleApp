@@ -1,4 +1,4 @@
-define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'home'], function($, Surveys, sys, SurveyBuilder, bx, menu) {
+define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu', 'alerts'], function($, Surveys, sys, SurveyBuilder, bx, menu, alerts) {
     var SurveyInterface = function() {
         var token = null;
         var slider;
@@ -15,6 +15,7 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'home
                     pageWrapper: "pageWrapper",
                     brandTitle: "Miele",
                     options: [
+                        sys.menu.option.closeSurveyMode(token),
                         sys.menu.option.closeSessionOption(token)
                     ]
                 });
@@ -33,14 +34,14 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'home
             setTitle(survey.name);
 
             setWelcomText(survey);          // initial slider
-            
-            (survey.non) ? null : setSectionAnon();
+
+            (survey.anon) ? null : setSectionAnon();
 
             $(survey.mst_questions).each(function(index) {
                 /* add a new slider each three questions */
                 if (index % 3 === 0)
                     sliderContainer = getSliderContainer();
-                
+
                 SurveyBuilder.addQuestion(this).insertBefore(sliderContainer.find('.navigation-buttons'));
 
             });
@@ -65,6 +66,10 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'home
                 },
                 onSlideAfter: function($slideElement, oldIndex, newIndex) {
                     setSliderNumber();
+                },
+                onSlideBefore: function($slideElement, oldIndex, newIndex) {
+//                    $('.slider-container.active-slider').removeClass('active-slider');
+                    $($slideElement).attr('index', newIndex);
                 }
             });
 
@@ -72,35 +77,35 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'home
                 if (questionsCompleted())
                     slider.goToNextSlide();
             });
-            
+
             $('.button-prev').on("click", function() {
-                if(slider.getCurrentSlide() > 1)
+                if (slider.getCurrentSlide() > 1)
                     slider.goToPrevSlide();
             });
-            
-            $('.restart-survey').on("click", function(){
+
+            $('.restart-survey').on("click", function() {
                 slider.goToSlide(0);
             });
 
             return sliderObject;
         };
-        
-         /**
+
+        /**
          * 
          * @param {boolean} addCurrentSlider add slider number container
          * @returns {$}
          */
-        var getSliderContainer = function(){
+        var getSliderContainer = function() {
             var sliderContainder = $('<div>', {class: "slider-container"});
-                sliderContainder.append(getSliderNumberContainer())
-                        .append(navigationButtons());
-                
+            sliderContainder.append(getSliderNumberContainer())
+                    .append(navigationButtons());
+
             $('#slider').append(sliderContainder);
-            
-            return sliderContainder; 
+
+            return sliderContainder;
         };
-        
-        var getSliderNumberContainer = function(){
+
+        var getSliderNumberContainer = function() {
             return $('<div>', {class: "slider-number-container"});
         };
 
@@ -119,7 +124,8 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'home
         var setSliderNumber = function() {
             var index = slider.getCurrentSlide();
             var totalSliders = parseInt(slider.getSlideCount()) - 1;
-            if(!isNaN(totalSliders) || !isNaN(index))
+
+            if (!isNaN(totalSliders) || !isNaN(index))
                 if (index > 0)
                     $('.slider-number-container').empty().text(index + "/" + totalSliders);
         };
@@ -127,15 +133,26 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'home
         var getFooter = function() {
             return $('<div>', {class: "footer-Wrapper"}).append($('<img>', {src: "img/logo-bar.png"}));
         };
-        
-        var setSectionAnon = function(){
-            var content = $('<div>', {class: "slider-container", id: "anon_section", idQuestionType: 0, idQuestion: 0})
+
+        var setSectionAnon = function() {
+            var content = $('<div>', {class: "slider-container customer-data", id: "anon_section", idQuestionType: 0, idQuestion: 0})
                     .append($('#anonContent').show())
                     .append(startSurvey());
-
+            
             $('#slider').append(content);
+            
+            $(content).find('input').each(function() {
+                $(this).keydown(function() {
+                    alerts.removeFormError($(this));
+                });
+            });
+            
+            $('#check-privacy').click(function(){
+                $(this).closest('div.checkbox').removeClass('has-error');
+            });
+
         };
-        
+
 
         var setWelcomText = function(survey) {
             var content = $('<div>', {class: "message-container slider-container", id: "question_welcome_text", idQuestionType: 0, idQuestion: 0})
@@ -160,46 +177,102 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'home
 
             return (!parseInt(idSurvey) > 0) ? null : Surveys.getSurvey(token, idSurvey);
         };
-        
-        var startSurvey = function(){
+
+        var startSurvey = function() {
             var wrapper = $('<div>', {class: "col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center"});
-            var container = $('<div>', {class:"btn-group"});
+            var container = $('<div>', {class: "btn-group"});
             var next = $('<button>', {class: "btn btn-primary btn-lg button-next next-bx"}).append("Siguiente");
-            
+
             container.append(next);
-            
+
             return  wrapper.append(container);
         };
-        
-        var restartSurvey = function(){
+
+        var restartSurvey = function() {
             var wrapper = $('<div>', {class: "col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center"});
-            var container = $('<div>', {class:"btn-group"});
+            var container = $('<div>', {class: "btn-group"});
             var next = $('<button>', {class: "btn btn-primary btn-lg restart-survey"}).append("Iniciar nueva encuesta");
-            
+
             container.append(next);
-            
+
             return  wrapper.append(container);
         };
 
         var navigationButtons = function() {
             var wrapper = $('<div>', {class: "col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center navigation-buttons"});
-            var container = $('<div>', {class:"btn-group"});
+            var container = $('<div>', {class: "btn-group"});
             var next = $('<button>', {class: "btn btn-primary btn-lg button-next next-bx"}).append("Siguiente");
             var prev = $('<button>', {class: "btn btn-primary btn-lg button-prev prev-bx"}).append("Anterior");
-            
+
             wrapper.append(container);
-            
+
             container.append(prev);
             container.append(next);
-            
+
             return wrapper;
         };
 
+        /**
+         * Check if survey questions are completed
+         * @returns {Boolean}
+         */
         var questionsCompleted = function() {
             var ok = true;
+            var index = slider.getCurrentSlide();
+
+            if (index === 0)
+                return true;
+
+            var slide = $('.slider-container[index=' + index + ']');
+
+            if ($(slide).hasClass('customer-data'))
+                return checkCustomerData(index);
+
+            $(slide).find('.questionContainer').each(function() {
+                var idQuestion = $(this).attr('idquestion');
+                var idQuestionType = $(this).attr('idQuestionType');
+
+//                console.log(idQuestion);
+//                console.log(idQuestionType);
+                var completed = SurveyBuilder.isQuestionCompleted($(this), idQuestionType);
+                console.log(completed);
+                if (!completed)
+                    ok = false;
+
+            });
 
 
             return ok;
+        };
+
+        /**
+         * Check if customer fields data are completed
+         * @returns {Boolean}
+         */
+        var checkCustomerData = function(sliderIndex) {
+            var status = true;
+            var slide = $('.slider-container[index=' + sliderIndex + ']');
+    
+            $(slide).find('input').each(function() {
+                var input = $(this);
+                input.val($.trim(input.val()));
+
+                alerts.removeFormError(input);
+
+                if (input.val().length === 0) {
+                    alerts.addFormError(input);
+                    status = false;
+                }
+            });
+            
+            $('#check-privacy').closest('div.checkbox').removeClass('has-error');
+       
+            if(!$('#check-privacy').is(':checked')){
+                $('#check-privacy').closest('div.checkbox').addClass('has-error');
+                status = false;
+            }
+
+            return status;
         };
 
     };

@@ -13,8 +13,10 @@
         </group>
         <group name="Miele">
             <file>file:/Library/WebServer/Documents/MieleApp/public_html/js/surveyBuilder.js</file>
+            <file>file:/Library/WebServer/Documents/MieleApp/public_html/css/surveyInterface.css</file>
             <file>file:/Library/WebServer/Documents/MieleApp/public_html/js/surveyInterface.js</file>
             <file>file:/Library/WebServer/Documents/MieleApp/public_html/surveyInterface.html</file>
+            <file>file:/Library/WebServer/Documents/MieleApp/public_html/.gitignore</file>
         </group>
     </open-files>
 </project-private>
