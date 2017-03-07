@@ -5,7 +5,7 @@ define(['jquery', 'system'], function($, e) {
 
         var port = 8000;
 
-        this.SERVER = "http://" + window.location.hostname + ":" + port;
+        this.SERVER = "http://miele.aper.net:" + port;
         this.getApiPath = function() {
             return "/api/v1";
         };
