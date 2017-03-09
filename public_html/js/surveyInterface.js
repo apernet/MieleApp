@@ -270,8 +270,10 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
                 if (this.type === "checkbox") {
                     $('#check-privacy').closest('div.checkbox').removeClass('has-error');
 
-                    if (!$(this).is(':checked')) 
+                    if (!$(this).is(':checked') & $(this).hasClass('required')){ 
                         $(this).closest('div.checkbox').addClass('has-error');
+                        status = false;
+                    }
                 }
                 
             });
