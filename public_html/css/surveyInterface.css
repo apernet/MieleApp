@@ -96,7 +96,7 @@ body{
     display: flex;
 }
 
-.questionContainer div.radio{
+.questionContainer div.radio, div.checkbox{
     line-height: 1.12857143;
 }
 
