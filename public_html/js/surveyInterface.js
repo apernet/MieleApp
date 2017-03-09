@@ -74,6 +74,7 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
             });
 
             $('.button-next').on("click", function() {
+                console.log("next");
                 if (questionsCompleted())
                     slider.goToNextSlide();
             });
@@ -138,16 +139,16 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
             var content = $('<div>', {class: "slider-container customer-data", id: "anon_section", idQuestionType: 0, idQuestion: 0})
                     .append($('#anonContent').show())
                     .append(startSurvey());
-            
+
             $('#slider').append(content);
-            
+
             $(content).find('input').each(function() {
                 $(this).keydown(function() {
                     alerts.removeFormError($(this));
                 });
             });
-            
-            $('#check-privacy').click(function(){
+
+            $('#check-privacy').click(function() {
                 $(this).closest('div.checkbox').removeClass('has-error');
             });
 
@@ -235,12 +236,13 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
 //                console.log(idQuestion);
 //                console.log(idQuestionType);
                 var completed = SurveyBuilder.isQuestionCompleted($(this), idQuestionType);
-                console.log(completed);
-                if (!completed)
+
+                if (!completed) {
                     ok = false;
+                    notify.error("Información requerida");
+                }
 
             });
-
 
             return ok;
         };
@@ -252,31 +254,33 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
         var checkCustomerData = function(sliderIndex) {
             var status = true;
             var slide = $('.slider-container[index=' + sliderIndex + ']');
-    
+
             $(slide).find('input').each(function() {
                 var input = $(this);
                 input.val($.trim(input.val()));
 
                 alerts.removeFormError(input);
 
-                if (input.val().length === 0) {
+                if (input.val().length === 0 & this.type === "text") {
                     alerts.addFormError(input);
                     status = false;
+
                 }
+                
+                if (this.type === "checkbox") {
+                    $('#check-privacy').closest('div.checkbox').removeClass('has-error');
+
+                    if (!$(this).is(':checked')) 
+                        $(this).closest('div.checkbox').addClass('has-error');
+                }
+                
             });
-            
-            $('#check-privacy').closest('div.checkbox').removeClass('has-error');
-       
-            if(!$('#check-privacy').is(':checked')){
-                $('#check-privacy').closest('div.checkbox').addClass('has-error');
-                status = false;
-                notify.error("La información no es correcta.")
-            }
+
+            if (!status)
+                notify.error("Información requerida.");
 
             return status;
         };
-        
-        
 
     };
 

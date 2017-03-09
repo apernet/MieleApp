@@ -30,7 +30,6 @@ define(['jquery', 'bootstrap-notify'], function($, $notify) {
         };
 
         this.error = function(message = "Error", barProgress = false) {
-            console.log("error");
             var notify = $.notify({
                 message: message,
                 icon: 'glyphicon glyphicon-exclamation-sign',
