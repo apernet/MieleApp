@@ -1,4 +1,4 @@
-define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu', 'alerts'], function($, Surveys, sys, SurveyBuilder, bx, menu, alerts) {
+define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu', 'alerts', 'notify'], function($, Surveys, sys, SurveyBuilder, bx, menu, alerts, notify) {
     var SurveyInterface = function() {
         var token = null;
         var slider;
@@ -157,8 +157,8 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
         var setWelcomText = function(survey) {
             var content = $('<div>', {class: "message-container slider-container", id: "question_welcome_text", idQuestionType: 0, idQuestion: 0})
                     .append($('<div>', {class: "text-wrapper"}).append(survey.welcome_text))
-                    .append(getFooter())
-                    .append(startSurvey());
+                    .append(startSurvey())
+                    .append(getFooter());
 
             $('#slider').append(content);
         };
@@ -166,8 +166,8 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
         var setFinishText = function(survey) {
             var content = $('<div>', {class: "message-container slider-container", id: "question_finish_text", idQuestionType: 0, idQuestion: 0})
                     .append($('<div>', {class: "text-wrapper"}).append(survey.finish_text))
-                    .append(getFooter())
-                    .append(restartSurvey());
+                    .append(restartSurvey())
+                    .append(getFooter());
 
             $('#slider').append(content);
         };
@@ -179,7 +179,7 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
         };
 
         var startSurvey = function() {
-            var wrapper = $('<div>', {class: "col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center"});
+            var wrapper = $('<div>', {class: "col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center button-wrapper"});
             var container = $('<div>', {class: "btn-group"});
             var next = $('<button>', {class: "btn btn-primary btn-lg button-next next-bx"}).append("Siguiente");
 
@@ -270,10 +270,13 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
             if(!$('#check-privacy').is(':checked')){
                 $('#check-privacy').closest('div.checkbox').addClass('has-error');
                 status = false;
+                notify.error("La información no es correcta.")
             }
 
             return status;
         };
+        
+        
 
     };
 

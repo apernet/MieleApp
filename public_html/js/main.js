@@ -11,8 +11,10 @@ require.config({
         'bootstrap-dialog': 'apis/bootstrap3-dialog/dist/js/bootstrap-dialog.min',
         "bootstrap-star-rating": "apis/bootstrap-star-rating/js/star-rating",
         "bootstrap-star-rating-es": "apis/bootstrap-star-rating/js/locales/es",
+        'bootstrap-notify': 'apis/bootstrap-notify/bootstrap-notify',
         "jquery.bxslider": "apis/jquery.bxslider/jquery.bxslider",
         exceptions: 'js/exceptions',
+        notify: 'js/notify',
         system: 'js/system',
         index: 'js/index',
         menu: 'js/menu',
@@ -28,11 +30,26 @@ require.config({
         jquery: {
             exports: 'jQuery'
         },
-        "bootstrap": {"deps": ['jquery']},
-        'bootstrap-dialog': {"deps": ['jquery', 'bootstrap']},
-        'jquery.bxslider': {"deps":['jquery']},
-        "bootstrap-star-rating": {"deps": ['jquery']},
-        "bootstrap-star-rating-es": {"deps":['bootstrap-star-rating']},
-        surveyBuilder: {"deps": ['bootstrap-star-rating', 'bootstrap-star-rating-es']}
+        "bootstrap": {
+            "deps": ['jquery']
+        },
+        'bootstrap-dialog': {
+            "deps": ['jquery', 'bootstrap']
+        },
+        'jquery.bxslider': {
+            "deps":['jquery']
+        },
+        "bootstrap-star-rating": {
+            "deps": ['jquery']
+        },
+        "bootstrap-star-rating-es": {
+            "deps":['bootstrap-star-rating']
+        },
+        surveyBuilder: {
+            "deps": ['bootstrap-star-rating', 'bootstrap-star-rating-es']
+        },
+        'bootstrap-notify': {
+            "deps": ['jquery', 'bootstrap']
+        }
     }
 });

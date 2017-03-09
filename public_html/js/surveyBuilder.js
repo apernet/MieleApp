@@ -79,7 +79,7 @@ define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts)
             return question.cat_question_type.answer_type;
         };
 
-        this.isQuestionCompleted = function(qcontainer, idQuestionType) {
+        this. isQuestionCompleted = function(qcontainer, idQuestionType) {
             var questionName = getSurveyTypeSelected(idQuestionType);
             return self.question[questionName].validate(qcontainer);
         };
@@ -263,7 +263,7 @@ define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts)
 
                 addAlert: function(btngroup) {
                     btngroup.css({"border": "solid 1px red"});
-                    return true;
+                    return false;
                 },
                 removeAlert: function(btngroup) {
                     btngroup.css({"border": "none"});
@@ -288,7 +288,18 @@ define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts)
 
                     qcontainer.append(ratingForm);
 
-                    ratingForm.rating({stars: 10, language: "es"});
+                    ratingForm.rating({stars: 10, language: "es", starCaptions: {
+                            1: "1",
+                            2: "2",
+                            3: "3",
+                            4: "4",
+                            5: "5",
+                            6: "6",
+                            7: "7",
+                            8: "8",
+                            9: "9",
+                            10: "10"
+                    }});
 
                     return true;
                 },
@@ -328,11 +339,7 @@ define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts)
                 save: function(qcontainer) {
                     return true;
                 },
-
-                removeAlert: function(questionForm) {
-                    return alerts.removeFormError(questionForm);
-                },
-
+                
                 validate: function() {
                     return true;
                 }

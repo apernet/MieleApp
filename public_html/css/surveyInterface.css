@@ -65,13 +65,22 @@ body{
     height: 100%;
     position: relative;
     width: 100%;
-    font-size: 60px;
+    font-size: 40px;
     text-align: center;
 }
 
 .message-container .text-wrapper{
-    max-height: 70%;
+    height: 40%;
     overflow-y: auto;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+.message-container .button-wrapper{
+    position: absolute;
+    top: 50%;
+    
 }
 .surveyBuilderContainer{
     height: 90% !important;
