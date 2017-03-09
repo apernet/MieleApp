@@ -96,6 +96,14 @@ body{
     display: flex;
 }
 
+.questionContainer div.radio{
+    line-height: 1.12857143;
+}
+
+.questionContainer textarea{
+    font-size: 17px;
+}
+
 .bx-wrapper{
     height: 97%;
     padding-right: 50px;

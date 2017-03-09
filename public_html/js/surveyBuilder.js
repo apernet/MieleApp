@@ -155,7 +155,8 @@ define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts)
              */
             multipleAnswerFunct: {
                 init: function(qcontainer, iconTypeOfQuestion, question) {
-                    var questionWrapper = $('<div>', {class: "col-xs-12 col-sm-12 col-md-12 col-lg-12 question"}).append(question.text);
+                    var label = $('<label>').append(question.text);
+                    var questionWrapper = $('<div>', {class: "col-xs-12 col-sm-12 col-md-12 col-lg-12 question"}).append(label);
                     var optionsWrapper = $('<div>', {class: "col-xs-12 col-sm-12 col-md-12 col-lg-12"});
 
                     qcontainer.append(questionWrapper);
@@ -221,7 +222,8 @@ define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts)
                 },
 
                 add: function(qcontainer, question) {
-                    var questionWrapper = $('<div>', {class: "col-xs-12 col-sm-12 col-md-12 col-lg-12 question"}).append(question.text);
+                    var label = $('<label>').append(question.text);
+                    var questionWrapper = $('<div>', {class: "col-xs-12 col-sm-12 col-md-12 col-lg-12 question"}).append(label);
                     qcontainer.append(questionWrapper).append(this.getButtonsGroup(question));
 
                     return true;
@@ -280,7 +282,8 @@ define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts)
                 },
 
                 add: function(qcontainer, question) {
-                    var questionWrapper = $('<div>', {class: "col-xs-12 col-sm-12 col-md-12 col-lg-12 question"}).append(question.text);
+                    var label = $('<label>').append(question.text);
+                    var questionWrapper = $('<div>', {class: "col-xs-12 col-sm-12 col-md-12 col-lg-12 question"}).append(label);
 
                     qcontainer.append(questionWrapper);
 
@@ -354,7 +357,8 @@ define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts)
                 },
 
                 add: function(qcontainer, question) {
-                    var questionWrapper = $('<div>', {class: "col-xs-12 col-sm-12 col-md-12 col-lg-12 question"}).append(question.text);
+                    var label = $('<label>').append(question.text);
+                    var questionWrapper = $('<div>', {class: "col-xs-12 col-sm-12 col-md-12 col-lg-12 question"}).append(label);
 
                     qcontainer.append(questionWrapper).append(this.getButtonsGroup(question));
 
