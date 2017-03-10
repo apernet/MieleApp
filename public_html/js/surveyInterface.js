@@ -34,8 +34,8 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
             setTitle(survey.name);
 
             setWelcomText(survey);          // initial slider
-
-            (survey.anon) ? null : setSectionAnon();
+    
+            (survey.anon === 1) ? null : setSectionAnon();
 
             $(survey.mst_questions).each(function(index) {
                 /* add a new slider each three questions */
