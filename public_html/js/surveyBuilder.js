@@ -284,7 +284,7 @@ define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts)
                 add: function(qcontainer, question) {
                     var label = $('<label>').append(question.text);
                     var questionWrapper = $('<div>', {class: "col-xs-12 col-sm-12 col-md-12 col-lg-12 question"}).append(label);
-                    var rate = (question.question_answers !== undefined) ? question.question_answers[0].text : 10;
+                    var rate = (question.question_answers !== undefined & question.question_answers[0] !== undefined) ? question.question_answers[0].text : 10;
                     qcontainer.append(questionWrapper);
 
                     var ratingForm = $('<input>', {type: "text", value: 0, "data-min": 0, "data-max": 10, "data-step": 1, class: "rating"});
