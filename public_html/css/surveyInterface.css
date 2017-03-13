@@ -104,6 +104,10 @@ body{
     font-size: 17px;
 }
 
+div.question{
+   font-size: 25px; 
+}
+
 .bx-wrapper{
     height: 97%;
     padding-right: 50px;
@@ -131,4 +135,8 @@ body{
     width: 100%;
     height: 35px;
     text-align: center;
+}
+
+.rating-md{
+    font-size: 2.13em;
 }
