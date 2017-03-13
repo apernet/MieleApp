@@ -284,14 +284,14 @@ define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts)
                 add: function(qcontainer, question) {
                     var label = $('<label>').append(question.text);
                     var questionWrapper = $('<div>', {class: "col-xs-12 col-sm-12 col-md-12 col-lg-12 question"}).append(label);
-
+                    var rate = (question.question_answers !== undefined) ? question.question_answers[0].text : 10;
                     qcontainer.append(questionWrapper);
 
                     var ratingForm = $('<input>', {type: "text", value: 0, "data-min": 0, "data-max": 10, "data-step": 1, class: "rating"});
 
                     qcontainer.append(ratingForm);
 
-                    ratingForm.rating({stars: 10, language: "es", starCaptions: {
+                    ratingForm.rating({stars: rate, language: "es", starCaptions: {
                             1: "1",
                             2: "2",
                             3: "3",
