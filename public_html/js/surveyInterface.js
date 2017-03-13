@@ -34,7 +34,7 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
             setTitle(survey.name);
 
             setWelcomText(survey);          // initial slider
-    
+
             (parseInt(survey.anon) === 1) ? null : setSectionAnon();
 
             $(survey.mst_questions).each(function(index) {
@@ -254,6 +254,7 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
         var checkCustomerData = function(sliderIndex) {
             var status = true;
             var slide = $('.slider-container[index=' + sliderIndex + ']');
+            var validate = true;
 
             $(slide).find('input').each(function() {
                 var input = $(this);
@@ -261,27 +262,60 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
 
                 alerts.removeFormError(input);
 
-                if (input.val().length === 0 & this.type === "text") {
-                    alerts.addFormError(input);
-                    status = false;
+                if (this.type === "text") {
+                    if (input.val().length === 0){
+                        status = false;
+                        alerts.addFormError(input);
+                    }
 
+                    if ($(this).attr('fieldType') !== undefined) {
+                        var validate = validation[input.attr('fieldType')](input.val());
+                        console.log(validate);
+                        if (!validate) {
+                            alerts.addFormError(input);
+                            validate = false;
+                        }
+                    }
+                    
+                    
                 }
-                
+
                 if (this.type === "checkbox") {
                     $('#check-privacy').closest('div.checkbox').removeClass('has-error');
 
-                    if (!$(this).is(':checked') & $(this).hasClass('required')){ 
+                    if (!$(this).is(':checked') & $(this).hasClass('required')) {
                         $(this).closest('div.checkbox').addClass('has-error');
                         status = false;
                     }
                 }
-                
+
             });
 
             if (!status)
                 notify.error("Información requerida.");
+            
+            if (!validate)
+                notify.error("Información incorrecta");
+
 
             return status;
+        };
+
+        validation = {
+            telephone: function(telephone) {
+                var re = new RegExp("([0-9\ -])");
+                return re.test(telephone);
+            },
+
+            email: function(email) {
+                 var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                 return re.test(email);
+            },
+
+            name: function(name) {
+                var re = new RegExp("([A-Za-z])");
+                return re.test(String(name));
+            }
         };
 
     };
