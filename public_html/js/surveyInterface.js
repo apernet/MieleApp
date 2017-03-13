@@ -269,9 +269,7 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
                     }
 
                     if ($(this).attr('fieldType') !== undefined) {
-                        var validate = validation[input.attr('fieldType')](input.val());
-                        console.log(validate);
-                        if (!validate) {
+                        if (!validation[input.attr('fieldType')](input.val())) {
                             alerts.addFormError(input);
                             validate = false;
                         }
@@ -294,8 +292,10 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
             if (!status)
                 notify.error("Información requerida.");
             
-            if (!validate)
+            if (!validate){
                 notify.error("Información incorrecta");
+                status = false;
+            }
 
 
             return status;
