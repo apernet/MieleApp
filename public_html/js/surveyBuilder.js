@@ -45,10 +45,10 @@ define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts)
          * @param {object} question
          * @returns {Number}
          */
-        this.addQuestion = function(question) {
+        this.addQuestion = function(question, conditionalQuestions = null) {
             var qcontainer = self.questionContainer(question);
 
-            setQuestion(question, qcontainer);
+            setQuestion(question, qcontainer, conditionalQuestions);
 
             return qcontainer;
         };
@@ -59,9 +59,9 @@ define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts)
          * @param {object} qcontainer question container is an object wrapper  
          * @returns {undefined}
          */
-        var setQuestion = function(question, qcontainer) {
+        var setQuestion = function(question, qcontainer, conditionalQuestions) {
             var questionName = getSurveyTypeSelected(question.idQuestionType);
-            self.question[questionName].init(qcontainer, question);
+            self.question[questionName].init(qcontainer, question, conditionalQuestions);
 
         };
 
@@ -83,7 +83,7 @@ define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts)
             var questionName = getSurveyTypeSelected(idQuestionType);
             return self.question[questionName].validate(qcontainer);
         };
-
+        
         /**
          * @description object that contains functions of each type of question
          */
@@ -133,8 +133,8 @@ define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts)
              * @returns {undefined}
              */
             multipleAnswerRadio: {
-                init: function(qcontainer, question) {
-                    self.question.multipleAnswerFunct.init(qcontainer, "record", question);
+                init: function(qcontainer, question, conditionalQuestions) {
+                    self.question.multipleAnswerFunct.init(qcontainer, "record", question, conditionalQuestions);
                 },
                 validate: function(qcontainer) {
                     return self.question.multipleAnswerFunct.validate(qcontainer);
@@ -154,23 +154,24 @@ define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts)
              * functions of Multiple answers
              */
             multipleAnswerFunct: {
-                init: function(qcontainer, iconTypeOfQuestion, question) {
+                init: function(qcontainer, iconTypeOfQuestion, question, conditionalQuestions = null) {
                     var label = $('<label>').append(question.text);
                     var questionWrapper = $('<div>', {class: "col-xs-12 col-sm-12 col-md-12 col-lg-12 question"}).append(label);
                     var optionsWrapper = $('<div>', {class: "col-xs-12 col-sm-12 col-md-12 col-lg-12"});
 
                     qcontainer.append(questionWrapper);
-                    optionsWrapper.append(this.setOptions(iconTypeOfQuestion, question));
+                    optionsWrapper.append(this.setOptions(qcontainer, iconTypeOfQuestion, question, conditionalQuestions));
                     qcontainer.append(optionsWrapper);
 
                     return true;
                 },
-                setOptions: function(iconTypeOfQuestion, question) {
+                setOptions: function(qcontainer, iconTypeOfQuestion, question, conditionalQuestions = null) {
                     var self_ = this;
                     var options = question.question_answers;
                     var wrapper = $('<div>', {class: "col-xs-12 col-sm-12 col-md-12 col-lg-12"});
-
+                    
                     $(options).each(function() {
+                        var opt = this;
                         var type = (iconTypeOfQuestion === "check") ? "checkbox" : "radio";
                         var option = $('<div>', {class: type});
                         var input = $('<input>', {class: "option", type: type, name: "radio_" + question.id});
@@ -180,6 +181,18 @@ define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts)
                         /* when press button next in the survey and if the question has error alert this will deactivate it */
                         $(input).on("click", function() {
                             self_.removeAlert(wrapper);
+ 
+                            $(conditionalQuestions).each(function(){                                
+                                var conditionalQcontainer = self.addQuestion(this);
+                                                                
+                                if(parseInt(this.idParent) === parseInt(question.id)){
+                                    if(parseInt(opt.id) === parseInt(this.answer)){
+                                        if($('#question_'+this.id).length === 0)
+                                            conditionalQcontainer.insertBefore($(qcontainer).closest('.slider-container').find('.navigation-buttons'));
+                                    }else
+                                        $('#question_'+this.id).remove();
+                                }
+                            });
                         });
                     });
 
@@ -352,25 +365,26 @@ define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts)
              * @description question of confirmation type
              */
             confirmation: {
-                init: function(qcontainer, question) {
-                    this.add(qcontainer, question);
+                init: function(qcontainer, question, conditionalQuestions = null) {
+                    this.add(qcontainer, question, conditionalQuestions);
                 },
 
-                add: function(qcontainer, question) {
+                add: function(qcontainer, question, conditionalQuestions) {
                     var label = $('<label>').append(question.text);
                     var questionWrapper = $('<div>', {class: "col-xs-12 col-sm-12 col-md-12 col-lg-12 question"}).append(label);
 
-                    qcontainer.append(questionWrapper).append(this.getButtonsGroup(question));
+                    qcontainer.append(questionWrapper).append(this.getButtonsGroup(qcontainer, question, conditionalQuestions));
 
                     return true;
                 },
 
-                getButtonsGroup: function(question) {
+                getButtonsGroup: function(qcontainer, question, conditionalQuestions) {
                     var self_ = this;
                     var group = $('<div>', {});
                     
                     $(this.getButtonGroupOptions(question)).each(function() {
-                        var button = $('<input>', {type: "radio", value: this.value, name: "radio"});
+                        var option = this;
+                        var button = $('<input>', {type: "radio", value: this.value, name: "radio_"+question.id});
                         var label = $('<label>').append(button).append(this.text);
                         var div = $('<div>', {class: "radio"}).append(label);
                         
@@ -379,6 +393,18 @@ define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts)
                         /* when press button next in the survey and if the question has error alert this will deactivate it */
                         $(button).on("click", function() {
                             self_.removeAlert(group);
+
+                            $(conditionalQuestions).each(function(){                                                                
+                                var conditionalQcontainer = self.addQuestion(this);
+                                
+                                if(parseInt(this.idParent) === parseInt(question.id)){
+                                    if(option.text === this.answer){
+                                        if($('#question_'+this.id).length === 0)
+                                            conditionalQcontainer.insertBefore($(qcontainer).closest('.slider-container').find('.navigation-buttons'));
+                                    }else
+                                        $('#question_'+this.id).remove();
+                                }
+                            });
                         });
                     });
 

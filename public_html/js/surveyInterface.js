@@ -2,6 +2,7 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
     var SurveyInterface = function() {
         var token = null;
         var slider;
+        var conditionalQuestions = {};
         this.init = function() {
             token = sys.getUrlParameter("token");
             buildMenu();
@@ -24,9 +25,11 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
 
         var showSurvey = function() {
             var survey = getSurvey();
-            var sliderContainer;
+            
             survey = ($.isPlainObject(survey)) ? null : survey[0];
             console.log(survey);
+            setConditionalQuestions(survey.mst_questions);
+            
             SurveyBuilder.init({token: token}, survey);
 
             hideNavBarTitle();
@@ -35,20 +38,57 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
 
             setWelcomText(survey);          // initial slider
 
-            (parseInt(survey.anon) === 1) ? null : setSectionAnon();
-
-            $(survey.mst_questions).each(function(index) {
-                /* add a new slider each three questions */
-                if (index % 3 === 0)
-                    sliderContainer = getSliderContainer();
-
-                SurveyBuilder.addQuestion(this).insertBefore(sliderContainer.find('.navigation-buttons'));
-
-            });
-
+            (parseInt(survey.anon) === 1) ? null : showSectionAnon();
+                        
+            setMasterQuestions(survey);
+            
             setFinishText(survey);          // end slider
 
             slider = initSlider();
+        };
+        
+        var setMasterQuestions = function(survey) {
+            var sliderContainer = getSliderContainer();
+
+            $(survey.mst_questions).each(function(index) {
+                if ($(sliderContainer).find('.questionContainer').length === 3) {
+                    appendSlider(sliderContainer);
+                    sliderContainer = getSliderContainer();
+                }
+                
+                if(parseInt(this.idParent) === 0){
+                    if (conditionalQuestions[this.id].length > 0) {   // has children
+                        if ($(sliderContainer).find('.questionContainer').length > 0)
+                            appendSlider(sliderContainer);
+
+                        sliderContainer = getSliderContainer();
+                        
+                        SurveyBuilder.addQuestion(this, conditionalQuestions[this.id]).insertBefore(sliderContainer.find('.navigation-buttons'));
+                        
+                        appendSlider(sliderContainer);
+                        
+                        sliderContainer = getSliderContainer();
+                        
+                    } else {
+                        SurveyBuilder.addQuestion(this).insertBefore(sliderContainer.find('.navigation-buttons'));
+                    }
+                }                    
+
+            });
+
+        };
+        
+        var setConditionalQuestions = function(questions) {
+            $(questions).each(function() {
+                if (parseInt(this.idParent) === 0) {
+                        conditionalQuestions[this.id] = [];
+                } else {
+                    if (conditionalQuestions[this.idParent] === undefined)
+                        conditionalQuestions[this.idParent] = [];
+                    else
+                        conditionalQuestions[this.idParent].push(this);
+                }
+            });
         };
 
         var initSlider = function() {
@@ -101,9 +141,11 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
             sliderContainder.append(getSliderNumberContainer())
                     .append(navigationButtons());
 
-            $('#slider').append(sliderContainder);
-
             return sliderContainder;
+        };
+        
+        var appendSlider = function(slider){
+            $('#slider').append(slider);
         };
 
         var getSliderNumberContainer = function() {
@@ -135,7 +177,7 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
             return $('<div>', {class: "footer-Wrapper"}).append($('<img>', {src: "img/logo-bar.png"}));
         };
 
-        var setSectionAnon = function() {
+        var showSectionAnon = function() {
             var content = $('<div>', {class: "slider-container customer-data", id: "anon_section", idQuestionType: 0, idQuestion: 0})
                     .append($('#anonContent').show())
                     .append(startSurvey());
