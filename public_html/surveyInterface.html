@@ -42,31 +42,58 @@ and open the template in the editor.
             </div>
             <div id="anonContent" class="" style="display: none">
                 <div class="questionContainer list-group">
-                    <div class="form-horizontal">
-                        <div class="form-group col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                            <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">Nombre</label>
-                            <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
-                                <input type="text" name="customer_name" class="form-control" placeholder="Nombre" fieldType="name">
+                    <form id="form-anon">
+                        <div class="row">
+                            <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <label class="col-xs-3 col-sm-2 col-md-2 col-lg-2">Nombre</label>
+                                <div class="col-xs-9 col-sm-10 col-md-10 col-lg-10">
+                                    <input type="text" name="name" class="form-control" placeholder="Nombre" fieldType="name">
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-group col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                            <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">Teléfono</label>
-                            <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
-                                <input type="text" name="customer_telephone" class="form-control" placeholder="Teléfono" fieldType="telephone">
+                            <div class="form-group col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">Apellido paterno</label>
+                                <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
+                                    <input type="text" name="mothers_last_name" class="form-control" placeholder="Apellido paterno" fieldType="name">
+                                </div>
                             </div>
-                        </div>
-                    </div>                  
+                            <div class="form-group col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">Apellido materno</label>
+                                <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
+                                    <input type="text" name="last_name" class="form-control" placeholder="Apellido materno" fieldType="name">
+                                </div>
+                            </div>
+                            <div class="questionContainer list-group">
+                                <div class="form-horizontal">
+                                    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                        <label class="col-xs-2 col-sm-2 col-md-2 col-lg-2">Email</label>
+                                        <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
+                                            <input type="text" name="email" class="form-control" placeholder="Email" fieldType="email">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                <label class="col-xs-6 col-sm-6 col-md-5 col-lg-5">Fecha de nacimiento</label>
+                                <div class="col-xs-6 col-sm-6 col-md-7 col-lg-7">
+                                    <input type="text" name="birthday" class="form-control" placeholder="Fecha de nacimiento">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3">Teléfono</label>
+                                <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
+                                    <input type="text" name="telephone" class="form-control" placeholder="Teléfono" fieldType="telephone">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <label class="col-xs-3 col-sm-3 col-md-2 col-lg-2">Dirección</label>
+                                <div class="col-xs-9 col-sm-9 col-md-10 col-lg-10">
+                                    <input type="text" name="telephone" class="form-control" placeholder="Dirección">
+                                </div>
+                            </div>
+                        </div>   
+                    </form>
                 </div>
-                <div class="questionContainer list-group">
-                    <div class="form-horizontal">
-                        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                            <label class="col-xs-2 col-sm-2 col-md-2 col-lg-2">Email</label>
-                            <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
-                                <input type="text" name="customer_email" class="form-control" placeholder="Email" fieldType="email">
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
                 <div class="questionContainer list-group">
                     <div class="form-horizontal">
                         <div class="checkbox col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -78,9 +105,9 @@ and open the template in the editor.
         </div>
     </body>
     <script>
-        require(['main'], function () {
-            require(['jquery', 'surveyInterface'], function ($, surveyInterface) {
-                $(document).ready(function () {
+        require(['main'], function() {
+            require(['jquery', 'surveyInterface'], function($, surveyInterface) {
+                $(document).ready(function() {
                     surveyInterface.init({});
                 });
             });

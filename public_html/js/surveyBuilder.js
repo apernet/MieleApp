@@ -9,7 +9,7 @@
  * @param {type} e
  * @returns {SurveyBuilder|surveyBuilderL#4.SurveyBuilder}
  *******************************************************************************/
-define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts) {
+define(['jquery', 'system', 'exceptions', 'alerts', 'notify'], function($, sys, e, alerts, notify) {
     var SurveyBuilder = function() {
         var self = this;
         var token = null;
@@ -84,6 +84,10 @@ define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts)
             return self.question[questionName].validate(qcontainer);
         };
         
+        var getIdQuestion = function(qcontainer){
+            return (qcontainer.attr('idQuestion') !== undefined) ? qcontainer.attr('idQuestion') : 0;
+        };
+        
         /**
          * @description object that contains functions of each type of question
          */
@@ -96,7 +100,6 @@ define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts)
             singleAnswer: {
                 init: function(qcontainer, question) {
                     this.add(qcontainer, question);
-
                 },
 
                 add: function(qcontainer, question) {
@@ -124,6 +127,13 @@ define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts)
                 removeAlert: function(form) {
                     alerts.removeFormError(form);
                     return true;
+                },
+                getData: function(qcontainer){
+                    var textAnswer = ($(qcontainer).find('textarea').length > 0) ? $(qcontainer).find('textarea').first().val() : null;
+                    return [{
+                        idQuestion: getIdQuestion(qcontainer), 
+                        answer: textAnswer
+                    }];
                 }
             },
 
@@ -138,6 +148,22 @@ define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts)
                 },
                 validate: function(qcontainer) {
                     return self.question.multipleAnswerFunct.validate(qcontainer);
+                },
+
+                getData: function(qcontainer) {
+                    var data = [];
+
+                    $(qcontainer).find('input[type=radio]').each(function() {
+                        if ($(this).is(":checked")) {
+                            data.push({
+                                idQuestion: getIdQuestion(qcontainer),
+                                answer: $(this).closest('label').text(),
+                                idQuestionAnswer: this.id
+                            });
+                        }
+                    });
+
+                    return data;
                 }
             },
 
@@ -147,6 +173,22 @@ define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts)
                 },
                 validate: function(qcontainer) {
                     return self.question.multipleAnswerFunct.validate(qcontainer);
+                },
+                     
+                getData: function(qcontainer) {
+                    var data = [];
+                    
+                    $(qcontainer).find('input[type=checkbox]').each(function() {
+                        if ($(this).is(":checked")){
+                            data.push({
+                                idQuestion: getIdQuestion(qcontainer),
+                                answer: $(this).closest('label').text(),
+                                idQuestionAnswer: this.id
+                            });
+                        }
+                    });
+                    
+                    return data;
                 }
             },
 
@@ -174,7 +216,7 @@ define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts)
                         var opt = this;
                         var type = (iconTypeOfQuestion === "check") ? "checkbox" : "radio";
                         var option = $('<div>', {class: type});
-                        var input = $('<input>', {class: "option", type: type, name: "radio_" + question.id});
+                        var input = $('<input>', {class: "option", type: type, id: this.id, name: "radio_" + question.id});
                         var label = $('<label>').append(input).append(this.text);
 
                         wrapper.append(option.append(label));
@@ -248,7 +290,7 @@ define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts)
                     var groupButton = this.getButtonGroupOptions(question);
 
                     $(groupButton).each(function() {
-                        var button = $('<button>', {type: "button", class: "btn btn-default btn-lg", value: this.id}).append(this.name);
+                        var button = $('<button>', {type: "button", class: "btn btn-default btn-lg", id:this.id, value: this.id}).append(this.name);
                         group.append(button);
                     });
 
@@ -283,6 +325,13 @@ define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts)
                 removeAlert: function(btngroup) {
                     btngroup.css({"border": "none"});
                     return true;
+                },
+                getData: function(qcontainer){
+                    return {
+                        idQuestion: getIdQuestion(qcontainer),
+                        answer: (qcontainer.find('.btn.active').length === 1) ? qcontainer.find('.btn.active').first().text() : "",
+                        idAnswerType: (qcontainer.find('.btn.active').length === 1) ? qcontainer.find('.btn.active').first().attr('id') : 0
+                    };
                 }
             },
 
@@ -334,6 +383,18 @@ define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts)
 
                 validate: function(qcontainer) {
                     return (this.getGradeSelect(qcontainer) > 0) ? true : false;
+                },
+                /*
+                        idQuestion: value,
+                        answer: value,
+                        idQuestionAnswer: idOption,
+                        idAnswerType: idAnswerOption,
+                     */
+                getData: function(qcontainer){
+                    return {
+                        idQuestion: getIdQuestion(qcontainer),
+                        answer: (qcontainer.find('input.rating').length === 1) ? qcontainer.find('input.rating').first().val() : ""
+                    };
                 }
             },
 
@@ -358,6 +419,11 @@ define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts)
                 
                 validate: function() {
                     return true;
+                },
+                getData: function(qcontainer){
+                    return {
+                        
+                    };
                 }
             },
 
@@ -384,7 +450,7 @@ define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts)
                     
                     $(this.getButtonGroupOptions(question)).each(function() {
                         var option = this;
-                        var button = $('<input>', {type: "radio", value: this.value, name: "radio_"+question.id});
+                        var button = $('<input>', {type: "radio", idAnswerType: option.idAnswerType, answer:option.text, value: this.value, name: "radio_"+question.id});
                         var label = $('<label>').append(button).append(this.text);
                         var div = $('<div>', {class: "radio"}).append(label);
                         
@@ -416,7 +482,7 @@ define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts)
                     var options = [];
 
                     $(questionData).each(function() {
-                        options.push({text: this.name, value: this.id});
+                        options.push({text: this.name, value: this.id, idAnswerType: this.id});
                     });
 
                     return options;
@@ -447,7 +513,80 @@ define(['jquery', 'system', 'exceptions', 'alerts'], function($, sys, e, alerts)
                     });
 
                     return true;
+                },
+                
+                getData: function(qcontainer){
+                    return {
+                        idQuestion: getIdQuestion(qcontainer),
+                        answer: (qcontainer.find('input[type=radio]:checked').length === 1) ? qcontainer.find('input[type=radio]:checked').first().attr('answer') : 0,
+                        idAnswerType: (qcontainer.find('input[type=radio]:checked').length === 1) ? qcontainer.find('input[type=radio]:checked').first().attr('idAnswerType') : 0
+                    };
                 }
+            }
+        };
+        
+        this.store =  {
+            /**
+            {
+                idQuestion: value,
+                answer: value,
+                idQuestionAnswer: idOption,
+                idAnswerType: idAnswerOption,
+            }
+             * @returns {object}
+             */
+            survey: function(survey) {
+                var questionsData = this.getQuestionsData();
+                var surveySubjectData = this.getSurveySubjectData();
+                var surveyAnswer = {id: survey.id, surveySubjectData: surveySubjectData, questionData:questionsData};
+                this.sendData(surveyAnswer);
+                
+            },
+            getQuestionsData: function(){
+                var data = [];
+                $('.questionContainer').each(function() {
+                    var qcontainer = $(this);
+                    if($(qcontainer).attr('idQuestionType') === undefined)
+                        return true;
+                    
+                    var questionName = getSurveyTypeSelected($(qcontainer).attr('idQuestionType'));
+                    var answerData = self.question[questionName].getData($(this));
+                    $(answerData).each(function(){
+                        data.push(this);
+                    });
+                });
+                
+                return data;
+            },
+            getSurveySubjectData: function(){
+                var data = {};
+                $("#form-anon").serializeArray().map(function(x){data[x.name] = x.value;}); 
+                return data;
+            },
+            sendData: function(data) {
+                var status = false;
+                console.log(data);
+
+                $.ajax({
+                    method: "POST",
+                    async: false,
+                    cache: false,
+                    data: data,
+                    url: sys.getSystemPath() + "/surveyanswer/create/?token=" + token,
+                    type: "json",
+                    success: function(response, textStatus, jqXHR) {
+                        console.log(response);
+                        if (typeof response !== 'object')
+                            e.error("e.INTERNAL_SERVER_ERROR", response);
+                        if(response.status)
+                            status = true;
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        e.manageError(jqXHR, textStatus, errorThrown);
+                    }
+                });
+                
+                return status;
             }
         };
     };

@@ -5,8 +5,14 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
         var conditionalQuestions = {};
         this.init = function() {
             token = sys.getUrlParameter("token");
+
+            var survey = getSurvey();
+
+            survey = ($.isPlainObject(survey)) ? null : survey[0];
+
             buildMenu();
-            showSurvey();
+
+            initSurvey(survey);
         };
 
         var buildMenu = function() {
@@ -23,13 +29,10 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
             });
         };
 
-        var showSurvey = function() {
-            var survey = getSurvey();
-            
-            survey = ($.isPlainObject(survey)) ? null : survey[0];
+        var initSurvey = function(survey) {
             console.log(survey);
             setConditionalQuestions(survey.mst_questions);
-            
+
             SurveyBuilder.init({token: token}, survey);
 
             hideNavBarTitle();
@@ -39,14 +42,14 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
             setWelcomText(survey);          // initial slider
 
             (parseInt(survey.anon) === 1) ? null : showSectionAnon();
-                        
+
             setMasterQuestions(survey);
-            
+
             setFinishText(survey);          // end slider
 
-            slider = initSlider();
+            slider = initSlider(survey);
         };
-        
+
         var setMasterQuestions = function(survey) {
             var sliderContainer = getSliderContainer();
 
@@ -55,33 +58,33 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
                     appendSlider(sliderContainer);
                     sliderContainer = getSliderContainer();
                 }
-                
-                if(parseInt(this.idParent) === 0){
+
+                if (parseInt(this.idParent) === 0) {
                     if (conditionalQuestions[this.id].length > 0) {   // has children
                         if ($(sliderContainer).find('.questionContainer').length > 0)
                             appendSlider(sliderContainer);
 
                         sliderContainer = getSliderContainer();
-                        
+
                         SurveyBuilder.addQuestion(this, conditionalQuestions[this.id]).insertBefore(sliderContainer.find('.navigation-buttons'));
-                        
+
                         appendSlider(sliderContainer);
-                        
+
                         sliderContainer = getSliderContainer();
-                        
+
                     } else {
                         SurveyBuilder.addQuestion(this).insertBefore(sliderContainer.find('.navigation-buttons'));
                     }
-                }                    
+                }
 
             });
 
         };
-        
+
         var setConditionalQuestions = function(questions) {
             $(questions).each(function() {
                 if (parseInt(this.idParent) === 0) {
-                        conditionalQuestions[this.id] = [];
+                    conditionalQuestions[this.id] = [];
                 } else {
                     if (conditionalQuestions[this.idParent] === undefined)
                         conditionalQuestions[this.idParent] = [];
@@ -91,7 +94,7 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
             });
         };
 
-        var initSlider = function() {
+        var initSlider = function(survey) {
             var sliderObject = $('#slider').bxSlider({
                 mode: "fade",
                 speed: 800,
@@ -106,6 +109,9 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
                 },
                 onSlideAfter: function($slideElement, oldIndex, newIndex) {
                     setSliderNumber();
+
+                    if(slider.getSlideCount() === newIndex+1)
+                        storeData(survey);
                 },
                 onSlideBefore: function($slideElement, oldIndex, newIndex) {
 //                    $('.slider-container.active-slider').removeClass('active-slider');
@@ -114,7 +120,6 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
             });
 
             $('.button-next').on("click", function() {
-                console.log("next");
                 if (questionsCompleted())
                     slider.goToNextSlide();
             });
@@ -124,11 +129,11 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
                     slider.goToPrevSlide();
             });
 
-            $('.restart-survey').on("click", function() {
-                slider.goToSlide(0);
-            });
-
             return sliderObject;
+        };
+
+        var storeData = function(survey) {
+            SurveyBuilder.store.survey(survey);
         };
 
         /**
@@ -143,8 +148,8 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
 
             return sliderContainder;
         };
-        
-        var appendSlider = function(slider){
+
+        var appendSlider = function(slider) {
             $('#slider').append(slider);
         };
 
@@ -209,7 +214,7 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
         var setFinishText = function(survey) {
             var content = $('<div>', {class: "message-container slider-container", id: "question_finish_text", idQuestionType: 0, idQuestion: 0})
                     .append($('<div>', {class: "text-wrapper"}).append(survey.finish_text))
-                    .append(restartSurvey())
+                    .append(restartSurveyButton(survey))
                     .append(getFooter());
 
             $('#slider').append(content);
@@ -231,12 +236,18 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
             return  wrapper.append(container);
         };
 
-        var restartSurvey = function() {
+        var restartSurveyButton = function(survey) {
             var wrapper = $('<div>', {class: "col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center"});
             var container = $('<div>', {class: "btn-group"});
             var next = $('<button>', {class: "btn btn-primary btn-lg restart-survey"}).append("Iniciar nueva encuesta");
 
             container.append(next);
+
+            next.on("click", function() {
+                slider.destroySlider();
+                $('#slider').empty();
+                initSurvey(survey);
+            });
 
             return  wrapper.append(container);
         };
@@ -305,7 +316,7 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
                 alerts.removeFormError(input);
 
                 if (this.type === "text") {
-                    if (input.val().length === 0){
+                    if (input.val().length === 0) {
                         status = false;
                         alerts.addFormError(input);
                     }
@@ -316,8 +327,8 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
                             validate = false;
                         }
                     }
-                    
-                    
+
+
                 }
 
                 if (this.type === "checkbox") {
@@ -333,8 +344,8 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
 
             if (!status)
                 notify.error("Información requerida.");
-            
-            if (!validate){
+
+            if (!validate) {
                 notify.error("Información incorrecta");
                 status = false;
             }
@@ -350,8 +361,8 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
             },
 
             email: function(email) {
-                 var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-                 return re.test(email);
+                var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                return re.test(email);
             },
 
             name: function(name) {
