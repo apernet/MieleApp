@@ -63,7 +63,7 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
                     appendSlider(sliderContainer);
                     sliderContainer = getSliderContainer();
                 }
-
+                
                 if (parseInt(this.idParent) === 0) {
                     if (conditionalQuestions[this.id].length > 0) {   // has children
                         if ($(sliderContainer).find('.questionContainer').length > 0)
@@ -77,8 +77,9 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
 
                         sliderContainer = getSliderContainer();
 
-                    } else {
+                    } else {                        
                         SurveyBuilder.addQuestion(this).insertBefore(sliderContainer.find('.navigation-buttons'));
+                        appendSlider(sliderContainer);
                     }
                 }
 
