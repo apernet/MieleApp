@@ -349,7 +349,7 @@ define(['jquery', 'system', 'exceptions', 'alerts', 'notify'], function($, sys, 
                     var rate = (question.question_answers !== undefined & question.question_answers[0] !== undefined) ? question.question_answers[0].text : 10;
                     qcontainer.append(questionWrapper);
 
-                    var ratingForm = $('<input>', {type: "text", value: 0, "data-min": 0, "data-max": 10, "data-step": 1, class: "rating"});
+                    var ratingForm = $('<input>', {type: "text", value: 0, "data-min": 0, "data-max": rate, "data-step": 1, class: "rating"});
 
                     qcontainer.append(ratingForm);
 
@@ -561,7 +561,6 @@ define(['jquery', 'system', 'exceptions', 'alerts', 'notify'], function($, sys, 
             getSurveySubjectData: function(){
                 var data = {};
                 $("#form-anon").serializeArray().map(function(x){
-                    console.log(x);
                     data[x.name] = x.value;
                 }); 
                 return data;
