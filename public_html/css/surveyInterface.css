@@ -30,6 +30,11 @@ body{
 .navbar-title{
 
 }
+
+.nav-justified text{
+    text-align: center;
+}
+
 .navbar.message-mode .survey-title{
     display: none;
 }
