@@ -32,7 +32,7 @@ and open the template in the editor.
                         </ul>
                     </div>
                     <div class="nav navbar-nav navbar-right">
-                        <button class="btn btn-default btn-lg">Salir de encuesta</button>
+                        <button class="btn btn-default btn-lg restart-survey">Reiniciar encuesta</button>
                     </div>
                 </div>
 
@@ -40,9 +40,9 @@ and open the template in the editor.
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 surveyBuilderContainer">
                 <div id="slider" class="slider-content"></div>
             </div>
-            <div id="anonContent" class="" style="display: none">
-                <div class="questionContainer list-group">
-                    <form id="form-anon">
+            <div id="anonContent" class="master" style="display: none">
+                <form id="form-anon">
+                    <div class="questionContainer list-group">
                         <div class="row">
                             <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <label class="col-xs-3 col-sm-2 col-md-2 col-lg-2">Nombre</label>
@@ -62,16 +62,8 @@ and open the template in the editor.
                                     <input type="text" name="last_name" class="form-control" placeholder="Apellido materno" fieldType="name">
                                 </div>
                             </div>
-                            <div class="questionContainer list-group">
-                                <div class="form-horizontal">
-                                    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                        <label class="col-xs-2 col-sm-2 col-md-2 col-lg-2">Email</label>
-                                        <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
-                                            <input type="text" name="email" class="form-control" placeholder="Email" fieldType="email">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+
+                            <!--
                             <div class="form-group col-xs-6 col-sm-6 col-md-6 col-lg-6">
                                 <label class="col-xs-6 col-sm-6 col-md-5 col-lg-5">Fecha de nacimiento</label>
                                 <div class="col-xs-6 col-sm-6 col-md-7 col-lg-7">
@@ -84,24 +76,47 @@ and open the template in the editor.
                                     <input type="text" name="telephone" class="form-control" placeholder="Teléfono" fieldType="telephone">
                                 </div>
                             </div>
+                            
                             <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <label class="col-xs-3 col-sm-3 col-md-2 col-lg-2">Dirección</label>
                                 <div class="col-xs-9 col-sm-9 col-md-10 col-lg-10">
                                     <input type="text" name="telephone" class="form-control" placeholder="Dirección">
                                 </div>
                             </div>
+                            -->
                         </div>   
-                    </form>
-                </div>
+                    </div>
 
-                <div class="questionContainer list-group">
-                    <div class="form-horizontal">
-                        <div class="checkbox col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                            <label><input type="checkbox" name="customer_privacy" class="" value="" id="check-privacy">Acepto aviso de privacidad</label>
+                    <div class="list-group questionContainer col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="questionContainer col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <div class="form-horizontal">
+                                <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <label class="col-xs-2 col-sm-2 col-md-2 col-lg-2">Email</label>
+                                    <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
+                                        <input type="text" name="email" class="form-control" placeholder="Email" fieldType="email">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
+
+                    <div class="questionContainer col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="checkbox col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <label><input type="checkbox" name="privacy" class="required" value="0" id="check-privacy">Acepto aviso de privacidad </label> <a id="agree-privacy" class="agree-privacy"><img src="img/pdf-file.png"></a>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <label>Autorizo el registro y uso de mis datos para recibir:</label>
+                        </div>
+                        <div class="checkbox col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <label><input type="checkbox" name="newsletter" class="" value="1" id="check-newsletter" checked="checked">Boletín en Línea (novedades, recetas y promociones especiales)</label>
+                        </div>
+                        <div class="checkbox col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <label><input type="checkbox" name="eventSubscription" class="" value="1" id="check-eventSubscription" checked="checked">Información sobre eventos</label>
+                        </div>
+                    </div>
+                </form>
             </div>
+
         </div>
     </body>
     <script>

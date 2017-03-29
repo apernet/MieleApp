@@ -560,7 +560,10 @@ define(['jquery', 'system', 'exceptions', 'alerts', 'notify'], function($, sys, 
             },
             getSurveySubjectData: function(){
                 var data = {};
-                $("#form-anon").serializeArray().map(function(x){data[x.name] = x.value;}); 
+                $("#form-anon").serializeArray().map(function(x){
+                    console.log(x);
+                    data[x.name] = x.value;
+                }); 
                 return data;
             },
             sendData: function(data) {

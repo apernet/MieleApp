@@ -89,6 +89,25 @@ define(['bootstrap-dialog', 'exceptions', 'system'], function(bdialog, e, sys) {
                 }
             });
         };
+        
+        this.info = function(title, textContent, onclick){
+            bdialog.show({
+                type: bdialog.TYPE_SUCCESS,
+                title: '<spam class="glyphicon"></spam> ' + title,
+                size: bdialog.SIZE_SMALL,
+                message: textContent,
+                buttons: [{
+                        label: "cerrar",
+                        title: "cerrar",
+                        action: function(dialog) {
+                            (typeof onclick === "function") ? onclick(dialog) : dialog.close();
+                        }
+                    }],
+                close: function(dialog) {
+                    (typeof onclick === "function") ? onclick(dialog) : dialog.close();
+                }
+            });
+        };
     };
 
     return new Exception();

@@ -1,8 +1,9 @@
-define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu', 'alerts', 'notify'], function($, Surveys, sys, SurveyBuilder, bx, menu, alerts, notify) {
+define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu', 'alerts', 'notify', 'exceptions', 'bootstrap-dialog'], function($, Surveys, sys, SurveyBuilder, bx, menu, alerts, notify, e, bdialog) {
     var SurveyInterface = function() {
         var token = null;
         var slider;
         var conditionalQuestions = {};
+
         this.init = function() {
             token = sys.getUrlParameter("token");
 
@@ -10,13 +11,17 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
 
             survey = ($.isPlainObject(survey)) ? null : survey[0];
 
-            buildMenu();
+            buildMenu(survey);
 
             initSurvey(survey);
         };
 
-        var buildMenu = function() {
+        var buildMenu = function(survey) {
             $(document).ready(function() {
+                $('.restart-survey').click(function() {
+                    restartSurvey(survey);
+                });
+
                 menu.init({
                     buttonSelector: "menu-toggle",
                     pageWrapper: "pageWrapper",
@@ -110,7 +115,7 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
                 onSlideAfter: function($slideElement, oldIndex, newIndex) {
                     setSliderNumber();
 
-                    if(slider.getSlideCount() === newIndex+1)
+                    if (slider.getSlideCount() === newIndex + 1)
                         storeData(survey);
                 },
                 onSlideBefore: function($slideElement, oldIndex, newIndex) {
@@ -166,7 +171,8 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
         };
 
         var setTitle = function(title) {
-            $('.survey-title').append(title);
+            if ($('.survey-title').is(":empty"))
+                $('.survey-title').append(title);
         };
 
         var setSliderNumber = function() {
@@ -183,8 +189,9 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
         };
 
         var showSectionAnon = function() {
+            var anonContent = $('#anonContent').contents().clone();
             var content = $('<div>', {class: "slider-container customer-data", id: "anon_section", idQuestionType: 0, idQuestion: 0})
-                    .append($('#anonContent').show())
+                    .append(anonContent)
                     .append(startSurvey());
 
             $('#slider').append(content);
@@ -199,6 +206,17 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
                 $(this).closest('div.checkbox').removeClass('has-error');
             });
 
+            $('#agree-privacy').click(showPrivacy);
+
+            $(anonContent).find('[type=checkbox]').unbind('change').on('change', function() {
+                if ($(this).is(':checked')) {
+                    $(this).attr('value', '1');
+                } else {
+                    $(this).attr('value', '0');
+                }
+
+                $('#checkbox-value').text($('#checkbox1').val());
+            });
         };
 
 
@@ -244,12 +262,16 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
             container.append(next);
 
             next.on("click", function() {
-                slider.destroySlider();
-                $('#slider').empty();
-                initSurvey(survey);
+                restartSurvey(survey);
             });
 
             return  wrapper.append(container);
+        };
+
+        var restartSurvey = function(survey) {
+            slider.destroySlider();
+            $('#slider').empty();
+            initSurvey(survey);
         };
 
         var navigationButtons = function() {
@@ -352,6 +374,25 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
 
 
             return status;
+        };
+
+        var showPrivacy = function() {
+            bdialog.show({
+                type: bdialog.TYPE_DEFAULT,
+                title: '<spam class="glyphicon"></spam> Aviso de privacidad',
+                size: bdialog.SIZE_NORMAL,
+                message: '<div><embed class="privacy-embed" src="files/AvisodePrivacidad.pdf" width="500" height="375" type="application/pdf"></div>',
+                buttons: [{
+                        label: "cerrar",
+                        title: "cerrar",
+                        action: function(dialog) {
+                            (typeof onclick === "function") ? onclick(dialog) : dialog.close();
+                        }
+                    }],
+                close: function(dialog) {
+                    (typeof onclick === "function") ? onclick(dialog) : dialog.close();
+                }
+            });
         };
 
         validation = {
