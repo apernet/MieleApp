@@ -51,5 +51,6 @@ require.config({
         'bootstrap-notify': {
             "deps": ['jquery', 'bootstrap']
         }
-    }
+    },
+    waitSeconds: 200
 });
