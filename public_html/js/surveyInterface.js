@@ -63,7 +63,7 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
                     appendSlider(sliderContainer);
                     sliderContainer = getSliderContainer();
                 }
-                
+
                 if (parseInt(this.idParent) === 0) {
                     if (conditionalQuestions[this.id].length > 0) {   // has children
                         if ($(sliderContainer).find('.questionContainer').length > 0)
@@ -77,7 +77,7 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
 
                         sliderContainer = getSliderContainer();
 
-                    } else {                        
+                    } else {
                         SurveyBuilder.addQuestion(this).insertBefore(sliderContainer.find('.navigation-buttons'));
                         appendSlider(sliderContainer);
                     }
@@ -203,6 +203,10 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
                 });
             });
 
+            $(content).find('select').change(function(){
+                alerts.removeFormError($(this));
+            })
+;
             $('#check-privacy').click(function() {
                 $(this).closest('div.checkbox').removeClass('has-error');
             });
@@ -332,7 +336,7 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
             var slide = $('.slider-container[index=' + sliderIndex + ']');
             var validate = true;
 
-            $(slide).find('input').each(function() {
+            $(slide).find('input,select').each(function() {
                 var input = $(this);
                 input.val($.trim(input.val()));
 
@@ -350,8 +354,15 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
                             validate = false;
                         }
                     }
-
-
+                }
+                
+                if (this.type === "select-one") {
+                    if ($(this).hasClass('required')) {
+                            if ($(this).find(":selected").val() === "0") {
+                                alerts.addFormError($(this));
+                                validate = false;
+                            }
+                    }
                 }
 
                 if (this.type === "checkbox") {
@@ -367,8 +378,7 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
 
             if (!status)
                 notify.error("Información requerida.");
-
-            if (!validate) {
+            else if (!validate) {
                 notify.error("Información incorrecta");
                 status = false;
             }
