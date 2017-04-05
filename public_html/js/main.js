@@ -24,7 +24,9 @@ require.config({
         surveys: 'js/surveys',
         surveyBuilder: 'js/surveyBuilder',
         surveyType: 'js/surveyType',
-        questionType: 'js/questionType'
+        questionType: 'js/questionType',
+        sync: 'js/sync',
+        database: 'js/database'
     },
     shim: {
         jquery: {

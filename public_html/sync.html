@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="apis/bootstrap/css/bootstrap.min.css"/>
+        <link rel="stylesheet" href="apis/bootstrap3-dialog/dist/css/bootstrap-dialog.css"/>
+        <link rel="stylesheet" href="css/menu.css"/>
+        <link rel="stylesheet" href="css/sync.css"/>
+        <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+        <script data-main="js/main" src="apis/require.js"></script>
+    </head>
+    <body>
+        <div id="pageWrapper">
+            <div class="container">
+               <span class="btn-menu glyphicon glyphicon-menu-hamburger" id="menu-toggle"></span>
+               <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                   <p>Usted esta apunto de sincronizar información con el servidor remoto de Miele, asegurese de tener una conexión a internet estable.</p>
+                   <button id="sync-now" class="btn btn-primary">Sincronizar ahora</button>
+               </div>
+            </div>
+        </div>
+    </body>
+    <script>
+        require(['main'], function () {
+            require(['sync'], function (sync) {
+                sync.init();
+            });
+        });
+    </script>
+</html>

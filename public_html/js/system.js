@@ -14,62 +14,6 @@ define(['jquery', 'system'], function($, e) {
             return self.SERVER + self.getApiPath();
         };
 
-        this.menu = {
-            option: {
-                /**
-                 * 
-                 * @param {type} token
-                 * @returns {systemL#2.system.menu.option.closeSessionOption.systemAnonym$1}
-                 */
-                closeSessionOption: function(token) {
-                    var url = self.SERVER + self.getApiPath() + "/auth/invalidate";
-
-                    return {
-                        title: "Cerrar Sesión",
-                        onclick: {
-                            ajax: {
-                                url: url,
-                                params: {"token": token},
-                                method: "POST",
-                                async: false,
-                                success: function(response, textStatus, jqXHR) {
-                                    if (typeof response !== "object")
-                                        e.error(response);
-
-                                    if (response.status)
-                                        window.location.href = "login.html";
-                                    else
-                                        e.error("Error", response.message);
-                                }
-                            }
-                        }
-                    };
-                },
-                goToHome: function(token) {
-                    return {
-                        title: "Home",
-                        onclick:
-                                function() {
-                                    window.location.href = "home.html?token=" + token;
-                                }
-                    };
-                },
-                closeSurveyMode: function(token) {
-                    return {
-                        title: "Salir",
-                        onclick:
-                                function() {
-                                    authModal(function() {
-                                        window.location.href = "surveys.html?token=" + token;
-                                    });
-                                }
-                    };
-                }
-            }
-
-        };
-
-
         /**
          * Obtiene un parámetro específico de la url actual
          * @param {type} sParam

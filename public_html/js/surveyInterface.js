@@ -27,8 +27,9 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
                     pageWrapper: "pageWrapper",
                     brandTitle: "Miele",
                     options: [
-                        sys.menu.option.closeSurveyMode(token),
-                        sys.menu.option.closeSessionOption(token)
+                        menu.option.sync(token),
+                        menu.option.closeSurveyMode(token),
+                        menu.option.closeSessionOption(token)
                     ]
                 });
             });

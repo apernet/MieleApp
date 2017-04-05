@@ -26,8 +26,9 @@ define(['jquery', 'system', 'menu', 'exceptions'], function($, system, menu, e) 
                 pageWrapper: "pageWrapper",
                 brandTitle: "Miele",
                 options: [
-                    system.menu.option.goToHome(token),
-                    system.menu.option.closeSessionOption(token)
+                    menu.option.goToHome(token),
+                    menu.option.sync(token),
+                    menu.option.closeSessionOption(token)
                 ]
             });
         };
