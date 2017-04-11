@@ -1,4 +1,4 @@
-define(['jquery', 'database', 'menu', 'system', 'exceptions'], function($, db, menu, system, e) {
+define(['jquery', 'menu', 'system', 'exceptions', 'jsonstore'], function($, menu, system, e, jsonstore) {
     var Sync = function() {
         this.init = function() {
             var token = system.getUrlParameter("token");
@@ -6,10 +6,12 @@ define(['jquery', 'database', 'menu', 'system', 'exceptions'], function($, db, m
             $(document).ready(function() {
                 initMenu(token);
                 $('#sync-now').on("click", function(){
-                    $(this).attr("disabled", true);
-                    var data = syncNow(token);
-                    console.log(data);
-                    $(this).attr("disabled", false);
+                    $(this).hide();
+                    var data = getData(token);
+ 
+                    if(data !== null)
+                        storeLocalData(data);
+                    $(this).show();
                 });
             });
 
@@ -22,13 +24,12 @@ define(['jquery', 'database', 'menu', 'system', 'exceptions'], function($, db, m
                 brandTitle: "Miele",
                 options: [
                     menu.option.closeSurveyMode(token),
-                    menu.option.closeSessionOption(token),
-                    menu.option.sync(token)
+                    menu.option.closeSessionOption(token)
                 ]
             });
         };
         
-        var syncNow = function(token){
+        var getData = function(token){
             var data = null;
             $.ajax({
                 method: "POST",
@@ -52,6 +53,10 @@ define(['jquery', 'database', 'menu', 'system', 'exceptions'], function($, db, m
                 }
             });
             return data;
+        };
+        
+        var storeLocalData = function(data){
+            var local = jsonstore.sync(data);
         };
     };
 

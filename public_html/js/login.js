@@ -7,16 +7,6 @@ define(['jquery', 'alerts', 'validator', 'exceptions', 'system'], function($, al
     var Login = function() {
         var loginContainer = $('#login-container');
         this.init = function() {
-            document.addEventListener('deviceready', function() {
-                window.sqlitePlugin.openDatabase({name: 'miele.db', location: 'default'}, function(db) {
-                    db.transaction(function(tx) {
-                        console.log("transaction");
-                        console.log(tx);
-                    }, function(err) {
-                        console.log('Open database ERROR: ' + JSON.stringify(err));
-                    });
-                });
-            });
             $(document).ready(function() {
                 removeAlerts();
                 $('#btnLogin').click(function(e) {

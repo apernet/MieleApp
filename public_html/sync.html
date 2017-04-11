@@ -5,6 +5,8 @@ To change this template file, choose Tools | Templates
 and open the template in the editor.
 -->
 <html>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, target-densityDpi=device-dpi" />
     <head>
         <title>TODO supply a title</title>
         <meta charset="UTF-8">
@@ -19,17 +21,17 @@ and open the template in the editor.
     <body>
         <div id="pageWrapper">
             <div class="container">
-               <span class="btn-menu glyphicon glyphicon-menu-hamburger" id="menu-toggle"></span>
-               <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                   <p>Usted esta apunto de sincronizar información con el servidor remoto de Miele, asegurese de tener una conexión a internet estable.</p>
-                   <button id="sync-now" class="btn btn-primary">Sincronizar ahora</button>
-               </div>
+                <span class="btn-menu glyphicon glyphicon-menu-hamburger" id="menu-toggle"></span>
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <p>Usted esta apunto de sincronizar información con el servidor remoto de Miele, asegurese de tener una conexión a internet estable.</p>
+                    <button id="sync-now" class="btn btn-primary">Sincronizar ahora</button>
+                </div>
             </div>
         </div>
     </body>
     <script>
-        require(['main'], function () {
-            require(['sync'], function (sync) {
+        require(['main'], function() {
+            require(['sync'], function(sync) {
                 sync.init();
             });
         });
