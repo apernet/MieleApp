@@ -79,15 +79,15 @@ define(['jquery', 'system', 'exceptions', 'alerts', 'notify'], function($, sys, 
             return question.cat_question_type.answer_type;
         };
 
-        this. isQuestionCompleted = function(qcontainer, idQuestionType) {
+        this.isQuestionCompleted = function(qcontainer, idQuestionType) {
             var questionName = getSurveyTypeSelected(idQuestionType);
             return self.question[questionName].validate(qcontainer);
         };
-        
-        var getIdQuestion = function(qcontainer){
+
+        var getIdQuestion = function(qcontainer) {
             return (qcontainer.attr('idQuestion') !== undefined) ? qcontainer.attr('idQuestion') : 0;
         };
-        
+
         /**
          * @description object that contains functions of each type of question
          */
@@ -128,12 +128,12 @@ define(['jquery', 'system', 'exceptions', 'alerts', 'notify'], function($, sys, 
                     alerts.removeFormError(form);
                     return true;
                 },
-                getData: function(qcontainer){
+                getData: function(qcontainer) {
                     var textAnswer = ($(qcontainer).find('textarea').length > 0) ? $(qcontainer).find('textarea').first().val() : null;
                     return [{
-                        idQuestion: getIdQuestion(qcontainer), 
-                        answer: textAnswer
-                    }];
+                            idQuestion: getIdQuestion(qcontainer),
+                            answer: textAnswer
+                        }];
                 }
             },
 
@@ -174,12 +174,12 @@ define(['jquery', 'system', 'exceptions', 'alerts', 'notify'], function($, sys, 
                 validate: function(qcontainer) {
                     return self.question.multipleAnswerFunct.validate(qcontainer);
                 },
-                     
+
                 getData: function(qcontainer) {
                     var data = [];
-                    
+
                     $(qcontainer).find('input[type=checkbox]').each(function() {
-                        if ($(this).is(":checked")){
+                        if ($(this).is(":checked")) {
                             data.push({
                                 idQuestion: getIdQuestion(qcontainer),
                                 answer: $(this).closest('label').text(),
@@ -187,7 +187,7 @@ define(['jquery', 'system', 'exceptions', 'alerts', 'notify'], function($, sys, 
                             });
                         }
                     });
-                    
+
                     return data;
                 }
             },
@@ -211,7 +211,7 @@ define(['jquery', 'system', 'exceptions', 'alerts', 'notify'], function($, sys, 
                     var self_ = this;
                     var options = question.question_answers;
                     var wrapper = $('<div>', {class: "col-xs-12 col-sm-12 col-md-12 col-lg-12"});
-                    
+
                     $(options).each(function() {
                         var opt = this;
                         var type = (iconTypeOfQuestion === "check") ? "checkbox" : "radio";
@@ -223,16 +223,16 @@ define(['jquery', 'system', 'exceptions', 'alerts', 'notify'], function($, sys, 
                         /* when press button next in the survey and if the question has error alert this will deactivate it */
                         $(input).on("click", function() {
                             self_.removeAlert(wrapper);
- 
-                            $(conditionalQuestions).each(function(){                                
+
+                            $(conditionalQuestions).each(function() {
                                 var conditionalQcontainer = self.addQuestion(this);
-                                                                
-                                if(parseInt(this.idParent) === parseInt(question.id)){
-                                    if(parseInt(opt.id) === parseInt(this.answer)){
-                                        if($('#question_'+this.id).length === 0)
+
+                                if (parseInt(this.idParent) === parseInt(question.id)) {
+                                    if (parseInt(opt.id) === parseInt(this.answer)) {
+                                        if ($('#question_' + this.id).length === 0)
                                             conditionalQcontainer.insertBefore($(qcontainer).closest('.slider-container').find('.navigation-buttons'));
-                                    }else
-                                        $('#question_'+this.id).remove();
+                                    } else
+                                        $('#question_' + this.id).remove();
                                 }
                             });
                         });
@@ -290,14 +290,14 @@ define(['jquery', 'system', 'exceptions', 'alerts', 'notify'], function($, sys, 
                     var groupButton = this.getButtonGroupOptions(question);
 
                     $(groupButton).each(function() {
-                        var button = $('<button>', {type: "button", class: "btn btn-default btn-lg", id:this.id, value: this.id}).append(this.name);
+                        var button = $('<button>', {type: "button", class: "btn btn-default btn-lg", id: this.id, value: this.id}).append(this.name);
                         group.append(button);
                     });
 
                     $(group).find("button").on("click", function() {
                         /* when press button next in the survey and if the question has error alert this will deactivate it */
                         self_.removeAlert(group);
-                        
+
                         $(group).find("button.active").removeClass("active");
                         $(this).addClass('active');
                     });
@@ -326,7 +326,7 @@ define(['jquery', 'system', 'exceptions', 'alerts', 'notify'], function($, sys, 
                     btngroup.css({"border": "none"});
                     return true;
                 },
-                getData: function(qcontainer){
+                getData: function(qcontainer) {
                     return {
                         idQuestion: getIdQuestion(qcontainer),
                         answer: (qcontainer.find('.btn.active').length === 1) ? qcontainer.find('.btn.active').first().text() : "",
@@ -364,7 +364,7 @@ define(['jquery', 'system', 'exceptions', 'alerts', 'notify'], function($, sys, 
                             8: "8",
                             9: "9",
                             10: "10"
-                    }});
+                        }});
 
                     return true;
                 },
@@ -385,12 +385,12 @@ define(['jquery', 'system', 'exceptions', 'alerts', 'notify'], function($, sys, 
                     return (this.getGradeSelect(qcontainer) > 0) ? true : false;
                 },
                 /*
-                        idQuestion: value,
-                        answer: value,
-                        idQuestionAnswer: idOption,
-                        idAnswerType: idAnswerOption,
-                     */
-                getData: function(qcontainer){
+                 idQuestion: value,
+                 answer: value,
+                 idQuestionAnswer: idOption,
+                 idAnswerType: idAnswerOption,
+                 */
+                getData: function(qcontainer) {
                     return {
                         idQuestion: getIdQuestion(qcontainer),
                         answer: (qcontainer.find('input.rating').length === 1) ? qcontainer.find('input.rating').first().val() : ""
@@ -416,13 +416,13 @@ define(['jquery', 'system', 'exceptions', 'alerts', 'notify'], function($, sys, 
                 save: function(qcontainer) {
                     return true;
                 },
-                
+
                 validate: function() {
                     return true;
                 },
-                getData: function(qcontainer){
+                getData: function(qcontainer) {
                     return {
-                        
+
                     };
                 }
             },
@@ -447,28 +447,28 @@ define(['jquery', 'system', 'exceptions', 'alerts', 'notify'], function($, sys, 
                 getButtonsGroup: function(qcontainer, question, conditionalQuestions) {
                     var self_ = this;
                     var group = $('<div>', {});
-                    
+
                     $(this.getButtonGroupOptions(question)).each(function() {
                         var option = this;
-                        var button = $('<input>', {type: "radio", idAnswerType: option.idAnswerType, answer:option.text, value: this.value, name: "radio_"+question.id});
+                        var button = $('<input>', {type: "radio", idAnswerType: option.idAnswerType, answer: option.text, value: this.value, name: "radio_" + question.id});
                         var label = $('<label>').append(button).append(this.text);
                         var div = $('<div>', {class: "radio"}).append(label);
-                        
+
                         group.append(div);
-                        
+
                         /* when press button next in the survey and if the question has error alert this will deactivate it */
                         $(button).on("click", function() {
                             self_.removeAlert(group);
 
-                            $(conditionalQuestions).each(function(){                                                                
+                            $(conditionalQuestions).each(function() {
                                 var conditionalQcontainer = self.addQuestion(this);
-                                
-                                if(parseInt(this.idParent) === parseInt(question.id)){
-                                    if(option.text === this.answer){
-                                        if($('#question_'+this.id).length === 0)
+
+                                if (parseInt(this.idParent) === parseInt(question.id)) {
+                                    if (option.text === this.answer) {
+                                        if ($('#question_' + this.id).length === 0)
                                             conditionalQcontainer.insertBefore($(qcontainer).closest('.slider-container').find('.navigation-buttons'));
-                                    }else
-                                        $('#question_'+this.id).remove();
+                                    } else
+                                        $('#question_' + this.id).remove();
                                 }
                             });
                         });
@@ -490,15 +490,15 @@ define(['jquery', 'system', 'exceptions', 'alerts', 'notify'], function($, sys, 
 
                 validate: function(qcontainer) {
                     var status = false;
-                    
+
                     qcontainer.find('input[type=radio]').each(function() {
                         if ($(this).is(':checked'))
                             status = true;
                     });
-                    
+
                     return (status) ? this.removeAlert(qcontainer) : this.addAlert(qcontainer);
                 },
-                
+
                 addAlert: function(qcontainer) {
                     qcontainer.find('.radio').each(function() {
                         $(this).addClass('has-error');
@@ -506,7 +506,7 @@ define(['jquery', 'system', 'exceptions', 'alerts', 'notify'], function($, sys, 
 
                     return false;
                 },
-                
+
                 removeAlert: function(qcontainer) {
                     qcontainer.find('.radio').each(function() {
                         $(this).removeClass('has-error');
@@ -514,8 +514,8 @@ define(['jquery', 'system', 'exceptions', 'alerts', 'notify'], function($, sys, 
 
                     return true;
                 },
-                
-                getData: function(qcontainer){
+
+                getData: function(qcontainer) {
                     return {
                         idQuestion: getIdQuestion(qcontainer),
                         answer: (qcontainer.find('input[type=radio]:checked').length === 1) ? qcontainer.find('input[type=radio]:checked').first().attr('answer') : 0,
@@ -524,45 +524,92 @@ define(['jquery', 'system', 'exceptions', 'alerts', 'notify'], function($, sys, 
                 }
             }
         };
-        
-        this.store =  {
+
+        this.store = {
             /**
-            {
-                idQuestion: value,
-                answer: value,
-                idQuestionAnswer: idOption,
-                idAnswerType: idAnswerOption,
-            }
+             {
+             idQuestion: value,
+             answer: value,
+             idQuestionAnswer: idOption,
+             idAnswerType: idAnswerOption,
+             }
              * @returns {object}
              */
             survey: function(survey) {
                 var questionsData = this.getQuestionsData();
                 var surveySubjectData = this.getSurveySubjectData();
-                var surveyAnswer = {id: survey.id, surveySubjectData: surveySubjectData, questionData:questionsData};
-                this.sendData(surveyAnswer);
+                var surveyAnswer = {id: survey.id, surveySubjectData: surveySubjectData, questionData: questionsData};
+
+//                this.sendData(surveyAnswer);
+                var addOptions = {
+                    // Mark data as dirty (true = yes, false = no), default true.
+                    markDirty: true
+                };
+
+                var collections = {
+                    // Object that defines the 'people' collection.
+                    surveyAnswer: {
+                        // Object that defines the Search Fields for the 'people' collection.
+                        searchFields: {id: 'string'}
+                    }
+                };
                 
+                var collectionName = "surveyAnswer";
+                
+                JSONStore.init(collections, {})
+                        .then(function() {
+                            return JSONStore.get(collectionName)
+                                    .add(surveyAnswer, addOptions);
+                        })
+                        .then(function(numberOfDocumentsAdded) {
+                            // Add was successful.
+                            console.log("surveyAnswer added: " + numberOfDocumentsAdded);
+                            return JSONStore.get(collectionName).findAll();
+                            // Alternatives:
+                            // - findById(1, options) which locates documents by their _id field
+                            // - findAll(options) which returns all documents
+                            // - find({'name': 'ayumu', age: 10}, options) which finds all documents
+                            // that match the query.
+
+                        })
+                        .fail(function(errorObject) {
+                            // Handle failure for any of the previous JSONStore operations (init, add).
+                            console.log("fail storing surveyAnswer");
+                            console.log(errorObject);
+                        })
+                        .then(function(arrayResults) {
+                            // arrayResults = [{_id: 1, json: {name: 'ayumu', age: 10}}]
+                            console.log("showing surveyAnswer");
+                            console.log(arrayResults);
+                        })
+                        .fail(function(errorObject) {
+                            // Handle failure.
+                            console.log("fail finding surveyAnswer");
+                            console.log(errorObject);
+                        });
+
             },
-            getQuestionsData: function(){
+            getQuestionsData: function() {
                 var data = [];
                 $('.questionContainer').each(function() {
                     var qcontainer = $(this);
-                    if($(qcontainer).attr('idQuestionType') === undefined)
+                    if ($(qcontainer).attr('idQuestionType') === undefined)
                         return true;
-                    
+
                     var questionName = getSurveyTypeSelected($(qcontainer).attr('idQuestionType'));
                     var answerData = self.question[questionName].getData($(this));
-                    $(answerData).each(function(){
+                    $(answerData).each(function() {
                         data.push(this);
                     });
                 });
-                
+
                 return data;
             },
-            getSurveySubjectData: function(){
+            getSurveySubjectData: function() {
                 var data = {};
-                $("#form-anon").serializeArray().map(function(x){
+                $("#form-anon").serializeArray().map(function(x) {
                     data[x.name] = x.value;
-                }); 
+                });
                 return data;
             },
             sendData: function(data) {
@@ -580,14 +627,14 @@ define(['jquery', 'system', 'exceptions', 'alerts', 'notify'], function($, sys, 
                         console.log(response);
                         if (typeof response !== 'object')
                             e.error("e.INTERNAL_SERVER_ERROR", response);
-                        if(response.status)
+                        if (response.status)
                             status = true;
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
                         e.manageError(jqXHR, textStatus, errorThrown);
                     }
                 });
-                
+
                 return status;
             }
         };

@@ -1,4 +1,6 @@
 
+/* global JSONStore */
+
 define(['jquery', 'system', 'menu', 'exceptions'], function($, system, menu, e) {
     var Survey = function() {
         var self = this;
@@ -8,11 +10,7 @@ define(['jquery', 'system', 'menu', 'exceptions'], function($, system, menu, e) 
             resizeContent();
             buildSurveyBoxes();
             engineSearch();
-            
-            $('.survey').on('click', function(){
-                var idSurvey = $(this).attr('idSurvey');
-                (parseInt(idSurvey) > 0) ? system.goToSurveyInterface(token, idSurvey) : e.error("No fue posible abrir la encuesta", "No se obtuvo el identificar de la encuesta a contestar");
-            });
+
         };
 
         var resizeContent = function() {
@@ -34,11 +32,17 @@ define(['jquery', 'system', 'menu', 'exceptions'], function($, system, menu, e) 
         };
 
         var buildSurveyBoxes = function() {
-            var surveyType = self.getSurveysTypes(token);
-            $(surveyType).each(function() {
-                if (typeof this.id === undefined || typeof this.name === undefined || parseInt(this.status) !== 1)
-                    return true;    /* skip */
-                $('#boxContent').append(buildBox(this));
+            self.getSurveys(function(surveyType) {
+                $(surveyType).each(function() {
+                    if (typeof this.json.id === undefined || typeof this.json.name === undefined || parseInt(this.json.status) !== 1)
+                        return true;    /* skip */
+                    $('#boxContent').append(buildBox(this.json));
+                });
+
+                $('.survey').on('click', function() {
+                    var idSurvey = $(this).attr('idSurvey');
+                    (parseInt(idSurvey) > 0) ? system.goToSurveyInterface(token, idSurvey) : e.error("No fue posible abrir la encuesta", "No se obtuvo el identificador de la encuesta a contestar");
+                });
             });
         };
 
@@ -53,36 +57,50 @@ define(['jquery', 'system', 'menu', 'exceptions'], function($, system, menu, e) 
 
             return $('<div>', {class: "col-sm-4 box-content survey", surveyName: survey.name, idSurvey: survey.id}).append(box);
         };
-        
+
         /**
          * 
          * @param {type} token
          * @returns {response}
          */
-        this.getSurveysTypes = function(token) {
-            var surveys = null;
-            $.ajax({
-                method: "POST",
-                async: false,
-                cache: false,
-                data: {},
-                url: system.getSystemPath() + "/survey/?token=" + token,
-                success: function(response, textStatus, jqXHR) {
-                    if (typeof response !== 'object')
-                        e.error("Respuesta inesperada", response);
+//        this.getSurveys = function(token) {
+//            var surveys = null;
+//            $.ajax({
+//                method: "POST",
+//                async: false,
+//                cache: false,
+//                data: {},
+//                url: system.getSystemPath() + "/survey/?token=" + token,
+//                success: function(response, textStatus, jqXHR) {
+//                    if (typeof response !== 'object')
+//                        e.error("Respuesta inesperada", response);
+//
+//                    surveys = response;
+//                },
+//                error: function(jqXHR, textStatus, errorThrown) {
+//                    console.log(jqXHR);
+//                    console.log(textStatus);
+//                    console.log(errorThrown);
+//                    e.error(jqXHR.statusText + " - " + jqXHR.status, jqXHR.responseText+"<br>"+errorThrown, function(){
+//                        system.gotToLogin();
+//                    });
+//                }
+//            });
+//            return surveys;
+//        };
 
-                    surveys = response;
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    console.log(jqXHR);
-                    console.log(textStatus);
-                    console.log(errorThrown);
-                    e.error(jqXHR.statusText + " - " + jqXHR.status, jqXHR.responseText+"<br>"+errorThrown, function(){
-                        system.gotToLogin();
+        this.getSurveys = function(callback) {
+            return JSONStore.init({surveys: {searchFields: {id: 'string'}}})
+                    .then(function() {
+                        return JSONStore.get("surveys").findAll();
+                    })
+                    .fail(function(error) {
+                        alert("Error al obtener encuestas: " + error);
+                    })
+                    .then(function(arrayResults) {
+                        if (typeof callback === "function")
+                            callback(arrayResults);
                     });
-                }
-            });
-            return surveys;
         };
 
         var engineSearch = function() {
@@ -107,30 +125,45 @@ define(['jquery', 'system', 'menu', 'exceptions'], function($, system, menu, e) 
             token = system.getUrlParameter("token");
         };
 
-        var getToken = function() {
-            return token;
+        this.getSurvey = function(idSurvey, callback) {
+            var query = {id: idSurvey};
+            return JSONStore.init({surveys: {searchFields: {id: 'string'}}})
+                    .then(function() {
+                        return JSONStore.get("surveys")
+                        .find(query, {});
+                    })
+                    .fail(function(error) {
+                        alert("Error al obtener encuesta: " + error);
+                    })
+                    .then(function(arrayResults) {
+                        arrayResults = (typeof arrayResults[0].json !== undefined) ? arrayResults[0].json : null;
+                
+                        if (typeof callback === "function")
+                            callback(arrayResults);
+                        else
+                            return arrayResults;
+                    });
         };
-        
-        this.getSurvey = function(authToken, idSurvey){
-            var survey = null;
-            $.ajax({
-                method: "POST",
-                async: false,
-                cache: false,
-                data: {},
-                url: system.getSystemPath() + "/survey/?id="+idSurvey+"&token=" + authToken,
-                success: function(response, textStatus, jqXHR) {
-                    if (typeof response !== 'object')
-                        e.error("Respuesta inesperada", response);
-
-                    survey = response;
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    e.manageError(jqXHR, textStatus, errorThrown);
-                }
-            });
-            return survey;
-        };
+//        this.getSurvey = function(authToken, idSurvey) {
+//            var survey = null;
+//            $.ajax({
+//                method: "POST",
+//                async: false,
+//                cache: false,
+//                data: {},
+//                url: system.getSystemPath() + "/survey/?id=" + idSurvey + "&token=" + authToken,
+//                success: function(response, textStatus, jqXHR) {
+//                    if (typeof response !== 'object')
+//                        e.error("Respuesta inesperada", response);
+//
+//                    survey = response;
+//                },
+//                error: function(jqXHR, textStatus, errorThrown) {
+//                    e.manageError(jqXHR, textStatus, errorThrown);
+//                }
+//            });
+//            return survey;
+//        };
     };
 
     return new Survey();

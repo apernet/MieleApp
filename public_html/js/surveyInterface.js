@@ -7,13 +7,11 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
         this.init = function() {
             token = sys.getUrlParameter("token");
 
-            var survey = getSurvey();
+            getSurvey(function(survey) {                
+                buildMenu(survey);
 
-            survey = ($.isPlainObject(survey)) ? null : survey[0];
-
-            buildMenu(survey);
-
-            initSurvey(survey);
+                initSurvey(survey);
+            });
         };
 
         var buildMenu = function(survey) {
@@ -204,10 +202,10 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
                 });
             });
 
-            $(content).find('select').change(function(){
+            $(content).find('select').change(function() {
                 alerts.removeFormError($(this));
             })
-;
+                    ;
             $('#check-privacy').click(function() {
                 $(this).closest('div.checkbox').removeClass('has-error');
             });
@@ -244,10 +242,10 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
             $('#slider').append(content);
         };
 
-        var getSurvey = function() {
+        var getSurvey = function(callback) {
             var idSurvey = sys.getUrlParameter("idSurvey");
 
-            return (!parseInt(idSurvey) > 0) ? null : Surveys.getSurvey(token, idSurvey);
+            return (!parseInt(idSurvey) > 0) ? null : Surveys.getSurvey(idSurvey, callback);
         };
 
         var startSurvey = function() {
@@ -356,13 +354,13 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
                         }
                     }
                 }
-                
+
                 if (this.type === "select-one") {
                     if ($(this).hasClass('required')) {
-                            if ($(this).find(":selected").val() === "0") {
-                                alerts.addFormError($(this));
-                                validate = false;
-                            }
+                        if ($(this).find(":selected").val() === "0") {
+                            alerts.addFormError($(this));
+                            validate = false;
+                        }
                     }
                 }
 
