@@ -1,17 +1,17 @@
 define(['jquery', 'menu', 'system', 'exceptions', 'jsonstore'], function($, menu, system, e, jsonstore) {
     var Sync = function() {
+        var self = this;
         this.init = function() {
             var token = system.getUrlParameter("token");
-            
+
             $(document).ready(function() {
                 initMenu(token);
-                $('#sync-now').on("click", function(){
-                    $(this).hide();
-                    var data = getData(token);
- 
-                    if(data !== null)
-                        storeLocalData(data);
-                    $(this).show();
+                $('#sync-now').on("click", function() {
+                    var button = $(this).hide();
+                    
+                    self.storeLocalData(token, function() {
+                        $(button).show();
+                    });
                 });
             });
 
@@ -28,8 +28,8 @@ define(['jquery', 'menu', 'system', 'exceptions', 'jsonstore'], function($, menu
                 ]
             });
         };
-        
-        var getData = function(token){
+
+        var getData = function(token) {
             var data = null;
             $.ajax({
                 method: "POST",
@@ -47,16 +47,17 @@ define(['jquery', 'menu', 'system', 'exceptions', 'jsonstore'], function($, menu
                     console.log(jqXHR);
                     console.log(textStatus);
                     console.log(errorThrown);
-                    e.error(jqXHR.statusText + " - " + jqXHR.status, jqXHR.responseText+"<br>"+errorThrown, function(){
+                    e.error(jqXHR.statusText + " - " + jqXHR.status, jqXHR.responseText + "<br>" + errorThrown, function() {
                         system.gotToLogin();
                     });
                 }
             });
             return data;
         };
-        
-        var storeLocalData = function(data){
-            var local = jsonstore.sync(data);
+
+        this.storeLocalData = function(token, callback) {
+            var data = getData(token);
+            var local = jsonstore.sync(data, callback);
         };
     };
 

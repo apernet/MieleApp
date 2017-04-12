@@ -1,5 +1,5 @@
 
-define(['jquery', 'menu', 'exceptions', 'system'], function($, menu, e, system) {
+define(['jquery', 'menu', 'exceptions', 'system', 'sync'], function($, menu, e, system, sync) {
     var Home = function() {
         var token = null;
 
@@ -30,6 +30,7 @@ define(['jquery', 'menu', 'exceptions', 'system'], function($, menu, e, system) 
          */
         var buildMenu = function() {
             $(document).ready(function() {
+                sync.storeLocalData(token)
                 menu.init({
                     buttonSelector: "menu-toggle",
                     pageWrapper: "pageWrapper",

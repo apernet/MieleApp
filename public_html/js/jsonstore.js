@@ -2,7 +2,7 @@
 
 define(['jquery'], function($) {
     var Jsonstore = function() {
-        this.sync = function(data) {
+        this.sync = function(data, callback) {
             console.log("JSONSTORE");
             var collections = {
                 // Object that defines the 'people' collection.
@@ -15,10 +15,12 @@ define(['jquery'], function($) {
                 }
             };
 
-            var JS = JSONStore.init(collections, {})
+            JSONStore.init(collections, {})
                     .then(function() {
-                        flushData(data);
-                    });
+                        return flushData(data);
+                    }).then(function() {
+                (typeof callback === "function") ? callback() : null;
+            });
 
         };
 
@@ -33,7 +35,7 @@ define(['jquery'], function($) {
                 markDirty: true // Mark data as dirty (true = yes, false = no), default true.
             };
 
-            JSONStore.get(collectionName)
+            return JSONStore.get(collectionName)
                     .add(data.surveys, addOptions)
                     .then(function(numberOfDocumentsAdded) {
                         // Add was successful.
@@ -72,7 +74,7 @@ define(['jquery'], function($) {
                 markDirty: true   // Mark data as dirty (true = yes, false = no), default true.
             };
             // Get an accessor to the people collection and add data.
-            JSONStore.get(collectionName)
+            return JSONStore.get(collectionName)
                     .add(data.users, addOptions)
                     .then(function(numberOfDocumentsAdded) {
                         // Add was successful.
@@ -100,15 +102,15 @@ define(['jquery'], function($) {
         var flushData = function(data) {
             console.log("flush data");
             var collectionName = 'surveys';
-            (JSONStore.get(collectionName) === undefined) ? storeSurveys(data.data) : flushSurveys(data);
-
-            collectionName = 'users';
-            (JSONStore.get(collectionName) === undefined) ? storeUsers(data.data) : flushUsers(data);
+            return ((JSONStore.get(collectionName) === undefined) ? storeSurveys(data.data) : flushSurveys(data)).then(function() {
+                collectionName = 'users';
+                return ((JSONStore.get(collectionName) === undefined) ? storeUsers(data.data) : flushUsers(data));
+            });
         };
 
         var flushSurveys = function(data) {
             console.log("flush surveys");
-            var collectionName = 'users';
+            var collectionName = 'surveys';
 
             return JSONStore.get(collectionName)
                     .clear()
@@ -124,8 +126,8 @@ define(['jquery'], function($) {
 
         var flushUsers = function(data) {
             console.log("flush users");
-            var collectionName = 'surveys';
-            JSONStore.get(collectionName)
+            var collectionName = 'users';
+            return JSONStore.get(collectionName)
                     .clear()
                     .then(function() {
                         console.log("users collection cleaned");
