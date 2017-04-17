@@ -23,7 +23,7 @@ define(['jquery', 'menu', 'system', 'exceptions', 'jsonstore'], function($, menu
                 pageWrapper: "pageWrapper",
                 brandTitle: "Miele",
                 options: [
-                    menu.option.closeSurveyMode(token),
+                    menu.option.goToHome(token),
                     menu.option.closeSessionOption(token)
                 ]
             });
@@ -57,7 +57,7 @@ define(['jquery', 'menu', 'system', 'exceptions', 'jsonstore'], function($, menu
 
         this.storeLocalData = function(token, callback) {
             var data = getData(token);
-            var local = jsonstore.sync(data, callback);
+            var local = jsonstore.sync(token, data, callback);
         };
     };
 

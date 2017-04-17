@@ -1,3 +1,5 @@
+/* global JSONStore */
+
 /*******************************************************************************
  * @description Manage functions for building surveys.
  * @author Daniel Luna   dluna@aper.net

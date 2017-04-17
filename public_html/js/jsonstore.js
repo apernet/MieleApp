@@ -1,9 +1,12 @@
 /* global JSONStore */
 
-define(['jquery'], function($) {
+define(['jquery', 'system', 'exceptions'], function($, sys, e) {
     var Jsonstore = function() {
-        this.sync = function(data, callback) {
+        var token;
+        this.sync = function(token_, data, callback) {
             console.log("JSONSTORE");
+            token = token_;
+            console.log(token);
             var collections = {
                 // Object that defines the 'people' collection.
                 surveys: {
@@ -12,15 +15,29 @@ define(['jquery'], function($) {
                 },
                 users: {
                     searchFields: {id: 'string'}
+                },
+                // Object that defines the 'people' collection.
+                surveyAnswer: {
+                    // Object that defines the Search Fields for the 'people' collection.
+                    searchFields: {id: 'string'}
                 }
             };
 
+
             JSONStore.init(collections, {})
+                    .then(function() {
+                        return sendSurveyAnswers(function() {
+
+                        });
+                    })
                     .then(function() {
                         return flushData(data);
                     }).then(function() {
                 (typeof callback === "function") ? callback() : null;
             });
+
+
+
 
         };
 
@@ -137,6 +154,62 @@ define(['jquery'], function($) {
                         // Handle failure.
                         console.log("error while cleaning surveys");
                         return undefined;
+                    });
+        };
+
+        var flushAnswers = function() {
+            console.log("flush answers");
+            var collectionName = "surveyAnswer";
+            return JSONStore.get(collectionName)
+                    .clear()
+                    .fail(function(errorObject) {
+                        // Handle failure.
+                        console.log("error while cleaning surveys");
+                        alert("Error al limpiar respuestas: " + errorObject);
+                        return undefined;
+                    });
+        };
+
+        var sendSurveyAnswers = function(callback) {
+            console.log("sendSurveyAnswers");
+            var collectionName = "surveyAnswer";
+            return JSONStore.get(collectionName).findAll()
+                    .then(function(arrayResults) {
+                        var surveyAnswer = [];
+                        $(arrayResults).each(function() {
+                            surveyAnswer.push(this.json);
+                        });
+
+                        console.log("enviando");
+                        console.log(surveyAnswer);
+                        $.ajax({
+                            method: "POST",
+                            async: false,
+                            cache: false,
+                            data: {surveyAnswer: surveyAnswer},
+                            url: sys.getSystemPath() + "/surveyanswer/store/?token=" + token,
+                            success: function(response, textStatus, jqXHR) {
+                                if (typeof response !== 'object')
+                                    e.error("Respuesta inesperada", response);
+                                console.log(response);
+                                if(response.status)
+                                    flushAnswers();
+
+
+                            },
+                            error: function(jqXHR, textStatus, errorThrown) {
+                                e.manageError(jqXHR, textStatus, errorThrown);
+                            }
+                        });
+                    })
+                    .fail(function(errorObject) {
+                        // Handle failure.
+                        console.log("fail finding surveyAnswer");
+                        console.log(errorObject);
+                        alert(errorObject);
+                    })
+                    .then(function() {
+                        callback();
                     });
         };
 
