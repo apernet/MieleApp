@@ -7,18 +7,17 @@ define(['jquery', 'system', 'exceptions'], function($, sys, e) {
             console.log("JSONSTORE");
             token = token_;
             console.log(token);
+//            destroy();
             var collections = {
-                // Object that defines the 'people' collection.
+                // Object that defines the 'surveys' collection.
                 surveys: {
-                    // Object that defines the Search Fields for the 'people' collection.
+                    // Object that defines the Search Fields for the 'surveys' collection.
                     searchFields: {id: 'string'}
                 },
                 users: {
-                    searchFields: {id: 'string'}
+                    searchFields: {id:'string', name: 'string', email: 'string', offline: "string"}
                 },
-                // Object that defines the 'people' collection.
                 surveyAnswer: {
-                    // Object that defines the Search Fields for the 'people' collection.
                     searchFields: {id: 'string'}
                 }
             };
@@ -36,9 +35,19 @@ define(['jquery', 'system', 'exceptions'], function($, sys, e) {
                 (typeof callback === "function") ? callback() : null;
             });
 
+        };
 
+        var destroy = function() {
+            return JSONStore.destroy()
 
+                    .then(function() {
+                        console.log("jsonsotre destroyed");
+                    })
 
+                    .fail(function(errorObject) {
+                        console.log("error al destruir json store");
+                        console.log(errorObject);
+                    });
         };
 
         var storeSurveys = function(data) {
@@ -94,25 +103,36 @@ define(['jquery', 'system', 'exceptions'], function($, sys, e) {
             return JSONStore.get(collectionName)
                     .add(data.users, addOptions)
                     .then(function(numberOfDocumentsAdded) {
+                        console.log("users added " + numberOfDocumentsAdded);
+                        var query = {email: 'admin.miele@aper.net', offline: "admin"};
+                        var options = {
+                            exact: false,
+                            limit: 10 //returns a maximum of 10 documents
+                        };
+                        return JSONStore.get(collectionName)
+                                .find(query, options)
+                    })
+                    .then(function(arrayResults) {
                         // Add was successful.
-                        console.log("users added: " + numberOfDocumentsAdded);
-
+                        console.log("resultado de busqueda....");
+                        console.log(arrayResults);
                         return JSONStore.get(collectionName).findAll();
                     })
                     .fail(function(errorObject) {
                         // Handle failure for any of the previous JSONStore operations (init, add).
-                        console.log("fail while storing users");
+                        console.log("fail while searching users");
                         console.log(errorObject);
                     })
                     .then(function(arrayResults) {
-                        console.log("showing users");
+                        console.log("showing all users");
                         console.log(arrayResults);
                     })
                     .fail(function(errorObject) {
                         // Handle failure for any of the previous JSONStore operations (init, add).
-                        console.log("fail while showing users");
+                        console.log("fail while showing all users");
                         console.log(errorObject);
-                    });
+                    })
+                    ;
 
         };
 
@@ -192,7 +212,7 @@ define(['jquery', 'system', 'exceptions'], function($, sys, e) {
                                 if (typeof response !== 'object')
                                     e.error("Respuesta inesperada", response);
                                 console.log(response);
-                                if(response.status)
+                                if (response.status)
                                     flushAnswers();
 
 

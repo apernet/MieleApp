@@ -1,5 +1,5 @@
 
-define(['jquery', 'system'], function($, e) {
+define(['jquery', 'exceptions'], function($, e) {
     var system = function() {
         var self = this;
 
@@ -44,7 +44,7 @@ define(['jquery', 'system'], function($, e) {
         var authModal = function(onclick) {
             if (typeof onclick === "function")
                 onclick();
-        };
+        };        
     };
 
     return new system();

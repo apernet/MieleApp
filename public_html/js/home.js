@@ -1,10 +1,9 @@
 
-define(['jquery', 'menu', 'exceptions', 'system', 'sync'], function($, menu, e, system, sync) {
+define(['jquery', 'menu', 'system', 'sync'], function($, menu, system, sync) {
     var Home = function() {
         var token = null;
 
         this.init = function() {
-            setToken();
             buildMenu();
             $(window).on('orientationchange', resizeWrapper);
 
@@ -14,7 +13,8 @@ define(['jquery', 'menu', 'exceptions', 'system', 'sync'], function($, menu, e, 
 
             $('.option').click(function(e) {
                 e.preventDefault();
-                window.location.href =  $(this).attr('option') + ".html?token=" + token;
+                if($(this).attr('option') !== undefined)
+                    window.location.href =  $(this).attr('option') + ".html?token=" + token;
             });
         };
 
@@ -30,7 +30,6 @@ define(['jquery', 'menu', 'exceptions', 'system', 'sync'], function($, menu, e, 
          */
         var buildMenu = function() {
             $(document).ready(function() {
-//                sync.storeLocalData(token)
                 menu.init({
                     buttonSelector: "menu-toggle",
                     pageWrapper: "pageWrapper",

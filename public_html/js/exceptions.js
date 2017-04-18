@@ -6,7 +6,7 @@
  * @param {type} bdialog
  * @returns {exceptionsL#4.Exception|Exception}
  *******************************************************************************/
-define(['bootstrap-dialog', 'exceptions', 'system'], function(bdialog, e, sys) {
+define(['bootstrap-dialog', 'system'], function(bdialog, sys) {
     var Exception = function() {
         var self = this;
         this.INTERNAL_SERVER_ERROR = "Internal Server Error";
