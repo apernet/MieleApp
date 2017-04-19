@@ -3,8 +3,9 @@
 define(['jquery', 'system', 'exceptions'], function($, sys, e) {
     var Jsonstore = function() {
         var token;
+        var logContainer = $('#result-container');
+        
         this.sync = function(token_, data, callback) {
-            console.log("JSONSTORE");
             token = token_;
             console.log(token);
 //            destroy();
@@ -15,13 +16,12 @@ define(['jquery', 'system', 'exceptions'], function($, sys, e) {
                     searchFields: {id: 'string'}
                 },
                 users: {
-                    searchFields: {id:'string', name: 'string', email: 'string', offline: "string"}
+                    searchFields: {id: 'string', name: 'string', email: 'string', offline: "string"}
                 },
                 surveyAnswer: {
                     searchFields: {id: 'string'}
                 }
             };
-
 
             JSONStore.init(collections, {})
                     .then(function() {
@@ -34,16 +34,13 @@ define(['jquery', 'system', 'exceptions'], function($, sys, e) {
                     }).then(function() {
                 (typeof callback === "function") ? callback() : null;
             });
-
         };
 
         var destroy = function() {
             return JSONStore.destroy()
-
                     .then(function() {
                         console.log("jsonsotre destroyed");
                     })
-
                     .fail(function(errorObject) {
                         console.log("error al destruir json store");
                         console.log(errorObject);
@@ -52,6 +49,7 @@ define(['jquery', 'system', 'exceptions'], function($, sys, e) {
 
         var storeSurveys = function(data) {
             console.log("storing surveys");
+            log("almacenando encuestas");
 
             var collectionName = 'surveys';
             // Object that defines all the collections.
@@ -66,6 +64,7 @@ define(['jquery', 'system', 'exceptions'], function($, sys, e) {
                     .then(function(numberOfDocumentsAdded) {
                         // Add was successful.
                         console.log("surveys added: " + numberOfDocumentsAdded);
+                        log("Encuestas totales y sincronizadas: " + numberOfDocumentsAdded);
                         return JSONStore.get(collectionName).findAll();
                         // Alternatives:
                         // - findById(1, options) which locates documents by their _id field
@@ -78,6 +77,7 @@ define(['jquery', 'system', 'exceptions'], function($, sys, e) {
                         // Handle failure for any of the previous JSONStore operations (init, add).
                         console.log("fail storing surveys");
                         console.log(errorObject);
+                        log("Error al sincronizar encuestas " + errorObject);
                     })
                     .then(function(arrayResults) {
                         // arrayResults = [{_id: 1, json: {name: 'ayumu', age: 10}}]
@@ -104,24 +104,16 @@ define(['jquery', 'system', 'exceptions'], function($, sys, e) {
                     .add(data.users, addOptions)
                     .then(function(numberOfDocumentsAdded) {
                         console.log("users added " + numberOfDocumentsAdded);
-                        var query = {email: 'admin.miele@aper.net', offline: "admin"};
-                        var options = {
-                            exact: false,
-                            limit: 10 //returns a maximum of 10 documents
-                        };
-                        return JSONStore.get(collectionName)
-                                .find(query, options)
+                        log("usuarios descargados y agregados al sistema: " + numberOfDocumentsAdded);
                     })
-                    .then(function(arrayResults) {
-                        // Add was successful.
-                        console.log("resultado de busqueda....");
-                        console.log(arrayResults);
+                    .then(function() {
                         return JSONStore.get(collectionName).findAll();
                     })
                     .fail(function(errorObject) {
                         // Handle failure for any of the previous JSONStore operations (init, add).
                         console.log("fail while searching users");
                         console.log(errorObject);
+                        log("error al obtener usuarios " + errorObject);
                     })
                     .then(function(arrayResults) {
                         console.log("showing all users");
@@ -138,6 +130,7 @@ define(['jquery', 'system', 'exceptions'], function($, sys, e) {
 
         var flushData = function(data) {
             console.log("flush data");
+            log("limpiando información");
             var collectionName = 'surveys';
             return ((JSONStore.get(collectionName) === undefined) ? storeSurveys(data.data) : flushSurveys(data)).then(function() {
                 collectionName = 'users';
@@ -153,11 +146,13 @@ define(['jquery', 'system', 'exceptions'], function($, sys, e) {
                     .clear()
                     .then(function() {
                         console.log("surveys collection cleaned");
+                        log("colección de encuestas vaciada correctamente");
                         storeSurveys(data.data);
                     })
                     .fail(function(errorObject) {
                         // Handle failure.
                         console.log("error while cleaning users");
+                        log('Error al limpiar usuarios ' + errorObject);
                     });
         };
 
@@ -168,24 +163,31 @@ define(['jquery', 'system', 'exceptions'], function($, sys, e) {
                     .clear()
                     .then(function() {
                         console.log("users collection cleaned");
+                        log("colección de usuarios vaciada correctamente");
                         storeUsers(data.data);
                     })
                     .fail(function(errorObject) {
                         // Handle failure.
-                        console.log("error while cleaning surveys");
+                        console.log("error while cleaning surveys " + errorObject);
+                        log("error al limpiar encuestas " + errorObject);
                         return undefined;
                     });
         };
 
         var flushAnswers = function() {
             console.log("flush answers");
+            log("limpiando respuestas");
             var collectionName = "surveyAnswer";
             return JSONStore.get(collectionName)
                     .clear()
+                    .then(function() {
+                        log("respuestas vaciadas correctamente");
+                    })
                     .fail(function(errorObject) {
                         // Handle failure.
                         console.log("error while cleaning surveys");
-                        alert("Error al limpiar respuestas: " + errorObject);
+                        log("Error al limpiar respuestas: " + errorObject);
+
                         return undefined;
                     });
         };
@@ -200,8 +202,12 @@ define(['jquery', 'system', 'exceptions'], function($, sys, e) {
                             surveyAnswer.push(this.json);
                         });
 
-                        console.log("enviando");
+                        log("total de respuestas por enviar: " + surveyAnswer.length);
                         console.log(surveyAnswer);
+
+                        if(!surveyAnswer.length > 0 )
+                            return callback();
+                        
                         $.ajax({
                             method: "POST",
                             async: false,
@@ -212,8 +218,12 @@ define(['jquery', 'system', 'exceptions'], function($, sys, e) {
                                 if (typeof response !== 'object')
                                     e.error("Respuesta inesperada", response);
                                 console.log(response);
-                                if (response.status)
+                                if (response.status){
+                                    log("respuestas enviadas y procesadas por el servidor correctamente");
                                     flushAnswers();
+                                }else{
+                                    log(response.error);
+                                }
 
 
                             },
@@ -226,11 +236,16 @@ define(['jquery', 'system', 'exceptions'], function($, sys, e) {
                         // Handle failure.
                         console.log("fail finding surveyAnswer");
                         console.log(errorObject);
-                        alert(errorObject);
+                        log("error al obtener respuestas");
+                        log(errorObject);
                     })
                     .then(function() {
                         callback();
                     });
+        };
+
+        var log = function(event) {
+            $(logContainer).append(event + " \n");
         };
 
     };

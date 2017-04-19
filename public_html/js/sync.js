@@ -16,14 +16,15 @@ define(['jquery', 'menu', 'system', 'exceptions', 'jsonstore', 'alerts', 'valida
 
         var sync = function(button) {
             var params = validateFields();
-            console.log("params");
-            console.log(params);
+            $('#result-container').empty();
+            
             if (params === 0){
                 button.show();
                 return 0;
             }
             
             var token = getToken(params);
+            
             if(token === false)
                 return 0;
             
@@ -74,10 +75,14 @@ define(['jquery', 'menu', 'system', 'exceptions', 'jsonstore', 'alerts', 'valida
 
             $('.login-alerts').hide().empty();
         };
+        
+        var addAlerts = function(message) {
+            $('.login-alerts').show().append("<p>" + message + "</p>");
+        };
 
         var getToken = function(params) {
             var token = false;
-            console.log(params);
+          
             $.ajax({
                 method: "POST",
                 async: false,
@@ -95,6 +100,7 @@ define(['jquery', 'menu', 'system', 'exceptions', 'jsonstore', 'alerts', 'valida
                         return addAlerts(jqXHR.statusText + " - " + jqXHR.status, jqXHR.responseText);
                 }
             });
+            
             return token;
         };
 
