@@ -24,9 +24,11 @@ define(['jquery', 'menu', 'system', 'exceptions', 'jsonstore', 'alerts', 'valida
             }
             
             var token = getToken(params);
-            
-            if(token === false)
+            console.log(token);
+            if(token === null){
+                button.show();
                 return 0;
+            }
             
             self.storeLocalData(token, function() {
                 $(button).show();
