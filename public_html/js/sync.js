@@ -24,9 +24,10 @@ define(['jquery', 'menu', 'system', 'exceptions', 'jsonstore', 'alerts', 'valida
             }
             
             var token = getToken(params);
-            console.log(token);
-            if(token === null){
-                button.show();
+            
+            button.show();
+            
+            if(token === false || token === undefined){
                 return 0;
             }
             
