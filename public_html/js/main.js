@@ -13,6 +13,7 @@ require.config({
         "bootstrap-star-rating-es": "apis/bootstrap-star-rating/js/locales/es",
         'bootstrap-notify': 'apis/bootstrap-notify/bootstrap-notify',
         "jquery.bxslider": "apis/jquery.bxslider/jquery.bxslider",
+        "jquery-ui": "apis/jquery-ui/jquery-ui",
         exceptions: 'js/exceptions',
         notify: 'js/notify',
         system: 'js/system',
@@ -52,6 +53,9 @@ require.config({
         },
         'bootstrap-notify': {
             "deps": ['jquery', 'bootstrap']
+        },
+        "jquery-ui": {
+            "deps": ['jquery']
         }
     },
     waitSeconds: 200

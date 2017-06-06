@@ -103,25 +103,32 @@ define(['jquery', 'alerts', 'validator', 'exceptions', 'system'], function($, al
                         console.log("resultados");
                         console.log(arrayResults);
                         $('#inputPassword').val('');
-                        
+
                         if (arrayResults.length > 0)
                             accessToSystem(null);
                     });
         };
 
         var checkInternetConnection = function() {
+            var url = system.SERVER + "/api/status/";
+            console.log("Comprobando conexión en:  " + url);
             var status = false;
             $.ajax({
                 method: "POST",
                 async: false,
                 cache: false,
                 data: [],
-                url: system.SERVER + "/status/",
+                url: url,
                 success: function(response, textStatus, jqXHR) {
+                    console.log("Success:");
+                    console.log(response);
                     if (response.status)
                         status = true;
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
+                    console.log("error:");
+                    console.log(textStatus);
+                    console.log(jqXHR);
                     var response = jqXHR.responseJSON;
                     $('#inputPassword').val('');
                     if (response === undefined)

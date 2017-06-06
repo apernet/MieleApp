@@ -1,4 +1,4 @@
-define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu', 'alerts', 'notify', 'exceptions', 'bootstrap-dialog'], function($, Surveys, sys, SurveyBuilder, bx, menu, alerts, notify, e, bdialog) {
+define(['jquery', 'jquery-ui', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu', 'alerts', 'notify', 'exceptions', 'bootstrap-dialog'], function($, ju, Surveys, sys, SurveyBuilder, bx, menu, alerts, notify, e, bdialog) {
     var SurveyInterface = function() {
         var token = null;
         var slider;
@@ -6,16 +6,19 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
 
         this.init = function() {
             token = sys.getUrlParameter("token");
-
-            getSurvey(function(survey) {                
+            console.log("inicializando calendario " + $('#birthday').length);
+            initDatepicker();
+            getSurvey(function(survey) {
                 buildMenu(survey);
 
                 initSurvey(survey);
             });
+
         };
 
         var buildMenu = function(survey) {
             $(document).ready(function() {
+
                 $('.restart-survey').click(function() {
                     restartSurvey(survey);
                 });
@@ -221,8 +224,36 @@ define(['jquery', 'surveys', 'system', 'surveyBuilder', 'jquery.bxslider', 'menu
 
                 $('#checkbox-value').text($('#checkbox1').val());
             });
+
+            console.log($.datepicker);
+            $('#birthday').datepicker();
+            
         };
 
+        var initDatepicker = function() {
+            $.datepicker.regional['es'] = {
+                closeText: 'Cerrar',
+                prevText: '< Ant',
+                nextText: 'Sig >',
+                currentText: 'Hoy',
+                monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+                monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+                dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+                dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Juv', 'Vie', 'Sáb'],
+                dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'],
+                weekHeader: 'Sm',
+                dateFormat: 'yy/mm/dd',
+                firstDay: 1,
+                isRTL: false,
+                showMonthAfterYear: false,
+                yearSuffix: '',
+                changeYear: true,
+                changeMonth: true,
+                yearRange: "-100:+0",
+                
+            };
+            $.datepicker.setDefaults($.datepicker.regional['es']);
+        };
 
         var setWelcomText = function(survey) {
             var content = $('<div>', {class: "message-container slider-container", id: "question_welcome_text", idQuestionType: 0, idQuestion: 0})
