@@ -4,6 +4,7 @@ define(['jquery', 'menu', 'system', 'sync'], function($, menu, system, sync) {
         var token = null;
 
         this.init = function() {
+            setToken();
             buildMenu();
             $(window).on('orientationchange', resizeWrapper);
 

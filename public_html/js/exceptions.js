@@ -35,7 +35,7 @@ define(['bootstrap-dialog', 'system'], function(bdialog, sys) {
             bdialog.show({
                 type: bdialog.TYPE_DANGER,
                 title: title,
-                size: bdialog.SIZE_NORMAL,
+                size: bdialog.SIZE_LARGE,
                 message: $('<p>').append(textContent),
                 closable: false,
                 draggable: true,

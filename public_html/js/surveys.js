@@ -6,6 +6,7 @@ define(['jquery', 'system', 'menu', 'exceptions'], function($, system, menu, e) 
         var self = this;
         var token = null;
         this.init = function() {
+            token = system.getUrlParameter("token");
             setTokenValue();
             resizeContent();
             buildSurveyBoxes();
@@ -34,9 +35,10 @@ define(['jquery', 'system', 'menu', 'exceptions'], function($, system, menu, e) 
         var buildSurveyBoxes = function() {
             self.getSurveys(function(surveyType) {
                 $(surveyType).each(function() {
-                    if (typeof this.json.id === undefined || typeof this.json.name === undefined || parseInt(this.json.status) !== 1)
-                        return true;    /* skip */
-                    $('#boxContent').append(buildBox(this.json));
+                    if(this.json !== undefined)
+                        $('#boxContent').append(buildBox(this.json));
+                    else
+                        $('#boxContent').append(buildBox(this));                    
                 });
 
                 $('.survey').on('click', function() {
@@ -63,44 +65,50 @@ define(['jquery', 'system', 'menu', 'exceptions'], function($, system, menu, e) 
          * @param {type} token
          * @returns {response}
          */
-//        this.getSurveys = function(token) {
-//            var surveys = null;
-//            $.ajax({
-//                method: "POST",
-//                async: false,
-//                cache: false,
-//                data: {},
-//                url: system.getSystemPath() + "/survey/?token=" + token,
-//                success: function(response, textStatus, jqXHR) {
-//                    if (typeof response !== 'object')
-//                        e.error("Respuesta inesperada", response);
-//
-//                    surveys = response;
-//                },
-//                error: function(jqXHR, textStatus, errorThrown) {
-//                    console.log(jqXHR);
-//                    console.log(textStatus);
-//                    console.log(errorThrown);
-//                    e.error(jqXHR.statusText + " - " + jqXHR.status, jqXHR.responseText+"<br>"+errorThrown, function(){
-//                        system.gotToLogin();
-//                    });
-//                }
-//            });
-//            return surveys;
-//        };
+        var getRemoteSurveys = function(token) {
+            var surveys = null;
+            $.ajax({
+                method: "POST",
+                async: false,
+                cache: false,
+                data: {},
+                url: system.getSystemPath() + "/survey/?token=" + token,
+                success: function(response, textStatus, jqXHR) {
+                    if (typeof response !== 'object')
+                        e.error("Respuesta inesperada", response);
+
+                    surveys = response;
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                    e.error(jqXHR.statusText + " - " + jqXHR.status, jqXHR.responseText+"<br>"+errorThrown, function(){
+                        system.gotToLogin();
+                    });
+                }
+            });
+            return surveys;
+        };
 
         this.getSurveys = function(callback) {
-            return JSONStore.init({surveys: {searchFields: {id: 'string'}}})
-                    .then(function() {
-                        return JSONStore.get("surveys").findAll();
-                    })
-                    .fail(function(error) {
-                        alert("Error al obtener encuestas: " + error);
-                    })
-                    .then(function(arrayResults) {
-                        if (typeof callback === "function")
-                            callback(arrayResults);
-                    });
+            if(typeof JSONStore !== 'undefined'){
+                return JSONStore.init({surveys: {searchFields: {id: 'string'}}})
+                        .then(function() {
+                            return JSONStore.get("surveys").findAll();
+                        })
+                        .fail(function(error) {
+                            alert("Error al obtener encuestas: " + error);
+                        })
+                        .then(function(arrayResults) {
+                            if (typeof callback === "function")
+                                callback(arrayResults);
+                        });
+                    }
+            else{
+                var surveysList = getRemoteSurveys(token);
+                return callback(surveysList);
+            }
         };
 
         var engineSearch = function() {
@@ -127,43 +135,47 @@ define(['jquery', 'system', 'menu', 'exceptions'], function($, system, menu, e) 
 
         this.getSurvey = function(idSurvey, callback) {
             var query = {id: idSurvey};
-            return JSONStore.init({surveys: {searchFields: {id: 'string'}}})
-                    .then(function() {
-                        return JSONStore.get("surveys")
-                        .find(query, {});
-                    })
-                    .fail(function(error) {
-                        alert("Error al obtener encuesta: " + error);
-                    })
-                    .then(function(arrayResults) {
-                        arrayResults = (typeof arrayResults[0].json !== undefined) ? arrayResults[0].json : null;
-                
-                        if (typeof callback === "function")
-                            callback(arrayResults);
-                        else
-                            return arrayResults;
-                    });
+            if(typeof JSONStore !== 'undefined')
+                return JSONStore.init({surveys: {searchFields: {id: 'string'}}})
+                        .then(function() {
+                            return JSONStore.get("surveys")
+                            .find(query, {});
+                        })
+                        .fail(function(error) {
+                            alert("Error al obtener encuesta: " + error);
+                        })
+                        .then(function(arrayResults) {
+                            arrayResults = (typeof arrayResults[0].json !== undefined) ? arrayResults[0].json : null;
+
+                            if (typeof callback === "function")
+                                callback(arrayResults);
+                            else
+                                return arrayResults;
+                        });
+            else
+                callback(getRemoteSurvey(idSurvey));
         };
-//        this.getSurvey = function(authToken, idSurvey) {
-//            var survey = null;
-//            $.ajax({
-//                method: "POST",
-//                async: false,
-//                cache: false,
-//                data: {},
-//                url: system.getSystemPath() + "/survey/?id=" + idSurvey + "&token=" + authToken,
-//                success: function(response, textStatus, jqXHR) {
-//                    if (typeof response !== 'object')
-//                        e.error("Respuesta inesperada", response);
-//
-//                    survey = response;
-//                },
-//                error: function(jqXHR, textStatus, errorThrown) {
-//                    e.manageError(jqXHR, textStatus, errorThrown);
-//                }
-//            });
-//            return survey;
-//        };
+        var getRemoteSurvey = function(idSurvey) {
+            setTokenValue();
+            var survey = null;
+            $.ajax({
+                method: "POST",
+                async: false,
+                cache: false,
+                data: {},
+                url: system.getSystemPath() + "/survey/?id=" + idSurvey + "&token=" + token,
+                success: function(response, textStatus, jqXHR) {
+                    if (typeof response !== 'object')
+                        e.error("Respuesta inesperada", response);
+
+                    survey = response;
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    e.manageError(jqXHR, textStatus, errorThrown);
+                }
+            });
+            return (survey[0] !== undefined) ? survey[0] : null;
+        };
     };
 
     return new Survey();

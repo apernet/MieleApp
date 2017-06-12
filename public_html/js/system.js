@@ -6,6 +6,7 @@ define(['jquery', 'exceptions'], function($, e) {
         var port = 8000;
 
         this.SERVER = "http://miele.aper.tech:" + port;
+        
         this.getApiPath = function() {
             return "/api/v1";
         };

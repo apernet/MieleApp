@@ -41,7 +41,7 @@ define(['jquery', 'alerts', 'validator', 'exceptions', 'system'], function($, al
                 return 0;
 
             removeAlerts();
-//            localLogin();
+
             (checkInternetConnection()) ? remoteLogin() : localLogin();
         };
 
@@ -54,13 +54,20 @@ define(['jquery', 'alerts', 'validator', 'exceptions', 'system'], function($, al
                 data: loginContainer.closest('form').serialize(),
                 url: system.SERVER + "/auth/login/",
                 success: function(response, textStatus, jqXHR) {
+                    console.log("success response");
                     manageResponse(response);
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
+                    console.log("error response");
+                    console.log(jqXHR);
                     var response = jqXHR.responseJSON;
+                    console.log("JSON");
+                    console.log(jqXHR.responseJSON);
                     $('#inputPassword').val('');
                     if (response === undefined)
-                        return addAlerts(jqXHR.statusText + " - " + jqXHR.status, jqXHR.responseText);
+                        return exceptions.error(jqXHR.statusText + " - " + jqXHR.status, jqXHR.responseText);
+                    else
+                        return addAlerts(jqXHR.status + "- " + response.message);
                 }
             });
         };
@@ -124,6 +131,8 @@ define(['jquery', 'alerts', 'validator', 'exceptions', 'system'], function($, al
                     console.log(response);
                     if (response.status)
                         status = true;
+                    else
+                        addAlerts( " - " + jqXHR.status, response.message);
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     console.log("error:");
@@ -133,6 +142,8 @@ define(['jquery', 'alerts', 'validator', 'exceptions', 'system'], function($, al
                     $('#inputPassword').val('');
                     if (response === undefined)
                         return addAlerts(jqXHR.statusText + " - " + jqXHR.status, jqXHR.responseText);
+                    else
+                        return addAlerts( " - " + jqXHR.status, response.message);
                 }
             });
             return status;
@@ -182,6 +193,8 @@ define(['jquery', 'alerts', 'validator', 'exceptions', 'system'], function($, al
         };
 
         var addAlerts = function(message) {
+            console.log("Agregando Alertas");
+            console.log(message);
             $('.login-alerts').show().append("<p>" + message + "</p>");
         };
     };

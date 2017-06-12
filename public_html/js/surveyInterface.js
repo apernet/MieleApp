@@ -28,8 +28,8 @@ define(['jquery', 'jquery-ui', 'surveys', 'system', 'surveyBuilder', 'jquery.bxs
                     pageWrapper: "pageWrapper",
                     brandTitle: "Miele",
                     options: [
+                        menu.option.goToSurveysInterface(token),
                         menu.option.sync(token),
-                        menu.option.closeSurveyMode(token),
                         menu.option.closeSessionOption(token)
                     ]
                 });
@@ -146,7 +146,6 @@ define(['jquery', 'jquery-ui', 'surveys', 'system', 'surveyBuilder', 'jquery.bxs
 
         /**
          * 
-         * @param {boolean} addCurrentSlider add slider number container
          * @returns {$}
          */
         var getSliderContainer = function() {
@@ -185,10 +184,6 @@ define(['jquery', 'jquery-ui', 'surveys', 'system', 'surveyBuilder', 'jquery.bxs
             if (!isNaN(totalSliders) || !isNaN(index))
                 if (index > 0)
                     $('.slider-number-container').empty().text(index + "/" + totalSliders);
-        };
-
-        var getFooter = function() {
-            return $('<div>', {class: "footer-Wrapper"}).append($('<img>', {src: "img/logo-bar.png"}));
         };
 
         var showSectionAnon = function() {
@@ -259,7 +254,7 @@ define(['jquery', 'jquery-ui', 'surveys', 'system', 'surveyBuilder', 'jquery.bxs
             var content = $('<div>', {class: "message-container slider-container", id: "question_welcome_text", idQuestionType: 0, idQuestion: 0})
                     .append($('<div>', {class: "text-wrapper"}).append(survey.welcome_text))
                     .append(startSurvey())
-                    .append(getFooter());
+                    ;
 
             $('#slider').append(content);
         };
@@ -268,7 +263,7 @@ define(['jquery', 'jquery-ui', 'surveys', 'system', 'surveyBuilder', 'jquery.bxs
             var content = $('<div>', {class: "message-container slider-container", id: "question_finish_text", idQuestionType: 0, idQuestion: 0})
                     .append($('<div>', {class: "text-wrapper"}).append(survey.finish_text))
                     .append(restartSurveyButton(survey))
-                    .append(getFooter());
+                    ;
 
             $('#slider').append(content);
         };
@@ -337,7 +332,7 @@ define(['jquery', 'jquery-ui', 'surveys', 'system', 'surveyBuilder', 'jquery.bxs
             var slide = $('.slider-container[index=' + index + ']');
 
             if ($(slide).hasClass('customer-data'))
-                return checkCustomerData(index);
+                return validateCustomerData(index);
 
             $(slide).find('.questionContainer').each(function() {
                 var idQuestion = $(this).attr('idquestion');
@@ -361,7 +356,7 @@ define(['jquery', 'jquery-ui', 'surveys', 'system', 'surveyBuilder', 'jquery.bxs
          * Check if customer fields data are completed
          * @returns {Boolean}
          */
-        var checkCustomerData = function(sliderIndex) {
+        var validateCustomerData = function(sliderIndex) {
             var status = true;
             var slide = $('.slider-container[index=' + sliderIndex + ']');
             var validate = true;
@@ -372,17 +367,18 @@ define(['jquery', 'jquery-ui', 'surveys', 'system', 'surveyBuilder', 'jquery.bxs
 
                 alerts.removeFormError(input);
 
-                if (this.type === "text") {
-                    if (input.val().length === 0) {
+                if (this.type === "text" | this.type === "email") {
+                    if (input.hasClass("required") && input.val().length === 0) {
                         status = false;
                         alerts.addFormError(input);
                     }
 
                     if ($(this).attr('fieldType') !== undefined) {
-                        if (!validation[input.attr('fieldType')](input.val())) {
-                            alerts.addFormError(input);
-                            validate = false;
-                        }
+                        if(input.val().length > 0)
+                            if (!validation[input.attr('fieldType')](input.val())) {
+                                alerts.addFormError(input);
+                                validate = false;
+                            }
                     }
                 }
 
@@ -421,8 +417,8 @@ define(['jquery', 'jquery-ui', 'surveys', 'system', 'surveyBuilder', 'jquery.bxs
             bdialog.show({
                 type: bdialog.TYPE_DEFAULT,
                 title: '<spam class="glyphicon"></spam> Aviso de privacidad',
-                size: bdialog.SIZE_NORMAL,
-                message: '<div><embed class="privacy-embed" src="files/AvisodePrivacidad.pdf" width="500" height="375" type="application/pdf"></div>',
+                size: bdialog.SIZE_LARGE,
+                message: '<div><embed class="privacy-embed" src="files/AvisodePrivacidad.pdf" width="800" height="2500" type="application/pdf"></div>',
                 buttons: [{
                         label: "cerrar",
                         title: "cerrar",

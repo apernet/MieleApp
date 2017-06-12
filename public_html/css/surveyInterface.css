@@ -46,8 +46,9 @@ body{
 
 .footer-Wrapper{
     position: absolute;
-    top: 90%;
-    width: 100%;
+    bottom: 7px;
+    width: 97%;
+    margin: 0 auto;
 }
 
 .footer-Wrapper img{
@@ -88,7 +89,7 @@ body{
 
 }
 .surveyBuilderContainer{
-    height: 90% !important;
+    height: 85% !important;
     position: absolute;
     background-color: transparent;
 }
@@ -133,7 +134,7 @@ div.question{
 
 .slider-container{
     overflow-y: auto;
-    height: 100%;
+    height: 95%;
 }
 
 .slider-number-container{
@@ -149,6 +150,7 @@ div.question{
 .privacy-embed{
     margin: 0 auto;
     display: block;
+    overflow: auto;
 }
 
 .agree-privacy img{

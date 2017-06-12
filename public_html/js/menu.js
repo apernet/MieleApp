@@ -24,9 +24,9 @@ define(['jquery', 'exceptions', 'system'], function($, e, system) {
                 return {
                     title: "Sincronizar",
                     onclick:
-                            function() {
-                                window.location.href = "sync.html?token=" + token;
-                            }
+                        function() {
+                            window.location.href = "sync.html?token=" + token;
+                        }
                 };
             },
             /**
@@ -35,45 +35,30 @@ define(['jquery', 'exceptions', 'system'], function($, e, system) {
              * @returns {systemL#2.system.menu.option.closeSessionOption.systemAnonym$1}
              */
             closeSessionOption: function(token) {
-                var url = system.SERVER + system.getApiPath() + "/auth/invalidate";
                 return {
                     title: "Cerrar Sesión",
-                    onclick: {
-                        ajax: {
-                            url: url,
-                            params: {"token": token},
-                            method: "POST",
-                            async: false,
-                            success: function(response, textStatus, jqXHR) {
-                                if (typeof response !== "object")
-                                    e.error(response);
-                                if (response.status)
-                                    window.location.href = "login.html";
-                                else
-                                    e.error("Error", response.message);
-                            }
+                    onclick:
+                        function() {
+                            window.location.href = "login.html";
                         }
-                    }
                 };
             },
             goToHome: function(token) {
                 return {
                     title: "Home",
                     onclick:
-                            function() {
-                                window.location.href = "home.html?token=" + token;
-                            }
+                        function() {
+                            window.location.href = "home.html?token=" + token;
+                        }
                 };
             },
-            closeSurveyMode: function(token) {
+            goToSurveysInterface: function(token) {
                 return {
-                    title: "Salir",
+                    title: "Encuestas",
                     onclick:
-                            function() {
-                                authModal(function() {
-                                    window.location.href = "surveys.html?token=" + token;
-                                });
-                            }
+                        function() {
+                            window.location.href = "surveys.html?token=" + token;
+                        }
                 };
             }
         };
