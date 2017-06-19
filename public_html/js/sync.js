@@ -93,14 +93,18 @@ define(['jquery', 'menu', 'system', 'exceptions', 'jsonstore', 'alerts', 'valida
                 data: params,
                 url: system.SERVER + "/auth/login/",
                 success: function(response, textStatus, jqXHR) {
-                    if (response.status)
+                    if (response.status){
+                        $('.result-container').val("Ingreso al sistema... \n");
                         token = response.token;
+                    }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     var response = jqXHR.responseJSON;
                     $('#inputPassword').val('');
                     if (response === undefined)
                         return addAlerts(jqXHR.statusText + " - " + jqXHR.status, jqXHR.responseText);
+                    
+                    addAlerts(response.message);
                 }
             });
             
