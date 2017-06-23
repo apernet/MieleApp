@@ -94,7 +94,7 @@ define(['jquery', 'menu', 'system', 'exceptions', 'jsonstore', 'alerts', 'valida
                 url: system.SERVER + "/auth/login/",
                 success: function(response, textStatus, jqXHR) {
                     if (response.status){
-                        $('.result-container').val("Ingreso al sistema... \n");
+                        $('.result-container').append("Ingreso al sistema... \n");
                         token = response.token;
                     }
                 },
