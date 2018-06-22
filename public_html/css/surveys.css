@@ -42,7 +42,7 @@ and open the template in the editor.
 }*/
 
 .glyphicon-search{
-    color: #E60000;
+    color: #b30000;
 }
 
 .input-group-addon{
@@ -82,7 +82,7 @@ and open the template in the editor.
     height: 80px;
     bottom: 0px;
     position: absolute;
-    background-color: #E60000;
+    background-color: #b30000;
     color: white;
     font-size: 19px;
     padding: 10px;
