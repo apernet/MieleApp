@@ -6,8 +6,9 @@ define(['jquery', 'system', 'menu', 'exceptions'], function($, system, menu, e) 
         var self = this;
         var token = null;
         this.init = function() {
-            token = system.getUrlParameter("token");
-            setTokenValue();
+            //token = system.getUrlParameter("token");
+            token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEsImlzcyI6Imh0dHA6XC9cLzE1OS4yMDMuMTY1LjYwOjgwMDBcL2F1dGhcL2xvZ2luIiwiaWF0IjoxNTQwMjc4MzExLCJleHAiOjE1NDE0ODc5MTEsIm5iZiI6MTU0MDI3ODMxMSwianRpIjoicFN6Y21nS2QwYlRHUUlzMSJ9.nXi0EyS-oTX5LJBhDCWj9r6qjKkn9-7X-9q7T0KPpqw'
+            //setTokenValue();
             resizeContent();
             buildSurveyBoxes();
             engineSearch();
