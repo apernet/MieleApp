@@ -1,0 +1,161 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Jan 3, 2017, 5:12:40 PM
+    Author     : danielunag
+*/
+
+.background-products{
+    top: 0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    /*background: url("../img/productos-background.png") no-repeat fixed;*/
+    /*background-color: white;*/
+    background-size: 100% 100%;
+}
+
+
+
+.miele-logo{
+    height: 41px;
+    margin-top: 2%;
+    margin-left: 25%;
+}
+
+.searcher-content{
+    top: 0px;
+    height: 51px;
+    background-color: #464646;
+}
+.boxes-content{
+    /*position: relative;*/
+    padding-left: 0px;
+    padding-right: 0px;
+    overflow-y: auto;
+    padding-bottom: 150px;
+}
+
+.box-content{
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+
+
+/*.container{
+    margin-left: 20px;
+}*/
+
+.glyphicon-search{
+    color: #b30000;
+}
+
+.input-group-addon{
+    background-color: #e8e8e8;
+    border-radius: 22px;
+    border-right: none;
+}
+
+.form-control{
+    background-color: #e8e8e8;
+    border-radius: 22px;
+    border-left: none;
+    border-right: none;
+    color: black;
+}
+
+.navbar-collapse{
+    padding-left: 100px;
+    width: 400px;
+    float: right;
+}
+
+.box{
+    width: 100%;
+    height: 360px;
+    position: relative;
+    background-color: white;
+    text-align: center;
+    border-bottom: 2px solid #d7d7d7;
+    border-right: 2px solid #d7d7d7;
+}
+
+
+.box .product-title{
+    width: 60%;
+    height: 30px;
+    bottom: 125px;
+    position: absolute;
+    background-color: white;
+    color: black;
+    font-size: 22px;
+    font-weight: bold;
+    padding: 2px;
+    left: 20%;
+}
+
+.box .product-description{
+    width: 60%;
+    height: 65px;
+    bottom: 65px;
+    position: absolute;
+    background-color: white;
+    color: black;
+    font-size: 20px;
+    padding: 5px;
+    left: 20%;
+    border-bottom: 2px solid #730609;
+}
+
+.box .product-button{
+    width: 50%;
+    height: 40px;
+    bottom: 20px;
+    position: absolute;
+    background-color: #730609;
+    color: white;
+    font-size: 19px;
+    padding: 6px;
+    left: 25%;
+}
+
+.box .surveyType-icon{
+    position: absolute;
+    width: 70%;
+    height: 70%;
+    margin: auto;
+    top: 0;
+    right: 0;
+    bottom: 80px;
+    left: 0;
+
+    -webkit-filter: drop-shadow(5px 5px 3px #a1a1a1);
+    -moz-filter: drop-shadow(5px 5px 3px #a1a1a1);
+    -ms-filter: drop-shadow(5px 5px 3px #a1a1a1);
+    -o-filter: drop-shadow(5px 5px 3px #a1a1a1);
+    filter: drop-shadow(5px 5px 3px #a1a1a1);
+}
+
+.box .surveyType-icon .img{
+    -webkit-filter: drop-shadow(10px 10px 5px #a1a1a1);
+    -moz-filter: drop-shadow(10px 10px 5px #a1a1a1);
+    -ms-filter: drop-shadow(10px 10px 5px #a1a1a1);
+    -o-filter: drop-shadow(10px 10px 5px #a1a1a1);
+    filter: drop-shadow(10px 10px 5px #a1a1a1);
+}
+
+.box .button-play{
+    position: absolute;
+    bottom: 90px;
+    right: 20px;
+}
+
+.box .surveyType-icon img{
+
+}

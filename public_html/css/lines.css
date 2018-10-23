@@ -1,0 +1,139 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Jan 3, 2017, 5:12:40 PM
+    Author     : danielunag
+*/
+
+.background-products{
+    top: 0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    /*background: url("../img/productos-background.png") no-repeat fixed;*/
+    /*background-color: white;*/
+    background-size: 100% 100%;
+}
+
+
+
+.miele-logo{
+    height: 41px;
+    margin-left: 25%;
+    margin-top: 2%;
+}
+
+.searcher-content{
+    top: 0px;
+    height: 51px;
+    margin-top: 30px;
+    background-color: #464646;
+}
+.boxes-content{
+    /*position: relative;*/
+    padding-left: 80px;
+    padding-right: 80px;
+    overflow-y: auto;
+    padding-bottom: 150px;
+}
+
+.box-content{
+    padding-left: 60px;
+    padding-right: 60px;
+}
+
+
+
+/*.container{
+    margin-left: 20px;
+}*/
+
+.glyphicon-search{
+    color: #b30000;
+}
+
+.input-group-addon{
+    background-color: #e8e8e8;
+    border-radius: 22px;
+    border-right: none;
+}
+
+.form-control{
+    background-color: #e8e8e8;
+    border-radius: 22px;
+    border-left: none;
+    border-right: none;
+    color: black;
+}
+
+.navbar-collapse{
+    padding-left: 100px;
+    width: 400px;
+    float: right;
+}
+
+.box{
+    margin-top: 32px;
+    width: 100%;
+    height: 300px;
+    position: relative;
+    background-color: white;
+    box-shadow: 5px 5px #d7d7d7;
+    text-align: center;
+}
+
+.box .survey-type-title{
+    font-size: 18px;
+    font-weight: bold;
+    padding: 15px;
+}
+
+.box .survey-title{
+    width: 90%;
+    height: 60px;
+    bottom: 10px;
+    position: absolute;
+    background-color: #730609;
+    color: white;
+    font-size: 19px;
+    padding: 10px;
+    left: 5%;
+}
+
+.box .surveyType-icon{
+    position: absolute;
+    width: 85%;
+    height: 85%;
+    margin: auto;
+    top: 0;
+    right: 0;
+    bottom: 50px;
+    left: 0;
+
+    -webkit-filter: drop-shadow(5px 5px 3px #a1a1a1);
+    -moz-filter: drop-shadow(5px 5px 3px #a1a1a1);
+    -ms-filter: drop-shadow(5px 5px 3px #a1a1a1);
+    -o-filter: drop-shadow(5px 5px 3px #a1a1a1);
+    filter: drop-shadow(5px 5px 3px #a1a1a1);
+}
+
+.box .surveyType-icon .img{
+    -webkit-filter: drop-shadow(10px 10px 5px #a1a1a1);
+    -moz-filter: drop-shadow(10px 10px 5px #a1a1a1);
+    -ms-filter: drop-shadow(10px 10px 5px #a1a1a1);
+    -o-filter: drop-shadow(10px 10px 5px #a1a1a1);
+    filter: drop-shadow(10px 10px 5px #a1a1a1);
+}
+
+.box .button-play{
+    position: absolute;
+    bottom: 90px;
+    right: 20px;
+}
+
+.box .surveyType-icon img{
+
+}

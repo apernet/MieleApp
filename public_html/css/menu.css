@@ -114,6 +114,7 @@
     cursor: pointer;
 }
 
+
 /* open menu by default */
 @media(min-width:768px) {
 /*    .menu-wrapper {

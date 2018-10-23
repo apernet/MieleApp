@@ -4,7 +4,8 @@ define(['jquery'], function($) {
         this.init = function() {
             $(document).ready(function() {
                 setTimeout(function() {
-                    window.location.href =  "login.html";
+                    //window.location.href =  "login.html";
+                    window.location.href =  "home.html";
                 }, 2000);
             });
 

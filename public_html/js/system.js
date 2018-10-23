@@ -42,6 +42,16 @@ define(['jquery', 'exceptions'], function($, e) {
             ;
         };
 
+        this.goToSublines = function(token) {
+            window.location = "sublines.html?token=" + token;
+            ;  
+        };
+
+        this.goToProducts = function(token) {
+            window.location = "products.html?token=" + token;
+            ;  
+        };
+
         var authModal = function(onclick) {
             if (typeof onclick === "function")
                 onclick();
