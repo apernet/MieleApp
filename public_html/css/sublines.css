@@ -110,12 +110,12 @@ and open the template in the editor.
     right: 0px;
     bottom: 50px;
     left: 0px;
-
+/*
     -webkit-filter: drop-shadow(5px 5px 3px #a1a1a1);
     -moz-filter: drop-shadow(5px 5px 3px #a1a1a1);
     -ms-filter: drop-shadow(5px 5px 3px #a1a1a1);
     -o-filter: drop-shadow(5px 5px 3px #a1a1a1);
-    filter: drop-shadow(5px 5px 3px #a1a1a1);
+    filter: drop-shadow(5px 5px 3px #a1a1a1);*/
 }
 
 .box .surveyType-icon .img{
