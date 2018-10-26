@@ -60,7 +60,7 @@ define(['jquery', 'system', 'menu', 'exceptions'], function($, system, menu, e) 
             //var type = $('<div>', {class: "survey-type-title"}).append(surveyTypeData.name);
             //var name = $('<div>', {class: "survey-title"}).css({"background-color": surveyTypeData.color}).append(survey.name);
             var name = $('<div>', {class: "survey-title"}).append(survey.name);
-            var icon = $('<div>', {class: "surveyType-icon"}).append($('<img>', {class: "surveyType-icon", src: surveyTypeData.icon}));
+            var icon = $('<div>', {class: "surveyType-icon"}).append($('<img>', {class: "icon", src: surveyTypeData.icon}));
             //var button = $('<div>', {class: "button-play"}).append($('<img>', {src: "img/play-button.png"}));
             var box = $('<div>', {class: "box"}).append(icon).append(name);
 
