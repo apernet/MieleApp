@@ -18,8 +18,6 @@ and open the template in the editor.
     background-size: 100% 100%;
 }
 
-
-
 .miele-logo{
     height: 41px;
     margin-left: 34%;
@@ -31,6 +29,7 @@ and open the template in the editor.
     height: 51px;
     background-color: #464646;
 }
+
 .boxes-content{
     /*position: relative;*/
     padding-left: 0px;
@@ -45,12 +44,6 @@ and open the template in the editor.
     padding-top: 0px;
     padding-bottom: 0px;
 }
-
-
-
-/*.container{
-    margin-left: 20px;
-}*/
 
 .glyphicon-search{
     color: #b30000;
@@ -78,39 +71,76 @@ and open the template in the editor.
 
 .box{
     width: 100%;
-    height: 360px;
+    height: 462px;
     position: relative;
-    background-color: white;
-    text-align: center;
-    border-bottom: 2px solid #d7d7d7;
-    border-right: 2px solid #d7d7d7;
 }
 
+.icon{
+    width: 110%;
+    height: auto;
+    position: absolute;
+    margin-top: 20%;
+    background-color: white;
+}
+
+.product-img{
+    width: 204px;
+    height: 204px;
+    margin-left: 26px;
+    margin-right: 26px;
+}
 
 .box .product-title{
-    width: 60%;
+    margin-top: 20px;
     height: 30px;
-    bottom: 125px;
-    position: absolute;
-    background-color: white;
-    color: black;
-    font-size: 22px;
+    font-size: 19px;
     font-weight: bold;
-    padding: 2px;
-    left: 20%;
+    padding-left: 55px;
+}
+
+.box .product-model{
+    margin-top: 15px;
+    height: 30px;
+    font-size: 16px;
+    padding-left: 55px;
+}
+
+.box .product-cost{
+    margin-top: 15px;
+    height: 30px;
+    font-size: 19px;
+    font-weight: bold;
+    padding-left: 55px;
+    color: #760c0f;
 }
 
 .box .product-description{
-    width: 60%;
-    height: 65px;
-    bottom: 65px;
-    position: absolute;
-    background-color: white;
-    color: black;
-    font-size: 20px;
-    padding: 5px;
-    left: 20%;
-    border-bottom: 2px solid #730609;
+    margin-top: 15px;
+    height: auto;
+    font-size: 16px;
+    padding-left: 55px;
+}
+
+.product-description-title{
+    margin-top: 15px;
+    height: 30px;
+    font-size: 19px;
+    font-weight: bold;
+    text-decoration: underline;
+    padding-left: 55px;
+    color: #760c0f;
+}
+
+.product-attributes-title{
+    padding-left: 55px;
+}
+
+.product-attributes{
+    margin-top: 15px;
+    height: auto;
+    font-size: 16px;
+    padding-left: 55px;
+    list-style-type: disc;
 }
 
 .box .product-button{

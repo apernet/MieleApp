@@ -24,6 +24,7 @@ require.config({
         line: 'js/lines',
         subline: 'js/sublines',
         product: 'js/products',
+        productDesc: 'js/productDesc',
         surveyInterface: 'js/surveyInterface',
         surveys: 'js/surveys',
         surveyBuilder: 'js/surveyBuilder',

@@ -1,21 +1,23 @@
 <!doctype html>
 <html>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, target-densityDpi=device-dpi" />
     <head>
-        <title>Miele</title>
-        <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+        <title>Producto</title>
         <meta name="viewport" content="width=device-width, shrink-to-fit=no, initial-scale=1">
-        <link rel="stylesheet" href="apis/bootstrap/css/bootstrap.min.css"/>
+        <link rel="stylesheet" href="/apis/bootstrap/css/bootstrap.min.css"/>
         <link rel="stylesheet" href="apis/bootstrap3-dialog/dist/css/bootstrap-dialog.css"/>
         <link rel="stylesheet" href="css/menu.css"/>
-        <link rel="stylesheet" href="css/home.css"/>
+        <link rel="stylesheet" href="css/productDesc.css"/>
         <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
-        <script data-main="js/main" src="apis/require.js"></script>
+        <script data-main="/js/main" src="/apis/require.js"></script>
     </head>
     <body>
         <div id="pageWrapper">
+            <div class="background-products"></div>
             <div class="searcher-content">
                 <div class="navbar">
-                    <div class="col-sm-12">
+                    <div class="col-sm-12 container">
                         <div class="col-sm-4 navbar-header">
                             <span class="navbar-brand btn-menu glyphicon glyphicon-menu-hamburger" id="menu-toggle"></span>
                         </div>
@@ -37,32 +39,13 @@
                     </div>
                 </div>
             </div>
-            <div class="container">
-                <div class="col-md-6 col-xs-6">
-                    <div class="productos-content side option" option="lines"> <!--attr  -->
-                        <div>
-                            <p><h1>Productos</h1></p>
-                            <hr>
-                            <p>Conoce las diferentes catégorias que Miele tiene para tí.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-xs-6">
-                    <div class="encuestas-content side option" option="surveys">
-                        <div>
-                            <p><h1>Encuestas</h1></p>
-                            <hr>
-                            <p>En Miele nos gusta siempre escuchar al cliente y mejorar nuestro servicio.</p>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
+            <div class="col-sm-12 boxes-content" id="boxContent"></div>
         </div>
-    </body>
+    </body> 
+
     <script>
-        require(['main'], function() {
-            require(['jquery', 'bootstrap', 'menu', 'home'], function($, bootstrap, menu, home) {
+        require(['main'], function () {
+            require(['productDesc'], function (home) { 
                 home.init();
             });
         });

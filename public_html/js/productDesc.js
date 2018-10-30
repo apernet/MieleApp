@@ -6,9 +6,8 @@ define(['jquery', 'system', 'menu', 'exceptions'], function($, system, menu, e) 
         var self = this;
         var token = null;
         this.init = function() {
-            //token = system.getUrlParameter("token");
-            token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEsImlzcyI6Imh0dHA6XC9cLzE1OS4yMDMuMTY1LjYwOjgwMDBcL2F1dGhcL2xvZ2luIiwiaWF0IjoxNTQwMjc4MzExLCJleHAiOjE1NDE0ODc5MTEsIm5iZiI6MTU0MDI3ODMxMSwianRpIjoicFN6Y21nS2QwYlRHUUlzMSJ9.nXi0EyS-oTX5LJBhDCWj9r6qjKkn9-7X-9q7T0KPpqw'
-            //setTokenValue();
+            token = system.getUrlParameter("token");
+            setTokenValue();
             resizeContent();
             buildSurveyBoxes();
             engineSearch();
@@ -16,7 +15,6 @@ define(['jquery', 'system', 'menu', 'exceptions'], function($, system, menu, e) 
         };
 
         var resizeContent = function() {
-            $('.background-products').css({width: $(window).width()});
             $('#boxContent').height($(window).height() - 150);
             buildMenu();
         };
@@ -36,37 +34,61 @@ define(['jquery', 'system', 'menu', 'exceptions'], function($, system, menu, e) 
 
         var buildSurveyBoxes = function() {
             self.getSurveys(function(surveyType) {
-                surveyType = [{"_id":1, "json":{"id": 1,"name": "Cuidado de la ropa","idSurveyType": 3, "survey_type": [{"id": 3,"name": "Ventas","icon": "https://shop.miele.com.mx/812-home_default/secadora-t1.jpg","color": "#7F7F7F"}]}},
-                              {"_id":2, "json":{"id": 2,"name": "Experiencia culinaria","idSurveyType": 3, "survey_type": [{"id": 3,"name": "Ventas","icon": "https://shop.miele.com.mx/777-home_default/range-cooker.jpg","color": "#7F7F7F"}]}},
-                              {"_id":3, "json":{"id": 3,"name": "Aspiradoras","idSurveyType": 3, "survey_type": [{"id": 3,"name": "Ventas","icon": "https://shop.miele.com.mx/533-home_default/complete-c3-parquet.jpg","color": "#7F7F7F"}]}},
-                              {"_id":4, "json":{"id": 4,"name": "Accesorios y consumibles","idSurveyType": 3, "survey_type": [{"id": 3,"name": "Ventas","icon": "https://shop.miele.com.mx/396-home_default/soplador-externo-para-campana-profesional.jpg","color": "#7F7F7F"}]}}];
+                //surveyType = [{"_id":1, "json":{"id": 1,"name": "Lavadoras","idSurveyType": 3, "survey_type": [{"id": 3,"name": "Ventas","icon": "https://shop.miele.com.mx/811-home_default/lavadora-w1.jpg","color": "#7F7F7F"}]}},
+                //              {"_id":2, "json":{"id": 2,"name": "Lavadoras","idSurveyType": 3, "survey_type": [{"id": 3,"name": "Ventas","icon": "https://shop.miele.com.mx/811-home_default/lavadora-w1.jpg","color": "#7F7F7F"}]}},
+                //              {"_id":3, "json":{"id": 3,"name": "Lavadoras","idSurveyType": 3, "survey_type": [{"id": 3,"name": "Ventas","icon": "https://shop.miele.com.mx/811-home_default/lavadora-w1.jpg","color": "#7F7F7F"}]}}];
+                surveyType = [{"_id":1, "json":{"id": 1,"name": "LAVADORA W1","icon": "https://shop.miele.com.mx/811-home_default/lavadora-w1.jpg", "model": "Mod: WKH122 WPS", "cost": "$66,900.00", "description": "Lavadora, capacidad de carga de 9Kg, color blanco. Carga frontal. <br> (La entrega de este producto será a partir de Marzo del 2018).", "attributes": "<li>Cuidado especialde la ropa gracias a su tambor patentado 'Honeycomb'.</li> <li>Color: blanco.</li> <li>Carga frontal.</li> <li>Capacidad: 9kg</li> <li>Reconocimiento automático de carga</li> <li>Sistema TwinDos - el mejor sistema de dosificación de detergente líquido</li> <li>PowerWash 2.0Ñ Tecnología única de centrifugado y espreado durante el proceso de lavado optimizando el consumo de agua.</li> <li>QuickPowerWash: Limpieza profuna y máxima velocidad, ropa limpia en menos de una hora.</li>", "slider": {"img1": "https://shop.miele.com.mx/821-home_default/lavadora-w1.jpg", "img2": "https://shop.miele.com.mx/824-home_default/lavadora-w1.jpg", "img3": "https://shop.miele.com.mx/822-home_default/lavadora-w1.jpg", "img4": "https://shop.miele.com.mx/823-home_default/lavadora-w1.jpg"}}}];
+
                 $(surveyType).each(function() {
-                    if(this.json !== undefined)
-                        $('#boxContent').append(buildBox(this.json));
-                    else
-                        $('#boxContent').append(buildBox(this));                    
+                    if(this.json !== undefined) {
+                        $('#boxContent').append(buildIcon(this.json));
+                        $('#boxContent').append(buildInfo(this.json));
+                        $('#boxContent').append(buildSlider(this.json));
+                    } else {
+                        $('#boxContent').append(buildDesc(this));              
+                    }
                 });
 
                 $('.survey').on('click', function() {
                     //var idSurvey = $(this).attr('idSurvey');
                     //(parseInt(idSurvey) > 0) ? system.goToSurveyInterface(token, idSurvey) : e.error("No fue posible abrir la encuesta", "No se obtuvo el identificador de la encuesta a contestar");
-                    system.goToSublines(token);
+
                 });
             });
         };
 
-        var buildBox = function(survey) {
-            var surveyTypeData = (survey.survey_type === undefined) ? {} : survey.survey_type[0];
+        var buildIcon = function(product) {
+            console.log(product.id);
+            var icon = $('<div>', {class: "product-icon"}).append($('<img>', {class: "icon", src: product.icon}));
+            var productionIconBox = $('<div>', {class: "box"}).append(icon);
+            var productIcon = $('<div>', {class: "col-sm-4 box-content survey", surveyName: product.name, idSurvey: product.id}).append(productionIconBox);
+            return productIcon;
+        }
 
-            //var type = $('<div>', {class: "survey-type-title"}).append(surveyTypeData.name);
-            //var name = $('<div>', {class: "survey-title"}).css({"background-color": surveyTypeData.color}).append(survey.name);
-            var name = $('<div>', {class: "survey-title"}).append(survey.name);
-            var icon = $('<div>', {class: "surveyType-icon"}).append($('<img>', {class: "surveyType-icon", src: surveyTypeData.icon}));
-            //var button = $('<div>', {class: "button-play"}).append($('<img>', {src: "img/play-button.png"}));
-            var box = $('<div>', {class: "box"}).append(icon).append(name);
+        var buildInfo = function(product) {
+            console.log(product.id);
+            var name = $('<div>', {class: "product-title"}).append(product.name);
+            var model = $('<div>', {class: "product-model"}).append(product.model);
+            var cost = $('<div>', {class: "product-cost"}).append(product.cost);
+            var description = $('<div>', {class: "product-description"}).append(product.description);
+            var descriptionTitle = $('<div>', {class: "product-description-title"}).append('Descripción').append($('<span>', {class: "product-attributes-title"}).append('Atributos'));
+            var attributes = $('<div>', {class: "product-attributes"}).append(product.attributes);
+            var productInfoBox = $('<div>', {class: "box"}).append(name).append(model).append(cost).append(description).append(descriptionTitle).append(attributes);
+            var productInfo = $('<div>', {class: "col-sm-8 box-content survey", surveyName: product.name, idSurvey: product.id}).append(productInfoBox);
+            return productInfo;
+        }
 
-            return $('<div>', {class: "col-sm-6 box-content survey", surveyName: survey.name, idSurvey: survey.id}).append(box);
-        };
+        var buildSlider = function(product) {
+            console.log(product.id);
+            var slider = product.slider;
+            var img1 = $('<span>', {class: "product-img1"}).append($('<img>', {class: "product-img", src: slider.img1}));
+            var img2 = $('<span>', {class: "product-img2"}).append($('<img>', {class: "product-img", src: slider.img2}));
+            var img3 = $('<span>', {class: "product-img3"}).append($('<img>', {class: "product-img", src: slider.img3}));
+            var img4 = $('<span>', {class: "product-img4"}).append($('<img>', {class: "product-img", src: slider.img4}));
+            var productSliderbox = $('<div>', {class: "box"}).append(img1).append(img2).append(img3).append(img4);
+            var productSlider = $('<div>', {class: "col-sm-12 box-content pictures", surveyName: product.name, idSurvey: product.id}).append(productSliderbox);
+            return productSlider;
+        }
 
         /**
          * 

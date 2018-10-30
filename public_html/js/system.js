@@ -52,6 +52,11 @@ define(['jquery', 'exceptions'], function($, e) {
             ;  
         };
 
+        this.goToProductDesc = function(token) {
+            window.location = "productDesc.html?token=" + token;
+            ;  
+        };
+
         var authModal = function(onclick) {
             if (typeof onclick === "function")
                 onclick();

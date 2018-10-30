@@ -50,6 +50,7 @@ define(['jquery', 'system', 'menu', 'exceptions'], function($, system, menu, e) 
                 $('.survey').on('click', function() {
                     //var idSurvey = $(this).attr('idSurvey');
                     //(parseInt(idSurvey) > 0) ? system.goToSurveyInterface(token, idSurvey) : e.error("No fue posible abrir la encuesta", "No se obtuvo el identificador de la encuesta a contestar");
+                    system.goToProductDesc(token);
                 });
             });
         };

@@ -22,7 +22,7 @@ define(['jquery', 'exceptions', 'system'], function($, e, system) {
         this.option = {
             sync: function(token) {
                 return {
-                    title: "Sincronizar",
+                    title: "- Sincronizar",
                     onclick:
                         function() {
                             window.location.href = "sync.html?token=" + token;
@@ -36,7 +36,7 @@ define(['jquery', 'exceptions', 'system'], function($, e, system) {
              */
             closeSessionOption: function(token) {
                 return {
-                    title: "Cerrar Sesión",
+                    title: "- Cerrar Sesión",
                     onclick:
                         function() {
                             window.location.href = "login.html";
@@ -45,7 +45,7 @@ define(['jquery', 'exceptions', 'system'], function($, e, system) {
             },
             goToHome: function(token) {
                 return {
-                    title: "Home",
+                    title: "- Home",
                     onclick:
                         function() {
                             window.location.href = "home.html?token=" + token;
@@ -67,6 +67,8 @@ define(['jquery', 'exceptions', 'system'], function($, e, system) {
             options.togleButton.click(function(e) {
                 e.preventDefault();
                 e.stopPropagation();
+                //$(".menu-wrapper").style.display = "block";
+                $(this).toggleClass('glyphicon-menu-hamburger').toggleClass('glyphicon-remove');
                 $(".menu-wrapper").toggleClass("toggled");
             });
         };
