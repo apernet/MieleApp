@@ -71,7 +71,8 @@ define(['jquery', 'system', 'menu', 'exceptions'], function($, system, menu, e) 
                 });
 
                 $('.product-img').on('click', function() {
-                    console.log(modal);
+                    console.log(slideIndex);
+                    slideIndex = parseInt(this.id);
                     modal.style.display = "block";
                     showSlides(slideIndex);
                     //console.log(this.id);
@@ -134,10 +135,10 @@ define(['jquery', 'system', 'menu', 'exceptions'], function($, system, menu, e) 
         var buildSlider = function(product) {
             console.log(product.id);
             var slider = product.slider;
-            var img1 = $('<span>', {class: "product-img1"}).append($('<img>', {class: "product-img", id: "1", src: slider.img1}));
-            var img2 = $('<span>', {class: "product-img2"}).append($('<img>', {class: "product-img", id: "2", src: slider.img2}));
-            var img3 = $('<span>', {class: "product-img3"}).append($('<img>', {class: "product-img", id: "3", src: slider.img3}));
-            var img4 = $('<span>', {class: "product-img4"}).append($('<img>', {class: "product-img", id: "4", src: slider.img4}));
+            var img1 = $('<span>', {class: "product-img1"}).append($('<img>', {class: "product-img", id: "2", src: slider.img1}));
+            var img2 = $('<span>', {class: "product-img2"}).append($('<img>', {class: "product-img", id: "3", src: slider.img2}));
+            var img3 = $('<span>', {class: "product-img3"}).append($('<img>', {class: "product-img", id: "4", src: slider.img3}));
+            var img4 = $('<span>', {class: "product-img4"}).append($('<img>', {class: "product-img", id: "5", src: slider.img4}));
             var productSliderbox = $('<div>', {class: "box"}).append(img1).append(img2).append(img3).append(img4);
             var productSlider = $('<div>', {class: "col-sm-12 box-content pictures", surveyName: product.name, idSurvey: product.id}).append(productSliderbox);
             return productSlider;
