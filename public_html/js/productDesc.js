@@ -5,6 +5,9 @@ define(['jquery', 'system', 'menu', 'exceptions'], function($, system, menu, e) 
     var Survey = function() {
         var self = this;
         var token = null;
+        var modal = document.getElementById('myModal');
+        var slideIndex = 1;
+        
         this.init = function() {
             token = system.getUrlParameter("token");
             setTokenValue();
@@ -45,17 +48,66 @@ define(['jquery', 'system', 'menu', 'exceptions'], function($, system, menu, e) 
                         $('#boxContent').append(buildInfo(this.json));
                         $('#boxContent').append(buildSlider(this.json));
                     } else {
-                        $('#boxContent').append(buildDesc(this));              
+                        $('#boxContent').append(buildDesc(this));         
                     }
                 });
 
-                $('.survey').on('click', function() {
+                $('.close').on('click', function() {
+                    modal.style.display = "none";
+                });
+
+                $('.dot').on('click', function() {
+                    var n = parseInt(this.id);
+                    currentSlide(n);
+                });
+
+                $('.prev').on('click', function() {
+                    plusSlides(-1);
+                });               
+
+                $('.next').on('click', function() {
+                    plusSlides(1);
+                });
+
+                $('.product-img').on('click', function() {
+                    console.log(modal);                    
+                    modal.style.display = "block";
+                    showSlides(slideIndex);
+                    //console.log(this.id);
+                    //var idImg = this.id;
                     //var idSurvey = $(this).attr('idSurvey');
                     //(parseInt(idSurvey) > 0) ? system.goToSurveyInterface(token, idSurvey) : e.error("No fue posible abrir la encuesta", "No se obtuvo el identificador de la encuesta a contestar");
-
                 });
             });
         };
+
+        // Next/previous controls
+        var plusSlides = function(n) {
+          showSlides(slideIndex += n);
+        }
+
+        // Thumbnail image controls
+        var currentSlide = function(n) {
+          showSlides(slideIndex = n);
+        }
+
+        var showSlides = function(n) {
+          var i;
+          var slides = document.getElementsByClassName("mySlides");
+          var dots = document.getElementsByClassName("dot");
+          
+          if (n > slides.length) {slideIndex = 1} 
+          if (n < 1) {slideIndex = slides.length}
+          for (i = 0; i < slides.length; i++) {
+              slides[i].style.display = "none"; 
+          }
+          for (i = 0; i < dots.length; i++) {
+              dots[i].className = dots[i].className.replace(" active", "");
+          }
+          console.log(n);
+          slides[slideIndex-1].style.display = "block"; 
+          dots[slideIndex-1].className += " active";
+        }
 
         var buildIcon = function(product) {
             console.log(product.id);
@@ -81,10 +133,10 @@ define(['jquery', 'system', 'menu', 'exceptions'], function($, system, menu, e) 
         var buildSlider = function(product) {
             console.log(product.id);
             var slider = product.slider;
-            var img1 = $('<span>', {class: "product-img1"}).append($('<img>', {class: "product-img", src: slider.img1}));
-            var img2 = $('<span>', {class: "product-img2"}).append($('<img>', {class: "product-img", src: slider.img2}));
-            var img3 = $('<span>', {class: "product-img3"}).append($('<img>', {class: "product-img", src: slider.img3}));
-            var img4 = $('<span>', {class: "product-img4"}).append($('<img>', {class: "product-img", src: slider.img4}));
+            var img1 = $('<span>', {class: "product-img1"}).append($('<img>', {class: "product-img", id: "1", src: slider.img1}));
+            var img2 = $('<span>', {class: "product-img2"}).append($('<img>', {class: "product-img", id: "2", src: slider.img2}));
+            var img3 = $('<span>', {class: "product-img3"}).append($('<img>', {class: "product-img", id: "3", src: slider.img3}));
+            var img4 = $('<span>', {class: "product-img4"}).append($('<img>', {class: "product-img", id: "4", src: slider.img4}));
             var productSliderbox = $('<div>', {class: "box"}).append(img1).append(img2).append(img3).append(img4);
             var productSlider = $('<div>', {class: "col-sm-12 box-content pictures", surveyName: product.name, idSurvey: product.id}).append(productSliderbox);
             return productSlider;
