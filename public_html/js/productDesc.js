@@ -57,7 +57,7 @@ define(['jquery', 'system', 'menu', 'exceptions'], function($, system, menu, e) 
                 });
 
                 $('.dot-img').on('click', function() {
-                    console.log(this);
+                    //console.log(this);
                     var n = parseInt(this.id);
                     currentSlide(n);
                 });
@@ -112,7 +112,7 @@ define(['jquery', 'system', 'menu', 'exceptions'], function($, system, menu, e) 
         }
 
         var buildIcon = function(product) {
-            console.log(product.id);
+            //console.log(product.id);
             var icon = $('<div>', {class: "product-icon"}).append($('<img>', {class: "icon", src: product.icon}));
             var productionIconBox = $('<div>', {class: "box"}).append(icon);
             var productIcon = $('<div>', {class: "col-sm-4 box-content survey", surveyName: product.name, idSurvey: product.id}).append(productionIconBox);
@@ -120,7 +120,7 @@ define(['jquery', 'system', 'menu', 'exceptions'], function($, system, menu, e) 
         }
 
         var buildInfo = function(product) {
-            console.log(product.id);
+            //console.log(product.id);
             var name = $('<div>', {class: "product-title"}).append(product.name);
             var model = $('<div>', {class: "product-model"}).append(product.model);
             var cost = $('<div>', {class: "product-cost"}).append(product.cost);
@@ -133,7 +133,7 @@ define(['jquery', 'system', 'menu', 'exceptions'], function($, system, menu, e) 
         }
 
         var buildSlider = function(product) {
-            console.log(product.id);
+            //console.log(product.id);
             var slider = product.slider;
             var img1 = $('<span>', {class: "product-img1"}).append($('<img>', {class: "product-img", id: "2", src: slider.img1}));
             var img2 = $('<span>', {class: "product-img2"}).append($('<img>', {class: "product-img", id: "3", src: slider.img2}));
