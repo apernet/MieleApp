@@ -56,7 +56,8 @@ define(['jquery', 'system', 'menu', 'exceptions'], function($, system, menu, e) 
                     modal.style.display = "none";
                 });
 
-                $('.dot').on('click', function() {
+                $('.dot-img').on('click', function() {
+                    console.log(this);
                     var n = parseInt(this.id);
                     currentSlide(n);
                 });
@@ -70,7 +71,7 @@ define(['jquery', 'system', 'menu', 'exceptions'], function($, system, menu, e) 
                 });
 
                 $('.product-img').on('click', function() {
-                    console.log(modal);                    
+                    console.log(modal);
                     modal.style.display = "block";
                     showSlides(slideIndex);
                     //console.log(this.id);
@@ -101,12 +102,12 @@ define(['jquery', 'system', 'menu', 'exceptions'], function($, system, menu, e) 
           for (i = 0; i < slides.length; i++) {
               slides[i].style.display = "none"; 
           }
-          for (i = 0; i < dots.length; i++) {
-              dots[i].className = dots[i].className.replace(" active", "");
-          }
-          console.log(n);
+          //for (i = 0; i < dots.length; i++) {
+          //    dots[i].className = dots[i].className.replace(" active", "");
+          //}
+          //console.log(slides);
           slides[slideIndex-1].style.display = "block"; 
-          dots[slideIndex-1].className += " active";
+          //dots[slideIndex-1].className += " active";
         }
 
         var buildIcon = function(product) {
