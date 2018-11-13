@@ -26,7 +26,11 @@ define(['jquery', 'system', 'menu', 'exceptions'], function($, system, menu, e) 
                 brandTitle: "Miele",
                 options: [
                     menu.option.goToHome(token),
-                    menu.option.sync(token),
+                    menu.option.goToClothesCare(token),
+                    menu.option.goToCooking(token),
+                    menu.option.goToVacuum(token),
+                    menu.option.goToAccessories(token),
+                    menu.option.syncCatalog(token),
                     menu.option.closeSessionOption(token)
                 ]
             });

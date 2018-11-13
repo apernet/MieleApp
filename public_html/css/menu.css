@@ -66,15 +66,27 @@
     list-style: none;
 }
 
+.sidebar-nav button {
+    background: transparent;
+    color: white;
+    border-color: transparent;
+    outline: transparent;
+}
+
+.sidebar-nav .liDrop a {
+    text-indent: 50px;
+    color: #999999;
+}
+
 .sidebar-nav li {
     text-indent: 20px;
-    line-height: 40px;
+    line-height: 50px;
 }
 
 .sidebar-nav li a {
     display: block;
     text-decoration: none;
-    color: #999999;
+    color: white;
 }
 
 .sidebar-nav li a:hover {
@@ -95,7 +107,8 @@
 }
 
 .sidebar-nav > .sidebar-brand a {
-    color: #999999;
+    color: white;
+    font-weight: bold;
 }
 
 .sidebar-nav > .sidebar-brand a:hover {

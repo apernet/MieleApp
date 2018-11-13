@@ -7,7 +7,7 @@ define(['jquery', 'system', 'menu', 'exceptions'], function($, system, menu, e) 
         var token = null;
         this.init = function() {
             //token = system.getUrlParameter("token");
-            token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEsImlzcyI6Imh0dHA6XC9cLzE1OS4yMDMuMTY1LjYwOjgwMDBcL2F1dGhcL2xvZ2luIiwiaWF0IjoxNTQwMjc4MzExLCJleHAiOjE1NDE0ODc5MTEsIm5iZiI6MTU0MDI3ODMxMSwianRpIjoicFN6Y21nS2QwYlRHUUlzMSJ9.nXi0EyS-oTX5LJBhDCWj9r6qjKkn9-7X-9q7T0KPpqw'
+            token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEsImlzcyI6Imh0dHA6XC9cLzE1OS4yMDMuMTY1LjYwOjgwMDBcL2F1dGhcL2xvZ2luIiwiaWF0IjoxNTQxNjI5NTQ4LCJleHAiOjE1NDI4MzkxNDgsIm5iZiI6MTU0MTYyOTU0OCwianRpIjoiSzZRQ2dXQm16ZUxLNGJUQyJ9.j7qFQjWWKaaiDeiGExrtlsCKudWOKwe1dhr8nt7AdjU'
             //setTokenValue();
             resizeContent();
             buildSurveyBoxes();
@@ -28,14 +28,18 @@ define(['jquery', 'system', 'menu', 'exceptions'], function($, system, menu, e) 
                 brandTitle: "Miele",
                 options: [
                     menu.option.goToHome(token),
-                    menu.option.sync(token),
+                    menu.option.goToClothesCare(token),
+                    menu.option.goToCooking(token),
+                    menu.option.goToVacuum(token),
+                    menu.option.goToAccessories(token),
+                    menu.option.syncCatalog(token),
                     menu.option.closeSessionOption(token)
                 ]
             });
         };
 
         var buildSurveyBoxes = function() {
-            self.getSurveys(function(surveyType) {
+            self.getLines(function(surveyType) {
                 surveyType = [{"_id":1, "json":{"id": 1,"name": "Cuidado de la ropa","idSurveyType": 3, "survey_type": [{"id": 3,"name": "Ventas","icon": "https://shop.miele.com.mx/812-home_default/secadora-t1.jpg","color": "#7F7F7F"}]}},
                               {"_id":2, "json":{"id": 2,"name": "Experiencia culinaria","idSurveyType": 3, "survey_type": [{"id": 3,"name": "Ventas","icon": "https://shop.miele.com.mx/777-home_default/range-cooker.jpg","color": "#7F7F7F"}]}},
                               {"_id":3, "json":{"id": 3,"name": "Aspiradoras","idSurveyType": 3, "survey_type": [{"id": 3,"name": "Ventas","icon": "https://shop.miele.com.mx/533-home_default/complete-c3-parquet.jpg","color": "#7F7F7F"}]}},
@@ -99,7 +103,7 @@ define(['jquery', 'system', 'menu', 'exceptions'], function($, system, menu, e) 
             return surveys;
         };
 
-        this.getSurveys = function(callback) {
+        this.getLines = function(callback) {
             if(typeof JSONStore !== 'undefined'){
                 return JSONStore.init({surveys: {searchFields: {id: 'string'}}})
                         .then(function() {
@@ -163,6 +167,7 @@ define(['jquery', 'system', 'menu', 'exceptions'], function($, system, menu, e) 
             else
                 callback(getRemoteSurvey(idSurvey));
         };
+        
         var getRemoteSurvey = function(idSurvey) {
             setTokenValue();
             var survey = null;

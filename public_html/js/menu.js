@@ -29,6 +29,16 @@ define(['jquery', 'exceptions', 'system'], function($, e, system) {
                         }
                 };
             },
+
+            syncCatalog: function(token) {
+                return {
+                    title: "- Sincronizar Catálogo",
+                    onclick:
+                        function() {
+                            window.location.href = "syncCatalog.html?token=" + token;
+                        }
+                };
+            },
             /**
              * 
              * @param {type} token
@@ -54,14 +64,157 @@ define(['jquery', 'exceptions', 'system'], function($, e, system) {
             },
             goToSurveysInterface: function(token) {
                 return {
-                    title: "Encuestas",
+                    title: "- Encuestas",
                     onclick:
                         function() {
                             window.location.href = "surveys.html?token=" + token;
                         }
                 };
+            },
+            goToClothesCare: function(token) {
+                return {
+                    title: "- Cuidado de la ropa",
+                    tag: "cuidadoDeLaRopaDrop",
+                    dropdown: [
+                        {
+                            title: "  - Lavadoras",
+                            onclick:
+                                function() {
+                                    window.location.href = "products.html?token=" + token;
+                                }
+                        },
+                        {
+                            title: "  - Secadoras",
+                            onclick:
+                                function() {
+                                    window.location.href = "products.html?token=" + token;
+                                }
+                        },
+                        {
+                            title: "  - Máquinas de planchar",
+                            onclick:
+                                function() {
+                                    window.location.href = "products.html?token=" + token;
+                                }
+                        }
+                    ],
+                    onclick:
+                        function() {
+                            dropdownToogle('cuidadoDeLaRopaDrop');
+                        }
+                };
+            },
+            goToCooking: function(token) {
+                return {
+                    title: "- Experiencia culinaria",
+                    tag: "experienciaCulinaria",
+                    dropdown: [
+                        {
+                            title: "  - Lavadoras",
+                            onclick:
+                                function() {
+                                    window.location.href = "products.html?token=" + token;
+                                }
+                        },
+                        {
+                            title: "  - Secadoras",
+                            onclick:
+                                function() {
+                                    window.location.href = "products.html?token=" + token;
+                                }
+                        },
+                        {
+                            title: "  - Máquinas de planchar",
+                            onclick:
+                                function() {
+                                    window.location.href = "products.html?token=" + token;
+                                }
+                        }
+                    ],
+                    onclick:
+                        function() {
+                            dropdownToogle('experienciaCulinaria');
+                        }
+                };
+            },
+            goToVacuum: function(token) {
+                return {
+                    title: "- Aspiradoras",
+                    tag: "aspiradoras",
+                    dropdown: [
+                        {
+                            title: "  - Lavadoras",
+                            onclick:
+                                function() {
+                                    window.location.href = "products.html?token=" + token;
+                                }
+                        },
+                        {
+                            title: "  - Secadoras",
+                            onclick:
+                                function() {
+                                    window.location.href = "products.html?token=" + token;
+                                }
+                        },
+                        {
+                            title: "  - Máquinas de planchar",
+                            onclick:
+                                function() {
+                                    window.location.href = "products.html?token=" + token;
+                                }
+                        }
+                    ],
+                    onclick:
+                        function() {
+                            dropdownToogle('aspiradoras');
+                        }
+                };
+            },goToAccessories: function(token) {
+                return {
+                    title: "- Accesorios",
+                    tag: "accesorios",
+                    dropdown: [
+                        {
+                            title: "  - Lavadoras",
+                            onclick:
+                                function() {
+                                    window.location.href = "products.html?token=" + token;
+                                }
+                        },
+                        {
+                            title: "  - Secadoras",
+                            onclick:
+                                function() {
+                                    window.location.href = "products.html?token=" + token;
+                                }
+                        },
+                        {
+                            title: "  - Máquinas de planchar",
+                            onclick:
+                                function() {
+                                    window.location.href = "products.html?token=" + token;
+                                }
+                        }
+                    ],
+                    onclick:
+                        function() {
+                            dropdownToogle('accesorios');
+                        }
+                };
             }
         };
+
+        var dropdownToogle = function(tag) {
+            var dropdownContent = $('.' + tag);
+            if (dropdownContent.css('display') == 'block') {
+                console.log('blocked');
+                dropdownContent.css('display','none');
+            } else {
+                dropdownContent.css('display','block');
+            }
+            //$('#myModal').css('display','block');
+            //console.log(dropdownContent.css('display'));
+        }
 
         var setButtonAction = function() {
             options.togleButton.click(function(e) {
@@ -81,12 +234,48 @@ define(['jquery', 'exceptions', 'system'], function($, e, system) {
             var div = $('<div>', {id: "sidebar-wrapper"});
             var ul = buildRoot();
             $(options.options).each(function() {
-                var li = buildList(this);
+                var li;
+                if (this.dropdown !== undefined) {
+                    li = buildDropdown(this);
+                } else {
+                    li = buildList(this);
+                }
                 ul.append(li);
             });
             div.append(ul);
             options.pageWrapper.append(div);
         };
+
+        var buildDropdown = function(option) {
+            
+            var li = $('<li>').append($('<button>').append(option.title).append($('<i>', {class: 'fa fa-caret-down'})));
+            var div = $('<div>', {class: option.tag});
+
+            $(option.dropdown).each(function() {
+                console.log(this);
+                var liDrop = buildListDrop(this);
+                div.append(liDrop);
+                div.css('display','none');
+            });
+
+            li.append(div);
+            
+            if (option.onclick !== undefined)
+                li.click(function() {
+                    onclick(option.onclick);
+                });
+            return li;
+        };
+
+        var buildListDrop = function(option) {
+            var li = $('<li>', {class: 'liDrop'}).append('<a href="#">' + option.title + '</a>');
+            if (option.onclick !== undefined)
+                li.click(function() {
+                    onclick(option.onclick);
+                });
+            return li;
+        };
+
         var buildList = function(option) {
             var li = $('<li>').append('<a href="#">' + option.title + '</a>');
             if (option.onclick !== undefined)

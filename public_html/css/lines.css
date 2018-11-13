@@ -36,12 +36,13 @@ and open the template in the editor.
     height: 51px;
     background-color: #464646;
 }
+
 .boxes-content{
     /*position: relative;*/
     padding-left: 80px;
     padding-right: 80px;
-    overflow-y: auto;
-    padding-bottom: 150px;
+    overflow-y: hidden;
+    padding-bottom: 99px;
 }
 
 .box-content{

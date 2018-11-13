@@ -7,7 +7,7 @@ body{
 }
 .navbar{
     background-color: #b30000;
-    min-height: 85px;
+    min-height: 51px;
     display: flex;
     align-items: center;
     padding-right: 30px;
@@ -17,7 +17,7 @@ body{
     background-color: transparent;
 }
 
-.navbar.message-mode .navbar-right{
+.navbar.message-mode .navbar-right{ 
     display: none;
 }
 .navbar.message-mode{

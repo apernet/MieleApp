@@ -5,7 +5,6 @@ define(['jquery', 'system', 'menu', 'exceptions'], function($, system, menu, e) 
     var Survey = function() {
         var self = this;
         var token = null;
-        var modal = document.getElementById('myModal');
         var slideIndex = 1;
         
         this.init = function() {
@@ -29,7 +28,11 @@ define(['jquery', 'system', 'menu', 'exceptions'], function($, system, menu, e) 
                 brandTitle: "Miele",
                 options: [
                     menu.option.goToHome(token),
-                    menu.option.sync(token),
+                    menu.option.goToClothesCare(token),
+                    menu.option.goToCooking(token),
+                    menu.option.goToVacuum(token),
+                    menu.option.goToAccessories(token),
+                    menu.option.syncCatalog(token),
                     menu.option.closeSessionOption(token)
                 ]
             });
@@ -37,9 +40,6 @@ define(['jquery', 'system', 'menu', 'exceptions'], function($, system, menu, e) 
 
         var buildSurveyBoxes = function() {
             self.getSurveys(function(surveyType) {
-                //surveyType = [{"_id":1, "json":{"id": 1,"name": "Lavadoras","idSurveyType": 3, "survey_type": [{"id": 3,"name": "Ventas","icon": "https://shop.miele.com.mx/811-home_default/lavadora-w1.jpg","color": "#7F7F7F"}]}},
-                //              {"_id":2, "json":{"id": 2,"name": "Lavadoras","idSurveyType": 3, "survey_type": [{"id": 3,"name": "Ventas","icon": "https://shop.miele.com.mx/811-home_default/lavadora-w1.jpg","color": "#7F7F7F"}]}},
-                //              {"_id":3, "json":{"id": 3,"name": "Lavadoras","idSurveyType": 3, "survey_type": [{"id": 3,"name": "Ventas","icon": "https://shop.miele.com.mx/811-home_default/lavadora-w1.jpg","color": "#7F7F7F"}]}}];
                 surveyType = [{"_id":1, "json":{"id": 1,"name": "LAVADORA W1","icon": "https://shop.miele.com.mx/811-home_default/lavadora-w1.jpg", "model": "Mod: WKH122 WPS", "cost": "$66,900.00", "description": "Lavadora, capacidad de carga de 9Kg, color blanco. Carga frontal. <br> (La entrega de este producto será a partir de Marzo del 2018).", "attributes": "<li>Cuidado especialde la ropa gracias a su tambor patentado 'Honeycomb'.</li> <li>Color: blanco.</li> <li>Carga frontal.</li> <li>Capacidad: 9kg</li> <li>Reconocimiento automático de carga</li> <li>Sistema TwinDos - el mejor sistema de dosificación de detergente líquido</li> <li>PowerWash 2.0Ñ Tecnología única de centrifugado y espreado durante el proceso de lavado optimizando el consumo de agua.</li> <li>QuickPowerWash: Limpieza profuna y máxima velocidad, ropa limpia en menos de una hora.</li>", "slider": {"img1": "https://shop.miele.com.mx/821-home_default/lavadora-w1.jpg", "img2": "https://shop.miele.com.mx/824-home_default/lavadora-w1.jpg", "img3": "https://shop.miele.com.mx/822-home_default/lavadora-w1.jpg", "img4": "https://shop.miele.com.mx/823-home_default/lavadora-w1.jpg"}}}];
 
                 $(surveyType).each(function() {
@@ -53,7 +53,8 @@ define(['jquery', 'system', 'menu', 'exceptions'], function($, system, menu, e) 
                 });
 
                 $('.close').on('click', function() {
-                    modal.style.display = "none";
+                    var modal = document.getElementById('myModal');
+                    $('#myModal').css('display','none');
                 });
 
                 $('.dot-img').on('click', function() {
@@ -73,7 +74,7 @@ define(['jquery', 'system', 'menu', 'exceptions'], function($, system, menu, e) 
                 $('.product-img').on('click', function() {
                     console.log(slideIndex);
                     slideIndex = parseInt(this.id);
-                    modal.style.display = "block";
+                    $('#myModal').css('display','block');
                     showSlides(slideIndex);
                     //console.log(this.id);
                     //var idImg = this.id;
@@ -135,12 +136,39 @@ define(['jquery', 'system', 'menu', 'exceptions'], function($, system, menu, e) 
         var buildSlider = function(product) {
             //console.log(product.id);
             var slider = product.slider;
-            var img1 = $('<span>', {class: "product-img1"}).append($('<img>', {class: "product-img", id: "2", src: slider.img1}));
-            var img2 = $('<span>', {class: "product-img2"}).append($('<img>', {class: "product-img", id: "3", src: slider.img2}));
-            var img3 = $('<span>', {class: "product-img3"}).append($('<img>', {class: "product-img", id: "4", src: slider.img3}));
-            var img4 = $('<span>', {class: "product-img4"}).append($('<img>', {class: "product-img", id: "5", src: slider.img4}));
-            var productSliderbox = $('<div>', {class: "box"}).append(img1).append(img2).append(img3).append(img4);
-            var productSlider = $('<div>', {class: "col-sm-12 box-content pictures", surveyName: product.name, idSurvey: product.id}).append(productSliderbox);
+            var img1 = $('<span>', {class: "product-img1"}).append($('<img>', {class: "product-img", id: "1", src: product.icon}));
+            var img2 = $('<span>', {class: "product-img1"}).append($('<img>', {class: "product-img", id: "2", src: slider.img1}));
+            var img3 = $('<span>', {class: "product-img2"}).append($('<img>', {class: "product-img", id: "3", src: slider.img2}));
+            var img4 = $('<span>', {class: "product-img3"}).append($('<img>', {class: "product-img", id: "4", src: slider.img3}));
+            var img5 = $('<span>', {class: "product-img4"}).append($('<img>', {class: "product-img", id: "5", src: slider.img4}));
+            var productSliderbox = $('<div>', {class: "sliderbox"}).append(img2).append(img3).append(img4).append(img5);
+
+            var close = $('<span>', {class: "close"}).append('&times;');
+            var header = $('<h2>').append(product.name);
+            var modalHeader = $('<div>', {class: "modal-header"}).append(close).append(header);
+
+
+            var slide1 = $('<div>', {class: "mySlides"}).append($('<div>', {class: "numbertext"}).append('1 / 5')).append($('<img>', {class: "slider-img", src: product.icon}));
+            var slide2 = $('<div>', {class: "mySlides"}).append($('<div>', {class: "numbertext"}).append('2 / 5')).append($('<img>', {class: "slider-img", src: slider.img1}));
+            var slide3 = $('<div>', {class: "mySlides"}).append($('<div>', {class: "numbertext"}).append('3 / 5')).append($('<img>', {class: "slider-img", src: slider.img2}));
+            var slide4 = $('<div>', {class: "mySlides"}).append($('<div>', {class: "numbertext"}).append('4 / 5')).append($('<img>', {class: "slider-img", src: slider.img3}));
+            var slide5 = $('<div>', {class: "mySlides"}).append($('<div>', {class: "numbertext"}).append('5 / 5')).append($('<img>', {class: "slider-img", src: slider.img4}));
+            var prev = $('<a>', {class: "prev"}).append('&#10094;');
+            var next = $('<a>', {class: "next"}).append('&#10095;');
+            var slideshowContainer = $('<div>', {class: "slideshow-container"}).append(slide1).append(slide2).append(slide3).append(slide4).append(slide5).append(prev).append(next);
+            var modalBody = $('<div>', {class: "modal-body"}).append(slideshowContainer);
+
+            var dotImg1 = $('<span>').append($('<img>', {class: "dot-img", id: "1", src: product.icon}));
+            var dotImg2 = $('<span>').append($('<img>', {class: "dot-img", id: "2", src: slider.img1}));
+            var dotImg3 = $('<span>').append($('<img>', {class: "dot-img", id: "3", src: slider.img2}));
+            var dotImg4 = $('<span>').append($('<img>', {class: "dot-img", id: "4", src: slider.img3}));
+            var dotImg5 = $('<span>').append($('<img>', {class: "dot-img", id: "5", src: slider.img4}));
+            var modalFooter = $('<div>', {class: "modal-footer"}).append(dotImg1).append(dotImg2).append(dotImg3).append(dotImg4).append(dotImg5);
+
+            var modalContent = $('<div>', {class: "modal-content"}).append(modalHeader).append(modalBody).append(modalFooter);
+            var modal = $('<div>', {class: "modal", id: "myModal"}).append(modalContent);
+
+            var productSlider = $('<div>', {class: "col-sm-12 box-content pictures", surveyName: product.name, idSurvey: product.id}).append(productSliderbox).append(modal);
             return productSlider;
         }
 

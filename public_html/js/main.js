@@ -31,6 +31,7 @@ require.config({
         surveyType: 'js/surveyType',
         questionType: 'js/questionType',
         sync: 'js/sync',
+        syncCatalog: 'js/syncCatalog',
         jsonstore: 'js/jsonstore'
     },
     shim: {

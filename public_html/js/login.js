@@ -12,6 +12,7 @@ define(['jquery', 'alerts', 'validator', 'exceptions', 'system'], function($, al
             $(document).ready(function() {
                 removeAlerts();
                 $('#btnLogin').click(function(e) {
+                    console.log('login');
                     e.preventDefault();
                     validateFields();
                 });

@@ -36,6 +36,30 @@ define(['jquery', 'system', 'exceptions'], function($, sys, e) {
             });
         };
 
+        this.syncCatalog = function(token_, data, callback) {
+            token = token_;
+            console.log(token);
+//            destroy();
+            var collections = {
+                // Object that defines the 'surveys' collection.
+                users: {
+                    searchFields: {id: 'string', name: 'string', email: 'string', offline: "string"}
+                },
+                lines: {
+                    // Object that defines the Search Fields for the 'surveys' collection.
+                    searchFields: {id: 'string'}
+                }
+                
+            };
+
+            JSONStore.init(collections, {})
+                    .then(function() {
+                        return flushCatalogData(data);
+                    }).then(function() {
+                (typeof callback === "function") ? callback() : null;
+            });
+        };
+
         var destroy = function() {
             return JSONStore.destroy()
                     .then(function() {
@@ -137,6 +161,64 @@ define(['jquery', 'system', 'exceptions'], function($, sys, e) {
                 return ((JSONStore.get(collectionName) === undefined) ? storeUsers(data.data) : flushUsers(data));
             });
         };
+
+        var flushCatalogData = function(data) {
+            console.log("flush catalog data");
+            log("limpiando información");
+            var collectionName = 'lines';
+            return ((JSONStore.get(collectionName) === undefined) ? storeCatalog(collectionName, data.data) : flushCatalog(collectionName, data.data));
+        };
+
+        var flushCatalog = function(collectionName, data) {
+            console.log("flushing " + collectionName);
+            return JSONStore.get(collectionName)
+                    .clear()
+                    .then(function() {
+                        console.log(collectionName + " collection cleaned");
+                        log(collectionName + "collection emptied successfully");
+                        storeCatalog(collectionName, data);
+                    })
+                    .fail(function(errorObject) {
+                        // Handle failure.
+                        console.log("error while cleaning " + collectionName);
+                        log('Error while cleaning ' + collectionName + ": " + errorObject);
+                    });
+        };
+
+        var storeCatalog = function(collectionName, data) {
+            console.log("storing " + collectionName);
+            var addOptions = {
+                markDirty: true   // Mark data as dirty (true = yes, false = no), default true.
+            };
+            // Get an accessor to the people collection and add data.
+            return JSONStore.get(collectionName)
+                    .add(data[collectionName], addOptions)
+                    .then(function(numberOfDocumentsAdded) {
+                        console.log(collectionName + " added " + numberOfDocumentsAdded);
+                        log(collectionName + " downloaded and added to the system: " + numberOfDocumentsAdded);
+                    })
+                    .then(function() {
+                        return JSONStore.get(collectionName).findAll();
+                    })
+                    .fail(function(errorObject) {
+                        // Handle failure for any of the previous JSONStore operations (init, add).
+                        console.log("fail while searching " + collectionName);
+                        console.log(errorObject);
+                        log("error obtaining " + collectionName + ": " + errorObject);
+                    })
+                    .then(function(arrayResults) {
+                        console.log("showing all " + collectionName);
+                        console.log(arrayResults);
+                    })
+                    .fail(function(errorObject) {
+                        // Handle failure for any of the previous JSONStore operations (init, add).
+                        console.log("fail while showing all " + collectionName);
+                        console.log(errorObject);
+                    })
+                    ;
+
+        };
+
 
         var flushSurveys = function(data) {
             console.log("flush surveys");

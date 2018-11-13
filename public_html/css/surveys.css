@@ -15,13 +15,21 @@ and open the template in the editor.
     height: 100%;
     background: url("../img/background-surveys.png") no-repeat fixed;
     background-size: 100% 100%;
+    z-index: -1;
+}
+
+.miele-logo{
+    height: 41px;
+    margin-left: 34%;
+    margin-top: 2%;
 }
 
 .searcher-content{
     top: 0px;
     height: 51px;
-    margin-top: 30px;
+    background-color: #464646;
 }
+
 .boxes-content{
     /*position: relative;*/
     padding-left: 24px;
@@ -46,21 +54,23 @@ and open the template in the editor.
 }
 
 .input-group-addon{
-    background-color: transparent;
+    background-color: #e8e8e8;
     border-radius: 22px;
     border-right: none;
 }
 
 .form-control{
-    background-color: transparent;
+    background-color: #e8e8e8;
     border-radius: 22px;
     border-left: none;
     border-right: none;
-    color: #E3E2E1;
+    color: black;
 }
 
 .navbar-collapse{
     padding-left: 100px;
+    width: 400px;
+    float: right;
 }
 
 .box{

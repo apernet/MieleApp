@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, target-densityDpi=device-dpi" />
+    <head>
+        <title>Syncronizar Catálogo</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="apis/bootstrap/css/bootstrap.min.css"/>
+        <link rel="stylesheet" href="apis/bootstrap3-dialog/dist/css/bootstrap-dialog.css"/>
+        <link rel="stylesheet" href="css/menu.css"/>
+        <link rel="stylesheet" href="css/sync.css"/>
+        <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+        <script data-main="js/main" src="apis/require.js"></script>
+    </head>
+    <body>
+        <div id="pageWrapper">
+            <nav class="navbar navbar-default" role="navigation">
+                <span class="navbar-brand btn-menu glyphicon glyphicon-menu-hamburger" id="menu-toggle"></span>
+                <div class="navbar-header">
+                    
+                    <a class="navbar-brand" href="#">Sincronizar Catálogo</a>
+                </div>
+            </nav>
+            <div class="container">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <p>Usted esta apunto de sincronizar información con el servidor remoto de Miele, asegurese de tener una conexión a internet estable.</p>
+                </div>
+                <div class="col-xs-12 col-sm-7 col-md-5 col-lg-5" id="sync-container">
+                    <div class="form-group row">
+                        <label class="col-xs-12 col-sm-3 col-md-3 ">Usuario</label>
+                        <div class="col-xs-12 col-sm-6 col-md-6">
+                            <input type="email" class="form-control" id="user" name="user">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-xs-12 col-sm-3 col-md-3 ">Password</label>
+                        <div class="col-xs-12 col-sm-6 col-md-6">
+                            <input type="password" class="form-control" id="password" name="password">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="alert alert-danger login-alerts col-md-12" style="display: none">
+
+                        </div>
+                    </div>
+                    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
+                        <button id="sync-now" class="btn btn-primary">Sincronizar ahora</button>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-5 col-md-7 col-lg-7">
+                    <label>Resultado</label>
+                    <textarea class="form-control result-container" id="result-container"></textarea>
+                </div>
+            </div>
+        </div>
+    </body>
+    <script>
+        require(['main'], function() {
+            require(['syncCatalog'], function(sync) {
+                sync.init();
+            });
+        });
+    </script>
+</html>
